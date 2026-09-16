@@ -136,7 +136,7 @@ function encodePng(size, pixels) {
 }
 
 /**
- * アイコンを1枚描きます。文字は「TC」（Talto_Converter）です。
+ * アイコンを1枚描きます。図柄は「TC」（TaltoConv）の白抜き文字だけのシンプルなものです。
  * TALTO 本体のアイコンと紛らわしくならないよう、単独の「T」は使いません。
  * maskable は OS 側で丸や角丸に切り抜かれる前提なので、背景を全面に塗り、字を中央 70% に収めます。
  */
@@ -144,21 +144,28 @@ function drawIcon(size, { maskable = false } = {}) {
   const pixels = Buffer.alloc(size * size * 4);
   const background = [0x65, 0x51, 0x81];
   const radius = maskable ? 0 : size * 0.22;
-  const glyphScale = maskable ? 0.7 : 0.9;
+  const glyphScale = maskable ? 0.68 : 0.88;
   const center = size / 2;
-  // アイコン中心を原点とした比率で字形を定義します。左に「T」、右に「C」。
-  const tBar = { x0: -0.44, x1: -0.06, y0: -0.22, y1: -0.10 };
-  const tStem = { x0: -0.31, x1: -0.19, y0: -0.10, y1: 0.22 };
-  const c = { cx: 0.24, cy: 0.0, outer: 0.22, inner: 0.105, gapDegrees: 42 };
+  // アイコン中心を原点とした比率で字形を定義します。左に「T」、右に「C」。線の太さはどちらも stroke で揃えます。
+  const stroke = 0.13;
+  const tBar = { x0: -0.47, x1: -0.07, y0: -0.25, y1: -0.25 + stroke };
+  const tStem = { x0: -0.27 - stroke / 2, x1: -0.27 + stroke / 2, y0: -0.25 + stroke, y1: 0.25 };
+  const c = { cx: 0.25, cy: 0.0, mid: 0.185, gapDegrees: 40 };
   const inRect = (rect, nx, ny) => nx >= rect.x0 && nx <= rect.x1 && ny >= rect.y0 && ny <= rect.y1;
   const inC = (nx, ny) => {
     const dx = nx - c.cx;
     const dy = ny - c.cy;
     const distance = Math.hypot(dx, dy);
-    if (distance > c.outer || distance < c.inner) return false;
-    // 右側（角度0°付近）を切り欠いて C の開口部にします。
     const angle = Math.abs((Math.atan2(dy, dx) * 180) / Math.PI);
-    return angle > c.gapDegrees;
+    // 右側（角度0°付近）を切り欠いて C の開口部にし、両端は丸く仕上げます。
+    if (Math.abs(distance - c.mid) <= stroke / 2 && angle > c.gapDegrees) return true;
+    for (const sign of [1, -1]) {
+      const theta = (sign * c.gapDegrees * Math.PI) / 180;
+      const ex = c.cx + c.mid * Math.cos(theta);
+      const ey = c.cy + c.mid * Math.sin(theta);
+      if (Math.hypot(nx - ex, ny - ey) <= stroke / 2) return true;
+    }
+    return false;
   };
 
   for (let y = 0; y < size; y += 1) {

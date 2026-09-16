@@ -304,9 +304,10 @@
   <div id="updateNotice" class="update-notice" role="status" hidden><span>新しい版があります。再読み込みすると最新の状態になります。</span><button id="reloadForUpdate" type="button" class="primary">再読み込み</button></div>
   <!-- スマホだけに表示する次工程ボタンです。PCでは各カードを同時に表示します。 -->
   <div class="mobile-action"><button id="mobileAction" class="primary" type="button"><span id="mobileActionText">形式へ</span><span aria-hidden="true">→</span></button></div>
-  <!-- 読み込み順が依存関係です。変換→形式カタログ→画面制御の順を変えないでください。 -->
+  <!-- 読み込み順が依存関係です。変換→形式カタログ→設定の検査→画面制御の順を変えないでください。 -->
   <script src="src/scripts/converter.js"></script>
   <script src="src/scripts/format-catalog.js"></script>
+  <script src="src/scripts/settings-schema.js"></script>
   <script src="src/scripts/app.js"></script>
 </body>
 </html>

@@ -460,6 +460,9 @@
   function applySettingsData(saved, forceCustom = false) {
     if (!saved || ![1, 2].includes(saved.version)) throw new Error("このツールの設定ファイルとして認識できません。");
     if (saved.version === 2 && saved.app !== "unofficial-talto-migration-helper") throw new Error("別のアプリの設定ファイルです。");
+    // 型や範囲が合わない項目が 1 つでもあれば、既存の設定を一切変えずに止めます（一部だけ適用された中途半端な状態を作らないため）。
+    const problems = window.TaltoSettingsSchema.validate(saved);
+    if (problems.length) throw new Error(window.TaltoSettingsSchema.describeProblems(problems));
     mode = forceCustom ? "custom" : saved.mode === "custom" ? "custom" : "unified";
     if (!forceCustom) sourceMode = ["files", "folder"].includes(saved.sourceMode) ? saved.sourceMode : "paste";
     if (["text", "commonmark", "gfm", "obsidian", "pixiv", "html"].includes(saved.format)) el.format.value = saved.format;
@@ -1118,7 +1121,9 @@
     if (!file) return;
     try {
       if (file.size > 1024 * 1024) throw new Error("設定ファイルは1MB以下のテキストファイルを選んでください。");
-      const saved = JSON.parse((await file.text()).replace(/^\uFEFF/, ""));
+      let saved;
+      try { saved = JSON.parse((await file.text()).replace(/^\uFEFF/, "")); }
+      catch (error) { throw new Error(`\u8A2D\u5B9A\u30D5\u30A1\u30A4\u30EB\u306E\u66F8\u5F0F\uFF08JSON\uFF09\u304C\u58CA\u308C\u3066\u3044\u307E\u3059\u3002\u9589\u3058\u62EC\u5F27\u3084\u5F15\u7528\u7B26\u3001\u672B\u5C3E\u306E\u30AB\u30F3\u30DE\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\uFF08${error.message}\uFF09`); }
       applySettingsData(saved, true);
       saveSettings();
       convert();

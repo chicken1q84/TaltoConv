@@ -12,6 +12,7 @@ migration-helper-v2/
 │  └─ scripts/
 │     ├─ converter.js            原稿の解析・TALTO向け変換
 │     ├─ format-catalog.js       入力形式の対応表
+│     ├─ settings-schema.js      設定ファイルの書式検査（画面に触らない。Node からもテスト）
 │     └─ app.js                  画面操作・ファイル読込・コピー
 ├─ tests/                        変換・構造・共通原稿（fixtures/）・ランダム入力・配布物の検査（Nodeのみ。配布物に同梱）
 ├─ e2e/                          Playwrightによる画面幅・操作・端末エミュレーション・PWA（オフライン起動と更新）の検査（開発専用）
@@ -38,9 +39,10 @@ migration-helper-v2/
 ```text
 HTML → converter.js
      → format-catalog.js
-     → app.js → 上記2ファイルの公開APIを利用
+     → settings-schema.js
+     → app.js → 上記3ファイルの公開APIを利用
 
-tests → converter.js / format-catalog.js
+tests → converter.js / format-catalog.js / settings-schema.js
 ```
 
 `converter.js` と `format-catalog.js` は画面要素を直接操作しません。画面変更が変換結果へ波及しにくく、ブラウザなしで検査できます。
@@ -51,6 +53,7 @@ tests → converter.js / format-catalog.js
 |---|---|
 | Markdown・HTML・Pixiv記法の変換 | `src/scripts/converter.js` |
 | 形式選択時の対応表・説明文 | `src/scripts/format-catalog.js` |
+| 設定ファイルで受け付ける項目・型・範囲 | `src/scripts/settings-schema.js`（`tests/test-settings-schema.cjs` も更新） |
 | ボタン、設定、ファイル一覧、コピー | `src/scripts/app.js` |
 | 色、余白、PC・スマホ表示 | `src/styles/app.css` |
 | 項目や画面構造 | `TaltoConv.html` |

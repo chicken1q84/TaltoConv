@@ -283,7 +283,7 @@ async function buildZip(baseDir, folderName) {
 // ---- HTML の加工 ----
 
 const stylesheetTag = '<link rel="stylesheet" href="src/styles/app.css">';
-const scriptFiles = ["src/scripts/converter.js", "src/scripts/format-catalog.js", "src/scripts/app.js"];
+const scriptFiles = ["src/scripts/converter.js", "src/scripts/format-catalog.js", "src/scripts/settings-schema.js", "src/scripts/app.js"];
 const versionMetaTag = '<meta name="app-version" content="dev">';
 
 /**
@@ -359,7 +359,7 @@ function buildWebHtml(html) {
 
 // ================================================================
 // ---- 1. ソース側のテスト ----
-runTests(root, ["tests/test-converter.cjs", "tests/test-structure.cjs", "tests/test-fixtures.cjs", "tests/fuzz-converter.cjs"]);
+runTests(root, ["tests/test-converter.cjs", "tests/test-structure.cjs", "tests/test-settings-schema.cjs", "tests/test-fixtures.cjs", "tests/fuzz-converter.cjs"]);
 
 // ---- 2. HTML の読み込みとバージョン埋め込み ----
 const sourceHtml = await readFile(resolve(root, "TaltoConv.html"), "utf8");

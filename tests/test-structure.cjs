@@ -20,6 +20,7 @@ for (const asset of [
   "src/styles/app.css",
   "src/scripts/converter.js",
   "src/scripts/format-catalog.js",
+  "src/scripts/settings-schema.js",
   "src/scripts/app.js",
 ]) {
   assert.ok(html.includes(`"${assetPrefix}${asset}"`), `HTMLに ${assetPrefix}${asset} の参照が必要です`);

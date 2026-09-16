@@ -1,6 +1,10 @@
 /*
  * Web版（GitHub Pages）だけで使う Service Worker です。ZIP版には含まれません。
- * ビルド時に __VERSION__ と __PRECACHE__ が実際の値へ置き換わります。
+ * ビルド時に __VERSION__・__BUILD_ID__・__PRECACHE__ が実際の値へ置き換わります。
+ *
+ * キャッシュ名にはバージョンだけでなく、配信ファイル全体のハッシュ（BUILD_ID）も含めます。
+ * バージョン番号を上げずにアイコンやスクリプトだけ差し替えた場合でも、この SW の内容が変わり、
+ * ブラウザが更新を検出して新しいキャッシュを作ります（同じ SW のままだと古いファイルが使われ続けるため）。
  *
  * 方針:
  *   - install で配信ファイル一式をまとめてキャッシュする（precache）。
@@ -11,7 +15,8 @@
  *   - 原稿データはこの SW を通らない。変換は端末内で完結し、外部へ送信しない。
  */
 const VERSION = "__VERSION__";
-const CACHE_NAME = `talto-helper-${VERSION}`;
+const BUILD_ID = "__BUILD_ID__";
+const CACHE_NAME = `talto-helper-${VERSION}-${BUILD_ID}`;
 const PRECACHE = __PRECACHE__;
 
 self.addEventListener("install", (event) => {

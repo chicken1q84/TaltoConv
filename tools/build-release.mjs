@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { resolve, join, relative, sep } from "node:path";
 import { deflateRawSync, deflateSync, crc32 } from "node:zlib";
 import { Script } from "node:vm";
+import { createHash } from "node:crypto";
 
 // このファイルは配布物を組み立てる配布係です。日常の変換処理には関与しません。
 // 同じソースから次の3つを同時に作り、片方だけ更新された状態を作らないようにします。
@@ -295,9 +296,17 @@ function assertSourceHtml(html) {
   }
 }
 
-/** VERSION.txt の値を画面表示用の meta へ埋め込みます。 */
+/**
+ * VERSION.txt の値を画面表示用の meta へ埋め込み、タブ用の小さなアイコンを data URI で添えます。
+ * ZIP版は file:// で開かれ外部ファイルのアイコンを当てにできないため、HTML 自身に埋め込みます（約1KB）。
+ */
 function withVersion(html) {
-  return html.replace(versionMetaTag, `<meta name="app-version" content="${version}">`);
+  const favicon = `data:image/png;base64,${drawIcon(48).toString("base64")}`;
+  return html.replace(
+    versionMetaTag,
+    `<meta name="app-version" content="${version}">
+  <link rel="icon" type="image/png" href="${favicon}">`
+  );
 }
 
 /**
@@ -340,7 +349,6 @@ function buildWebHtml(html) {
   const head = [
     '  <link rel="manifest" href="manifest.webmanifest">',
     '  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">',
-    '  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">',
     '  <meta name="mobile-web-app-capable" content="yes">',
     '  <meta name="apple-mobile-web-app-capable" content="yes">',
     '  <meta name="apple-mobile-web-app-status-bar-style" content="default">',
@@ -372,14 +380,18 @@ await Promise.all([
 // Service Worker は最後に作ります。precache 一覧に dist/ の全ファイルを載せるためです。
 const distFiles = await assertNoForbiddenFiles(distDir, "dist");
 const precache = ["./", ...distFiles.map((file) => `./${file.name}`)];
+// 配信ファイル全体のハッシュを BUILD_ID にします。1バイトでも変われば sw.js が変わり、利用者側で更新が検出されます。
+const digest = createHash("sha256");
+for (const file of distFiles) digest.update(file.name).update(await readFile(file.absolute));
+const buildId = digest.digest("hex").slice(0, 10);
 const swTemplate = await readFile(resolve(root, "tools/pwa/sw.js"), "utf8");
 await writeFile(
   resolve(distDir, "sw.js"),
   // 置き換え先は雛形の説明コメントにも現れるため、先頭1件ではなく全件を置き換えます。
-  swTemplate.replaceAll("__VERSION__", version).replaceAll("__PRECACHE__", JSON.stringify(precache, null, 2)),
+  swTemplate.replaceAll("__VERSION__", version).replaceAll("__BUILD_ID__", buildId).replaceAll("__PRECACHE__", JSON.stringify(precache, null, 2)),
   "utf8"
 );
-console.log(`Web版: ${distDir} (${distFiles.length + 1}ファイル)`);
+console.log(`Web版: ${distDir} (${distFiles.length + 1}ファイル, build ${buildId})`);
 
 if (webOnly) {
   console.log("--web-only のため ZIP版は作成しません。");

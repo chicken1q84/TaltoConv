@@ -83,7 +83,7 @@ TaltoConv（非公式TALTO移行ヘルパー）をWindows優先で維持しな�
 制作者が行うこと（Claudeでは代行できない）:
 
 - [x] GitHubアカウントを用意する（`chicken1q84`）。
-- [x] `migration-helper-v2/` を公開リポジトリとして作成する（`chicken1q84/talto-migration-helper`。Pages URL は `https://chicken1q84.github.io/talto-migration-helper/`）。
+- [x] `migration-helper-v2/` を公開リポジトリとして作成する（`chicken1q84/TaltoConv`。当初 talto-migration-helper で作成し 2026-09-17 に改名。Pages URL は `https://chicken1q84.github.io/TaltoConv/`）。
 - [x] リポジトリの Settings → Pages で配信元を「GitHub Actions」にする。
 - [x] gitのユーザー名とメールを設定し（設定済み。メールはGitHubのnoreplyアドレス）、初回コミットとプッシュを行う。
 

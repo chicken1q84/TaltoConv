@@ -21,7 +21,7 @@ Microsoft EdgeまたはGoogle Chromeで開いてください。触るのはこ�
 
 iPhone・iPad・AndroidではこのZIPではなく、Web版をSafariまたはChromeで開いて「ホーム画面に追加」してください。
 一度開けば、次回からはネット接続なしで起動できます。
-  Web版: https://chicken1q84.github.io/talto-migration-helper/
+  Web版: https://chicken1q84.github.io/TaltoConv/
 
 ■ 対応する原稿
 

@@ -3,9 +3,17 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
+// ソースでは TaltoConv.html がこのフォルダの1つ上（root）にあります。
+// ZIP版では root が TaltoConv_files/ になり、HTML はさらに1つ上の最上位にあるため、両方を探します。
 const root = path.resolve(__dirname, "..");
-const html = fs.readFileSync(path.join(root, "TaltoConv.html"), "utf8");
+const htmlCandidates = [path.join(root, "TaltoConv.html"), path.join(root, "..", "TaltoConv.html")];
+const htmlPath = htmlCandidates.find((candidate) => fs.existsSync(candidate));
+assert.ok(htmlPath, "TaltoConv.html が見つかりません");
+const html = fs.readFileSync(htmlPath, "utf8");
 const catalog = require(path.join(root, "src", "scripts", "format-catalog.js"));
+// ZIP版では HTML から見た src/ の位置が TaltoConv_files/src/ になります。参照の前置きはそれに合わせます。
+const isLayered = path.dirname(htmlPath) !== root;
+const assetPrefix = isLayered ? `${path.basename(root)}/` : "";
 
 // HTMLの参照と実ファイルの存在を同時に確認します。
 for (const asset of [
@@ -14,7 +22,7 @@ for (const asset of [
   "src/scripts/format-catalog.js",
   "src/scripts/app.js",
 ]) {
-  assert.ok(html.includes(asset), `HTMLに ${asset} の参照が必要です`);
+  assert.ok(html.includes(`"${assetPrefix}${asset}"`), `HTMLに ${assetPrefix}${asset} の参照が必要です`);
   assert.ok(fs.existsSync(path.join(root, asset)), `${asset} が存在する必要があります`);
 }
 

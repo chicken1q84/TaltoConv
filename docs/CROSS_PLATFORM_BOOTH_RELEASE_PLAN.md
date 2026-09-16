@@ -52,9 +52,11 @@ TaltoConv（非公式TALTO移行ヘルパー）をWindows優先で維持しな�
 ```text
 同じソース
   ├─ tools/build-release.mjs ─┬─ release/<名前>_v<版>/ とzip   … BOOTHへ
-  │                            │    ├─ TaltoConv.html（分割ファイル版）
-  │                            │    ├─ TaltoConv_単一ファイル版.html
-  │                            │    └─ src/ tests/ docs/ tools/serve.mjs …
+  │                            │    ├─ TaltoConv.html            … 利用者がクリックする唯一のファイル
+  │                            │    ├─ はじめにお読みください.txt
+  │                            │    └─ TaltoConv_files/          … 触らなくてよいもの
+  │                            │         ├─ TaltoConv_単一ファイル版.html（予備）
+  │                            │         └─ src/ tests/ docs/ tools/serve.mjs CHANGELOG LICENSE VERSION
   │                            └─ dist/                          … GitHub Pagesへ
   │                                 ├─ index.html
   │                                 ├─ manifest.webmanifest
@@ -305,21 +307,22 @@ PlaywrightのWebKitはiOS実機の代替にはなりません。OSのファイ�
 
 ```text
 TaltoConv_v1.0.0/
+├─ TaltoConv.html                ← ダブルクリックするのはこれだけ
 ├─ はじめにお読みください.txt
-├─ TaltoConv.html
-├─ TaltoConv_単一ファイル版.html
-├─ src/
-├─ docs/
-│  ├─ MIGRATION_GUIDE.md
-│  ├─ ARCHITECTURE.md
-│  ├─ CROSS_PLATFORM_BOOTH_RELEASE_PLAN.md
-│  ├─ 対応環境.md
-│  └─ 既知の問題.md
-├─ tests/
-├─ tools/serve.mjs
-├─ CHANGELOG.txt
-├─ LICENSE.txt
-└─ VERSION.txt
+└─ TaltoConv_files/              ← 触らない
+   ├─ TaltoConv_単一ファイル版.html（予備）
+   ├─ src/
+   ├─ docs/
+   │  ├─ MIGRATION_GUIDE.md
+   │  ├─ ARCHITECTURE.md
+   │  ├─ CROSS_PLATFORM_BOOTH_RELEASE_PLAN.md
+   │  ├─ 対応環境.md
+   │  └─ 既知の問題.md
+   ├─ tests/
+   ├─ tools/serve.mjs
+   ├─ CHANGELOG.txt
+   ├─ LICENSE.txt
+   └─ VERSION.txt
 ```
 
 公開前の確認:

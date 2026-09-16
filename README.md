@@ -4,7 +4,7 @@
 
 配布物は次の3つを同じソースから生成します。動作だけを隠した簡易版は生成しません。
 
-- **ZIP版**（Windows向け、BOOTHで配布）: ソース・テスト・設計資料を同梱。展開して `TaltoConv.html` を開く
+- **ZIP版**（Windows向け、BOOTHで配布）: 展開して最上位の `TaltoConv.html` を開く。ソース・テスト・設計資料は `TaltoConv_files/` にまとめて同梱
 - **Web版**（iPhone・iPad・Android向け、GitHub Pagesで配信）: 一度開いて「ホーム画面に追加」すると、以降はネット接続なしで起動できる
 - **単一ファイル版**（ZIPに同梱）: CSS・JSを1つのHTMLに埋め込んだ予備版
 

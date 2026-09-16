@@ -7,7 +7,10 @@ import { fileURLToPath } from "node:url";
 // 外部へ公開せず127.0.0.1だけで待ち受けるため、このPCからのみアクセスできます。
 // 使い方: node tools/serve.mjs [ポート] [配信するフォルダ]
 //   フォルダを省略するとこのツールのソースを配信します。dist を指定すると Web版の動作確認に使えます。
-const root = path.resolve(process.argv[3] || path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."));
+const ownRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// ZIP版ではこのファイルが TaltoConv_files/tools/ にあり、HTML はさらに1つ上にあるため、その場合は最上位を配信します。
+const defaultRoot = fs.existsSync(path.join(ownRoot, "TaltoConv.html")) ? ownRoot : path.resolve(ownRoot, "..");
+const root = path.resolve(process.argv[3] || defaultRoot);
 const port = Number(process.argv[2] || 8765);
 const mimeTypes = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
@@ -30,5 +33,5 @@ http.createServer((request, response) => {
   response.writeHead(200, { "content-type": mimeTypes[path.extname(filePath)] || "application/octet-stream" });
   fs.createReadStream(filePath).pipe(response);
 }).listen(port, "127.0.0.1", () => {
-  console.log(`TALTO migration helper: http://127.0.0.1:${port}/`);
+  console.log(`TaltoConv: http://127.0.0.1:${port}/`);
 });

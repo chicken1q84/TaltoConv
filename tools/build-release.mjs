@@ -7,7 +7,9 @@ import { Script } from "node:vm";
 // このファイルは配布物を組み立てる配布係です。日常の変換処理には関与しません。
 // 同じソースから次の3つを同時に作り、片方だけ更新された状態を作らないようにします。
 //   ZIP版（BOOTH向け）      release/TaltoConv_v<版>/ と同名の zip
-//                            分割ファイル版HTML・単一ファイル版HTML・ソース・テスト・設計資料を同梱
+//                            最上位は「TaltoConv.html」と「はじめにお読みください.txt」だけにし、
+//                            ソース・テスト・設計資料・予備の単一ファイル版は TaltoConv_files/ にまとめる
+//                            （利用者がクリックすべきファイルと、触らなくてよいものを層で分ける）
 //   Web版（GitHub Pages向け） dist/  index.html・manifest・Service Worker・アイコン
 //
 // 手順:
@@ -28,6 +30,8 @@ const releaseRoot = resolve(root, "..", "release");
 const packageDir = resolve(releaseRoot, packageName);
 const zipPath = `${packageDir}.zip`;
 const distDir = resolve(root, "dist");
+// ZIP版で、利用者が触らなくてよいものをまとめるフォルダ名です。HTMLからの参照もこの名前で書き換えます。
+const filesDirName = "TaltoConv_files";
 const buildTime = new Date();
 
 // 配布物に絶対に入れてはいけないフォルダ名です。作業フォルダ直下にある TALTO の復元コードや
@@ -289,6 +293,16 @@ function withVersion(html) {
   return html.replace(versionMetaTag, `<meta name="app-version" content="${version}">`);
 }
 
+/**
+ * ZIP版の最上位に置く HTML 用に、src/ への参照を TaltoConv_files/src/ へ書き換えます。
+ * 参照の形はビルド前に assertSourceHtml で固定しているため、置換漏れは起きません。
+ */
+function withFilesDir(html) {
+  return html
+    .replace(stylesheetTag, `<link rel="stylesheet" href="${filesDirName}/src/styles/app.css">`)
+    .replaceAll('<script src="src/', `<script src="${filesDirName}/src/`);
+}
+
 /** <html> に版の種類を記録し、画面側が Web版・単一ファイル版を見分けられるようにします。 */
 function withBuildKind(html, kind) {
   return html.replace('<html lang="ja">', `<html lang="ja" data-build="${kind}">`);
@@ -369,25 +383,29 @@ if (webOnly) {
   await rm(zipPath, { force: true });
   await mkdir(packageDir, { recursive: true });
 
-  // 改修する人が原因を追えるよう、実行ファイルだけでなくテストと設計資料も同梱します。
+  // 最上位には利用者がクリックする HTML と説明書だけを置き、それ以外は TaltoConv_files/ にまとめます。
+  // 改修する人が原因を追えるよう、ソースだけでなくテストと設計資料も同梱します。
+  const filesDir = resolve(packageDir, filesDirName);
+  await mkdir(filesDir, { recursive: true });
   await Promise.all([
-    writeFile(resolve(packageDir, "TaltoConv.html"), versionedHtml, "utf8"),
-    buildSingleFileHtml(versionedHtml).then((html) => writeFile(resolve(packageDir, "TaltoConv_単一ファイル版.html"), html, "utf8")),
-    cp(resolve(root, "src"), resolve(packageDir, "src"), { recursive: true }),
-    cp(resolve(root, "tests"), resolve(packageDir, "tests"), { recursive: true }),
-    cp(resolve(root, "docs"), resolve(packageDir, "docs"), { recursive: true }),
-    mkdir(resolve(packageDir, "tools"), { recursive: true }).then(() =>
-      copyFile(resolve(root, "tools", "serve.mjs"), resolve(packageDir, "tools", "serve.mjs"))
+    writeFile(resolve(packageDir, "TaltoConv.html"), withFilesDir(versionedHtml), "utf8"),
+    copyFile(resolve(root, "tools", "templates", "README-DEBUG.txt"), resolve(packageDir, "はじめにお読みください.txt")),
+    buildSingleFileHtml(versionedHtml).then((html) => writeFile(resolve(filesDir, "TaltoConv_単一ファイル版.html"), html, "utf8")),
+    cp(resolve(root, "src"), resolve(filesDir, "src"), { recursive: true }),
+    cp(resolve(root, "tests"), resolve(filesDir, "tests"), { recursive: true }),
+    cp(resolve(root, "docs"), resolve(filesDir, "docs"), { recursive: true }),
+    mkdir(resolve(filesDir, "tools"), { recursive: true }).then(() =>
+      copyFile(resolve(root, "tools", "serve.mjs"), resolve(filesDir, "tools", "serve.mjs"))
     ),
-    copyFile(resolve(root, "tools", "templates", "README-DEBUG.txt"), resolve(packageDir, "README.txt")),
-    copyFile(resolve(root, "CHANGELOG.txt"), resolve(packageDir, "CHANGELOG.txt")),
-    copyFile(resolve(root, "LICENSE.txt"), resolve(packageDir, "LICENSE.txt")),
-    copyFile(resolve(root, "VERSION.txt"), resolve(packageDir, "VERSION.txt"))
+    copyFile(resolve(root, "CHANGELOG.txt"), resolve(filesDir, "CHANGELOG.txt")),
+    copyFile(resolve(root, "LICENSE.txt"), resolve(filesDir, "LICENSE.txt")),
+    copyFile(resolve(root, "VERSION.txt"), resolve(filesDir, "VERSION.txt"))
   ]);
 
   // ---- 5. 配布物側の検査 ----
   // コピー先で実行することで、「ソースでは動くが配布物では欠けている」を検出します。
-  runTests(packageDir, ["tests/test-structure.cjs"]);
+  // 構造テストは TaltoConv_files/ から1つ上の TaltoConv.html を見つけ、参照の書き換えも確認します。
+  runTests(filesDir, ["tests/test-structure.cjs"]);
   await assertNoForbiddenFiles(packageDir, "ZIP版");
 
   // ---- 6. zip の作成 ----

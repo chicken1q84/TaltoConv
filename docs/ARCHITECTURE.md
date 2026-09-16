@@ -54,7 +54,7 @@ tests → converter.js / format-catalog.js
 | ボタン、設定、ファイル一覧、コピー | `src/scripts/app.js` |
 | 色、余白、PC・スマホ表示 | `src/styles/app.css` |
 | 項目や画面構造 | `TaltoConv.html` |
-| 配布内容 | `tools/build-release.mjs` |
+| 配布内容（ZIP版は最上位に `TaltoConv.html` と説明書、他は `TaltoConv_files/`） | `tools/build-release.mjs` |
 | Web版のオフライン動作・更新案内 | `tools/pwa/sw.js`、`app.js` の「Web版のオフライン対応と更新案内」 |
 | バージョン番号 | `VERSION.txt`（ビルド時に各所へ埋め込まれる） |
 

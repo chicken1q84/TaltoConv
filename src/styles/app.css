@@ -23,6 +23,20 @@ button:disabled,a[aria-disabled="true"] { opacity:.55; cursor:default; }
 .site-header { height:82px; display:flex; justify-content:space-between; align-items:center; gap:20px; padding:0 max(28px,calc((100vw - 1344px)/2)); border-bottom:1px solid var(--line); }
 .header-actions { display:flex; align-items:center; gap:10px; }
 .theme-control { display:flex; align-items:center; gap:8px; font-weight:600; white-space:nowrap; }
+.help-button { min-height:40px; padding:8px 14px; font-size:14px; }
+/* 使い方ダイアログ。PC／スマホの切替はタブで行い、端末判定で初期表示を決めます。 */
+.help-dialog { width:min(640px,calc(100vw - 32px)); max-height:min(85vh,calc(100vh - 32px)); margin:auto; padding:22px 24px 24px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--ink); box-shadow:0 18px 48px #302d3a33; overflow:auto; overscroll-behavior:contain; }
+.help-dialog::backdrop { background:#302d3a66; }
+.help-head { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; }
+.help-head h2 { margin:0; font-size:18px; }
+.help-head .text-button { color:var(--accent-dark); text-decoration:underline; font-size:14px; }
+.help-tabs { margin-bottom:16px; }
+.help-tabs button { flex:1; }
+.help-lead { margin:0 0 12px; color:var(--muted); font-size:14px; line-height:1.7; }
+.help-panel ol { margin:0; padding-left:22px; font-size:14px; line-height:1.85; }
+.help-panel li + li { margin-top:8px; }
+.help-panel kbd { padding:1px 6px; border-radius:5px; background:var(--soft); font-size:13px; }
+.help-note { margin:14px 0 0; padding:12px 14px; border-radius:8px; background:var(--surface-soft); color:var(--muted); font-size:13px; line-height:1.8; }
 .theme-control > span { color:var(--muted); font-size:12px; }
 .theme-control select { width:auto; min-width:104px; min-height:var(--control-height); padding-left:12px; }
 .brand { display:block; padding:8px 0; text-align:left; border-radius:6px; cursor:pointer; }
@@ -168,7 +182,7 @@ textarea { display:block; min-height:235px; resize:vertical; font-family:Consola
 .segmented label { position:relative; flex:1; cursor:pointer; }
 .segmented label input { position:absolute; opacity:0; }
 .segmented label span,.segmented button { display:block; text-align:center; padding:10px 7px; border-radius:6px; font-size:13px; font-weight:600; white-space:nowrap; }
-.segmented label input:checked + span,.segmented button[aria-pressed="true"] { color:var(--accent-dark); background:var(--surface); box-shadow:0 1px 4px #302d3a12; }
+.segmented label input:checked + span,.segmented button[aria-pressed="true"],.segmented button[aria-selected="true"] { color:var(--accent-dark); background:var(--surface); box-shadow:0 1px 4px #302d3a12; }
 .segmented label input:focus-visible + span { outline:3px solid var(--focus); }
 .spacing-intro { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin:20px 0 13px; }
 .spacing-intro strong { font-size:14px; font-weight:600; }
@@ -368,6 +382,8 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
 }
 @media (max-width:760px) {
   .site-header { height:73px; padding:0 18px; gap:8px; }
+  .help-button { min-height:36px; padding:6px 10px; font-size:13px; }
+  .help-dialog { padding:18px 16px 20px; }
   .brand > span { font-size:16px; }
   .brand > small { font-size:12px; }
   .header-actions { gap:7px; }

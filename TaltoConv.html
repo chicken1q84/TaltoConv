@@ -14,7 +14,7 @@
   <!-- 共通ヘッダー：ロゴは常にホームへ戻るボタンとして働きます。 -->
   <header class="site-header">
     <button id="homeLink" type="button" class="brand" aria-label="ホームへ戻る"><span>TaltoConv</span><small>非公式TALTO移行ヘルパー</small></button>
-    <div class="header-actions"><label class="theme-control" for="themeMode"><span>表示</span><select id="themeMode" aria-label="表示テーマ"><option value="system" selected>システム</option><option value="light">ライト</option><option value="dark">ダーク</option></select></label></div>
+    <div class="header-actions"><button id="openHelp" type="button" class="secondary help-button" aria-haspopup="dialog">使い方</button><label class="theme-control" for="themeMode"><span>表示</span><select id="themeMode" aria-label="表示テーマ"><option value="system" selected>システム</option><option value="light">ライト</option><option value="dark">ダーク</option></select></label></div>
   </header>
   <main>
     <!-- ホーム画面：使い方、重要な注意、権利・免責を最初に伝えます。 -->
@@ -251,7 +251,7 @@
         <p class="preview-note">PC／スマホ切替は表示幅の目安です。TALTOの画面を完全には再現しないため、貼り付け後に最終確認してください。</p>
         <details id="warningDetails" class="warning-details" hidden><summary id="warningSummary">変換メモ</summary><ul id="warnings"></ul></details>
         <div class="export-area"><button id="copyResult" type="button" class="primary copy-primary" disabled><span id="copyResultText">リッチテキストをコピー</span><span aria-hidden="true">↗</span></button><p id="copyFeedback" class="copy-feedback" role="status" aria-live="polite" hidden></p></div>
-        <p class="paste-hint">コピーした内容をTALTOの本文欄へ貼り付けてください。<button id="openManualCopy" type="button" class="text-button">自動コピーがうまくいかない場合</button></p>
+        <p class="paste-hint"><span id="pasteHintText">コピーした内容をTALTOの本文欄へ貼り付けてください。</span><button id="openManualCopy" type="button" class="text-button">自動コピーがうまくいかない場合</button></p>
         <!-- 手動コピー欄：自動コピーに失敗したとき、または利用者が自分で開いたときだけ表示します。
              iPhone・iPadでは自動コピーが許可されないことがあるため、ここが第2の正式経路です。 -->
         <section id="manualCopy" class="manual-copy" aria-labelledby="manualCopyHeading" hidden>
@@ -267,6 +267,37 @@
     </div>
     </div>
   </main>
+  <!-- 使い方ダイアログ：作業中でも開けるよう、ホームの案内とは別に短くまとめています。
+       app.js が端末を判定し、PC か スマホ・タブレット のどちらかを最初に表示します。 -->
+  <dialog id="helpDialog" class="help-dialog" aria-labelledby="helpHeading">
+    <div class="help-head"><h2 id="helpHeading">使い方</h2><button id="closeHelp" type="button" class="text-button">閉じる</button></div>
+    <div class="segmented help-tabs" role="tablist" aria-label="端末の種類">
+      <button id="helpTabPc" type="button" role="tab" aria-selected="true" data-help-target="pc">PCブラウザ</button>
+      <button id="helpTabMobile" type="button" role="tab" aria-selected="false" data-help-target="mobile">スマホ・タブレット</button>
+    </div>
+    <section id="helpPc" class="help-panel" role="tabpanel" data-help="pc">
+      <p class="help-lead">Windows・Macのブラウザ（Edge・Chrome・Safari）向けの手順です。</p>
+      <ol>
+        <li><strong>原稿</strong>：貼り付け、ファイル、フォルダのいずれかで入れます。複数ファイルは一覧の上から順に結合され、ドラッグか上下ボタンで並べ替えられます。</li>
+        <li><strong>形式</strong>：原稿の書き方に合うものを1つ選びます。迷ったら「対応識別子のテスト原稿」で表示を見比べてください。</li>
+        <li><strong>設定</strong>：空行、太字、下線などの変換方法を決めます。設定はこの端末に保存されますが、原稿本文は保存されません。</li>
+        <li><strong>確認</strong>：プレビューを見て「リッチテキストをコピー」を押します。<kbd>Ctrl</kbd>+<kbd>Enter</kbd> で原稿欄から直接ここへ来られます。</li>
+        <li><strong>TALTOへ</strong>：本文欄をクリックして <kbd>Ctrl</kbd>+<kbd>V</kbd>（Macは <kbd>⌘</kbd>+<kbd>V</kbd>）。保存済み表示が出たら一度再読み込みし、見出しや太字が残っているか確認します。</li>
+      </ol>
+      <p class="help-note">コピーできない場合は「自動コピーがうまくいかない場合」から手動でコピーしてください。画像は読み込まないため、「【画像：…】」を目印にTALTO側で挿入します。</p>
+    </section>
+    <section id="helpMobile" class="help-panel" role="tabpanel" data-help="mobile" hidden>
+      <p class="help-lead">iPhone・iPad・Androidスマートフォン・タブレット向けの手順です。</p>
+      <ol>
+        <li><strong>進み方</strong>：画面下のボタンで 原稿→形式→設定→確認 と進みます。上のタブで前の工程へ戻れます。iPadを横向きにすると、PCと同じ並びで表示されます。</li>
+        <li><strong>原稿</strong>：貼り付けるか「ファイル」から選びます。フォルダの読み込みはiPhone・iPadでは使えず、Androidでは端末によります。複数ファイルは上下ボタンで並べ替えます。</li>
+        <li><strong>形式・設定</strong>：PCと同じです。設定はこの端末に保存され、原稿本文は保存されません。</li>
+        <li><strong>確認</strong>：画面下の「リッチテキストをコピー」を押します。コピーできなかった場合は「手動でコピーする」欄が開くので、<strong>「すべて選択」→「コピー」</strong>の順にタップします。</li>
+        <li><strong>TALTOへ</strong>：本文欄を長押しして<strong>「ペースト」</strong>（Androidは「貼り付け」）。保存済み表示が出たら一度再読み込みし、見出しや太字が残っているか確認します。</li>
+      </ol>
+      <p class="help-note">ネット接続なしで使うには、Safariの共有ボタン→「ホーム画面に追加」、Chromeのメニュー（⋮）→「ホーム画面に追加」で一度登録してください。以降はホーム画面の「TaltoConv」から起動できます。</p>
+    </section>
+  </dialog>
   <div id="status" class="status" role="status" aria-live="polite" hidden></div>
   <!-- Web版で新しい版を検出したときだけ表示します。ZIP版では使いません。 -->
   <div id="updateNotice" class="update-notice" role="status" hidden><span>新しい版があります。再読み込みすると最新の状態になります。</span><button id="reloadForUpdate" type="button" class="primary">再読み込み</button></div>

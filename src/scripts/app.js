@@ -16,7 +16,8 @@
     "listMarker", "listPrefixBold", "listPrefixUnderline", "listContentBold", "listContentUnderline", "previewDesktop", "previewMobile", "previewStage",
     "emptyPreview", "preview", "resultCount", "warningDetails", "warningSummary", "warnings",
     "copyFormat", "copyResult", "copyResultText", "copyFeedback", "status", "mobileAction", "mobileActionText",
-    "openManualCopy", "manualCopy", "manualCopyReason", "selectManualCopy", "closeManualCopy", "manualCopyRich", "manualCopyText", "manualCopyFeedback"
+    "openManualCopy", "manualCopy", "manualCopyReason", "selectManualCopy", "closeManualCopy", "manualCopyRich", "manualCopyText", "manualCopyFeedback",
+    "openHelp", "closeHelp", "helpDialog", "helpTabPc", "helpTabMobile", "helpPc", "helpMobile", "pasteHintText"
   ];
   const spacingTypes = ["all", "h1", "h2", "h3", "note", "body"];
   const markerTypes = ["bold", "underline"];
@@ -1285,13 +1286,18 @@
    * 判定は表示の順序と開閉にだけ使い、機能を制限したり隠したりはしません（誤判定しても他の項目を開けば済む）。
    * iPadOS 13 以降の Safari は Mac と同じ UA を名乗るため、タッチ点数で見分けます。
    */
-  function openDeviceGuide() {
+  function detectDevice() {
     const ua = navigator.userAgent;
     const touch = navigator.maxTouchPoints > 1;
-    let device = "windows";
-    if (/iPhone|iPod/.test(ua)) device = "iphone";
-    else if (/iPad/.test(ua) || (/Macintosh/.test(ua) && touch)) device = "ipad";
-    else if (/Android/.test(ua)) device = "android";
+    if (/iPhone|iPod/.test(ua)) return "iphone";
+    if (/iPad/.test(ua) || (/Macintosh/.test(ua) && touch)) return "ipad";
+    if (/Android/.test(ua)) return "android";
+    return "windows";
+  }
+  const device = detectDevice();
+  const isMobileDevice = device !== "windows";
+
+  function openDeviceGuide() {
     const item = document.querySelector(`.device-item[data-device="${device}"]`);
     if (!item) return;
     item.open = true;
@@ -1299,6 +1305,38 @@
     // 該当項目を先頭へ移し、スクロールせずに目に入るようにします。
     item.parentElement.insertBefore(item, item.parentElement.querySelector(".device-item"));
   }
+
+  /**
+   * 作業中でも開ける「使い方」ダイアログ。PC／スマホ・タブレットのタブを持ち、端末判定で初期表示を決めます。
+   * <dialog> に未対応の古いブラウザでは open 属性で代用します（正式対応外だが表示は崩さない）。
+   */
+  function showHelpTab(target) {
+    const isPc = target === "pc";
+    el.helpPc.hidden = !isPc;
+    el.helpMobile.hidden = isPc;
+    el.helpTabPc.setAttribute("aria-selected", String(isPc));
+    el.helpTabMobile.setAttribute("aria-selected", String(!isPc));
+  }
+  function openHelp() {
+    showHelpTab(isMobileDevice ? "mobile" : "pc");
+    if (typeof el.helpDialog.showModal === "function") el.helpDialog.showModal();
+    else el.helpDialog.setAttribute("open", "");
+  }
+  function closeHelp() {
+    if (typeof el.helpDialog.close === "function" && el.helpDialog.open) el.helpDialog.close();
+    else el.helpDialog.removeAttribute("open");
+  }
+  el.openHelp.addEventListener("click", openHelp);
+  el.closeHelp.addEventListener("click", closeHelp);
+  el.helpTabPc.addEventListener("click", () => showHelpTab("pc"));
+  el.helpTabMobile.addEventListener("click", () => showHelpTab("mobile"));
+  // 背景（ダイアログ枠の外）をクリックしたら閉じます。
+  el.helpDialog.addEventListener("click", (event) => { if (event.target === el.helpDialog) closeHelp(); });
+
+  // 確認画面の貼り付け案内を、端末に合わせた操作で表示します。
+  el.pasteHintText.textContent = isMobileDevice
+    ? `コピーした内容を、TALTOの本文欄を長押しして「${device === "android" ? "貼り付け" : "ペースト"}」してください。`
+    : "コピーした内容を、TALTOの本文欄をクリックして Ctrl+V（Macは⌘V）で貼り付けてください。";
 
   // ===== 11. 起動時の初期化 =====
   openDeviceGuide();

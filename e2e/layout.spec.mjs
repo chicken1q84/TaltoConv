@@ -26,3 +26,17 @@ test("原稿を入れるとプレビューとコピーボタンが有効にな�
   await expect(page.locator("#copyResult")).toBeEnabled();
   await expect(page.locator("#preview h1")).toHaveText("見出し");
 });
+
+test("「使い方」ダイアログが開き、PCとスマホの手順を切り替えられる", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "変換を始める" }).first().click();
+  await page.locator("#openHelp").click();
+  await expect(page.locator("#helpDialog")).toBeVisible();
+  // デスクトップ判定なので PC の手順が先に出る
+  await expect(page.locator("#helpPc")).toBeVisible();
+  await page.locator("#helpTabMobile").click();
+  await expect(page.locator("#helpMobile")).toBeVisible();
+  await expect(page.locator("#helpPc")).toBeHidden();
+  await page.locator("#closeHelp").click();
+  await expect(page.locator("#helpDialog")).toBeHidden();
+});

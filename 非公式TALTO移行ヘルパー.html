@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <!-- 文字コードと画面幅を最初に指定し、日本語とスマホ表示の崩れを防ぎます。 -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6f2" id="themeColor">
+  <title>非公式TALTO移行ヘルパー</title>
+  <link rel="stylesheet" href="src/styles/app.css">
+</head>
+<body data-view="home" data-step="source">
+  <!-- 共通ヘッダー：ロゴは常にホームへ戻るボタンとして働きます。 -->
+  <header class="site-header">
+    <button id="homeLink" type="button" class="brand" aria-label="ホームへ戻る"><span>非公式TALTO移行ヘルパー</span><small>原稿をTALTO向けに変換</small></button>
+    <div class="header-actions"><label class="theme-control" for="themeMode"><span>表示</span><select id="themeMode" aria-label="表示テーマ"><option value="system" selected>システム</option><option value="light">ライト</option><option value="dark">ダーク</option></select></label></div>
+  </header>
+  <main>
+    <!-- ホーム画面：使い方、重要な注意、権利・免責を最初に伝えます。 -->
+    <section id="homeView" class="home-view" aria-labelledby="homeHeading">
+      <div class="home-intro">
+        <p class="eyebrow">TALTOへの手作業移行を補助する非公式ツール</p>
+        <h1 id="homeHeading">原稿をTALTOへ貼り付けやすい形に変換</h1>
+        <p>プレーンテキスト、各種Markdown、pixiv小説形式、HTMLを読み取り、TALTO向けの見出し・注釈・本文・太字・下線に整えます。変換結果の貼り付けと保存確認は手作業で行います。</p>
+        <button id="startHelper" type="button" class="primary home-primary">変換を始める <span aria-hidden="true">→</span></button>
+      </div>
+      <section class="home-section" aria-labelledby="usageHeading">
+        <h2 id="usageHeading">使い方</h2>
+        <ol class="usage-steps">
+          <li><span>1</span><div><strong>原稿</strong><p>貼り付けるか、対応ファイル・フォルダを選びます。</p></div></li>
+          <li><span>2</span><div><strong>形式</strong><p>結合した原稿全体を読み取る形式を1つ選びます。</p></div></li>
+          <li><span>3</span><div><strong>設定</strong><p>空行や書式など、変換方法を設定します。</p></div></li>
+          <li><span>4</span><div><strong>確認</strong><p>変換結果を確認し、コピー方法を選びます。</p></div></li>
+        </ol>
+        <p class="image-support-note"><strong>画像について</strong>画像ファイル自体は読み込みません。対応記法の画像参照は「【画像：説明｜参照先】」として残すため、それを目印にTALTO側で挿入してください。</p>
+        <aside class="usage-caution" aria-labelledby="usageCautionHeading">
+          <strong id="usageCautionHeading">使用上の注意</strong>
+          <p>このツールは変換専用で、原稿を管理・編集するエディタではありません。元の原稿は必ず別に保管してください。重要な修正は元の原稿で行い、修正後にもう一度読み込んでください。</p>
+        </aside>
+      </section>
+      <div class="home-notices">
+        <section aria-labelledby="rightsHeading"><h2 id="rightsHeading">権利・運営について</h2><p>本ツールは個人が制作した非公式ツールであり、TALTOおよびその運営元とは関係ありません。TALTOの名称、サービス、掲載作品その他の権利は、それぞれの権利者に帰属します。変換する原稿は、利用者自身が使用・移行する権利を持つものに限ってください。</p></section>
+        <section aria-labelledby="disclaimerHeading"><h2 id="disclaimerHeading">免責事項</h2><p>本ツールの利用によって生じたデータの消失、表示崩れ、保存失敗、その他の損害について、制作者は一切の責任を負いません。元の原稿を必ず保管し、少量の原稿で動作を確認してから利用してください。</p></section>
+      </div>
+      <footer class="home-footer"><p>連絡先：<a href="https://x.com/chicken1_skin" target="_blank" rel="noopener noreferrer">@chicken1_skin</a></p><p><button id="startHelperFooter" type="button" class="text-button">変換を始める <span aria-hidden="true">→</span></button></p></footer>
+    </section>
+    <!-- 変換画面：4工程を順にたどれる構造です。hidden属性でホームと切り替えます。 -->
+    <div id="appView" hidden>
+    <nav class="mobile-tabs" aria-label="作業画面">
+      <button type="button" data-step-target="source" aria-current="step"><span>01</span> 原稿</button>
+      <button type="button" data-step-target="format"><span>02</span> 形式</button>
+      <button type="button" data-step-target="settings"><span>03</span> 設定</button>
+      <button type="button" data-step-target="preview"><span>04</span> 確認</button>
+    </nav>
+    <div class="workspace">
+      <div class="editor-column">
+        <!-- 01 原稿：貼り付け、複数ファイル、フォルダのいずれか一つを受け取ります。 -->
+        <section class="card source-card" id="sourcePanel" aria-labelledby="sourceHeading">
+          <div class="section-heading"><div><span class="step-number">01</span><h2 id="sourceHeading" tabindex="-1">原稿</h2></div></div>
+          <fieldset class="source-mode-fieldset"><legend>原稿の入力方法</legend><div class="segmented source-mode-switch">
+            <label><input type="radio" name="sourceMode" value="paste" checked><span>貼り付け</span></label>
+            <label><input type="radio" name="sourceMode" value="files"><span>ファイル</span></label>
+            <label><input type="radio" name="sourceMode" value="folder"><span>フォルダ</span></label>
+          </div></fieldset>
+          <p id="sourcePriority" class="source-priority" role="status" aria-live="polite"></p>
+          <div id="pasteSourcePanel">
+            <div class="source-label"><label for="source">原稿</label><span id="sourceCount">0文字</span></div>
+            <textarea id="source" spellcheck="false" placeholder="ここに原稿を貼り付けます。&#10;&#10;入力後に「02 形式」で、原稿の記述形式を選んでください。"></textarea>
+            <div class="source-bottom"><button id="clear" type="button" class="text-button">貼り付けた原稿を消す</button></div>
+          </div>
+          <div id="fileSourcePanel" hidden>
+            <label class="file-drop" for="files"><span class="upload-icon" aria-hidden="true">↑</span><strong>ファイルを追加</strong><span>.md / .markdown / .html / .htm / .txt</span><input id="files" type="file" accept=".md,.markdown,.html,.htm,.txt,text/markdown,text/html,text/plain" multiple></label>
+            <p class="file-format-note">選び直しても既存の一覧へ追加します。すべて「02 形式」で選んだ1種類として読み取ります。</p>
+          </div>
+          <div id="folderSourcePanel" hidden>
+            <label class="file-drop" for="folderFiles"><span class="upload-icon folder-icon" aria-hidden="true">＋</span><strong>フォルダを追加</strong><span>対応ファイルだけを相対パス順で読み込みます</span><input id="folderFiles" type="file" accept=".md,.markdown,.html,.htm,.txt,text/markdown,text/html,text/plain" webkitdirectory directory multiple></label>
+            <p class="file-format-note">フォルダ内の対応ファイルを一覧へ追加します。画像と未対応ファイルは読み込みません。</p>
+          </div>
+          <div id="collectionSourcePanel" hidden>
+            <aside class="file-support-summary" aria-label="ファイルとフォルダ読み込みの仕様"><strong>読み込みの仕様</strong><ul><li>対応拡張子：.md / .markdown / .html / .htm / .txt</li><li>対応する記述形式：プレーンテキスト、CommonMark、GFM、Obsidian Markdown、pixiv小説形式、HTML</li><li>一覧の上から下へ結合し、全体を「02 形式」で選んだ1種類として読み取ります</li><li>HTML拡張子とそれ以外が混在する場合は、確認のため自動変換を停止します</li></ul></aside>
+            <div class="loaded-row" id="loadedRow" hidden><div><strong id="loadedSummary"></strong><span id="fileCount"></span></div><p class="reorder-hint">上から下の順に結合します。ドラッグや上下ボタンで並べ替え、×ボタンで一覧から外せます。</p><ol id="loadedFiles" aria-label="ファイルの結合順"></ol><button id="clearFiles" type="button" class="text-button">すべてのファイルを外す</button></div>
+            <div id="mixedFormatWarning" class="mixed-warning" role="alert" hidden>
+              <strong>HTML拡張子とその他の原稿ファイルが混在しています</strong>
+              <p>内容の取り違えを防ぐため変換を停止しています。強制実行すると、すべてを「02 形式」で選んだ形式として読み取ります。</p>
+              <label class="force-row"><input id="forceMixedFormats" type="checkbox">選択形式を確認し、強制実行する</label>
+            </div>
+          </div>
+          <p id="sourceFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p>
+        </section>
+        <!-- 02 形式：入力記法を選び、対応・簡略化・除外の範囲を表示します。 -->
+        <section class="card format-card" id="formatPanel" aria-labelledby="formatHeading">
+          <div class="section-heading"><div><span class="step-number">02</span><h2 id="formatHeading">形式</h2></div></div>
+          <p class="section-lead">貼り付け原稿も、結合したファイルも、ここで選んだ1種類として読み取ります。拡張子からMarkdown方言やpixiv形式を自動判定しません。</p>
+          <div class="field"><label for="format">原稿の記述形式</label><select id="format">
+            <option value="text">プレーンテキスト</option>
+            <option value="commonmark">標準Markdown（CommonMark）</option>
+            <option value="gfm">GitHub Markdown（GFM）</option>
+            <option value="obsidian" selected>Obsidian Markdown</option>
+            <option value="pixiv">pixiv小説形式</option>
+            <option value="html">HTML</option>
+          </select><div id="formatHelp" class="format-help" aria-live="polite"></div><button id="sample" type="button" class="secondary sample-switch">対応識別子のテスト原稿に置き換える</button></div>
+        </section>
+        <!-- 03 設定：空行、太字、下線、疑似箇条書きなどを調整します。 -->
+        <section class="card settings-card" id="settingsPanel" aria-labelledby="settingsHeading">
+          <div class="section-heading"><div><span class="step-number">03</span><h2 id="settingsHeading">設定</h2></div></div>
+          <fieldset class="spacing-fieldset"><legend>空行の設定モード</legend><div class="segmented mode-switch">
+            <label><input type="radio" name="spacingMode" value="unified" checked><span>すべて同じ</span></label>
+            <label><input type="radio" name="spacingMode" value="custom"><span>種類別</span></label>
+          </div></fieldset>
+          <div id="unifiedSpacing"><div class="spacing-intro"><strong>すべての種類に同じ設定</strong><span>見出し1・2・3 / 注釈 / 本文</span></div><div class="unified-inputs">
+            <div class="field"><label for="allBefore">すべての前の空行</label><div class="number-wrap"><input id="allBefore" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div></div>
+            <div class="field"><label for="allAfter">すべての後の空行</label><div class="number-wrap"><input id="allAfter" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div></div>
+          </div></div>
+          <div id="customSpacing" hidden>
+            <div class="spacing-intro"><strong>種類ごとに前後を調整</strong><button id="applyUnified" type="button" class="text-button">同じ値にそろえる</button></div>
+            <table class="spacing-table"><caption class="sr-only">種類ごとの空行数。0から10行まで設定できます。</caption><thead><tr><th scope="col">種類</th><th scope="col">前の空行</th><th scope="col">後の空行</th></tr></thead><tbody>
+              <tr><th scope="row"><span class="type-symbol">H1</span>見出し1</th><td><input id="h1Before" aria-label="見出し1の前の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td><td><input id="h1After" aria-label="見出し1の後の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td></tr>
+              <tr><th scope="row"><span class="type-symbol">H2</span>見出し2</th><td><input id="h2Before" aria-label="見出し2の前の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td><td><input id="h2After" aria-label="見出し2の後の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td></tr>
+              <tr><th scope="row"><span class="type-symbol">H3</span>見出し3</th><td><input id="h3Before" aria-label="見出し3の前の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td><td><input id="h3After" aria-label="見出し3の後の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td></tr>
+              <tr><th scope="row"><span class="type-symbol note-symbol">“</span>注釈</th><td><input id="noteBefore" aria-label="注釈の前の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td><td><input id="noteAfter" aria-label="注釈の後の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td></tr>
+              <tr><th scope="row"><span class="type-symbol">¶</span>本文</th><td><input id="bodyBefore" aria-label="本文の前の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td><td><input id="bodyAfter" aria-label="本文の後の空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"></td></tr>
+            </tbody></table>
+          </div>
+          <div class="priority-spacing">
+            <div><label for="consecutiveHeadingSpacing">見出しが連続するときの空行</label><p>見出し1〜3が続く場合は、この値だけを使います。</p></div>
+            <div class="number-wrap"><input id="consecutiveHeadingSpacing" aria-label="見出しが連続するときの空行" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div>
+          </div>
+          <p class="hint">0〜10行で指定。隣り合う「後」と「前」は多い方を採用します。<br>例：見出しの後2行 + 本文の前1行 → 間は2行。</p>
+          <div class="edge-options">
+            <label><input id="includeLeadingSpacing" type="checkbox">原稿の先頭にも前の空行を入れる</label>
+            <label><input id="includeTrailingSpacing" type="checkbox">原稿の末尾にも後の空行を入れる</label>
+          </div>
+          <details id="headingSettings" class="settings-group"><summary><span><strong>種類ごとの書式</strong><small id="headingSettingsSummary">追加書式なし</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
+            <fieldset class="bold-fieldset"><legend>見出しをまとめて太字に</legend>
+              <div class="bold-options">
+                <label><input id="boldH1" type="checkbox"><span>見出し1</span></label>
+                <label><input id="boldH2" type="checkbox"><span>見出し2</span></label>
+                <label><input id="boldH3" type="checkbox"><span>見出し3</span></label>
+              </div>
+              <p class="hint">選んだ種類の見出し全体を太字にします。未選択の種類は原稿の指定を保ちます。</p>
+            </fieldset>
+            <fieldset class="bold-fieldset format-fieldset"><legend>種類ごとに下線を追加</legend>
+              <div class="format-options">
+                <label><input id="underlineH1" type="checkbox"><span>見出し1</span></label>
+                <label><input id="underlineH2" type="checkbox"><span>見出し2</span></label>
+                <label><input id="underlineH3" type="checkbox"><span>見出し3</span></label>
+                <label><input id="underlineNote" type="checkbox"><span>注釈</span></label>
+                <label><input id="underlineBody" type="checkbox"><span>本文</span></label>
+              </div>
+              <p class="hint">選んだ種類の文字全体に下線を追加します。</p>
+            </fieldset>
+          </details>
+          <details id="listSettings" class="settings-group"><summary><span><strong>箇条書きの見た目</strong><small id="listSettingsSummary">冒頭「・ 」</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
+            <div class="list-settings-body">
+              <div class="field"><label for="listMarker">箇条書きの冒頭</label><input id="listMarker" type="text" value="・ " spellcheck="false" autocomplete="off"><p class="hint">文字や空白をそのまま使います。空欄や空白だけの指定もできます。番号付きリストは元の番号を使います。</p></div>
+              <div class="list-style-grid">
+                <fieldset><legend>冒頭だけ</legend><label><input id="listPrefixBold" type="checkbox">太字</label><label><input id="listPrefixUnderline" type="checkbox">下線</label></fieldset>
+                <fieldset><legend>冒頭以外</legend><label><input id="listContentBold" type="checkbox">太字</label><label><input id="listContentUnderline" type="checkbox">下線</label></fieldset>
+              </div>
+            </div>
+          </details>
+          <details id="markerSettings" class="settings-group"><summary><span><strong>書式の識別子</strong><small id="markerSettingsSummary">下線 ==文字==</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
+            <div class="marker-settings-body">
+              <p class="hint">記号は自由に変更できます。空欄にすると、その書式の自動認識を止めます。「前後を別指定」では開始と終了に異なる記号を使えます。行頭・行末を選ぶと、その行の残り全体へ適用します。</p>
+              <div class="marker-rule">
+                <div class="marker-name"><strong>太字</strong><div data-single-marker="bold"><label for="boldMarker">共通の識別子</label><input id="boldMarker" type="text" value="**" spellcheck="false"></div><div class="marker-pair" data-pair-markers="bold" hidden><label for="boldStartMarker">開始</label><input id="boldStartMarker" type="text" value="**" spellcheck="false"><label for="boldEndMarker">終了</label><input id="boldEndMarker" type="text" value="**" spellcheck="false"></div></div>
+                <fieldset><legend>太字の認識方法</legend><div class="segmented marker-mode"><label><input type="radio" name="boldMarkerMode" value="wrap" data-marker-mode="bold" checked><span>挟む</span></label><label><input type="radio" name="boldMarkerMode" value="pair" data-marker-mode="bold"><span>前後を別指定</span></label><label><input type="radio" name="boldMarkerMode" value="start" data-marker-mode="bold"><span>行頭のみ</span></label><label><input type="radio" name="boldMarkerMode" value="end" data-marker-mode="bold"><span>行末のみ</span></label></div></fieldset>
+              </div>
+              <div class="marker-rule">
+                <div class="marker-name"><strong>下線</strong><div data-single-marker="underline"><label for="underlineMarker">共通の識別子</label><input id="underlineMarker" type="text" value="==" spellcheck="false"></div><div class="marker-pair" data-pair-markers="underline" hidden><label for="underlineStartMarker">開始</label><input id="underlineStartMarker" type="text" value="==" spellcheck="false"><label for="underlineEndMarker">終了</label><input id="underlineEndMarker" type="text" value="==" spellcheck="false"></div></div>
+                <fieldset><legend>下線の認識方法</legend><div class="segmented marker-mode"><label><input type="radio" name="underlineMarkerMode" value="wrap" data-marker-mode="underline" checked><span>挟む</span></label><label><input type="radio" name="underlineMarkerMode" value="pair" data-marker-mode="underline"><span>前後を別指定</span></label><label><input type="radio" name="underlineMarkerMode" value="start" data-marker-mode="underline"><span>行頭のみ</span></label><label><input type="radio" name="underlineMarkerMode" value="end" data-marker-mode="underline"><span>行末のみ</span></label></div></fieldset>
+              </div>
+              <p class="hint marker-example">デフォルトの例：<code>==本文：下線==</code> → <u>本文：下線</u></p>
+            </div>
+          </details>
+          <details id="conversionSettings" class="settings-group"><summary><span><strong>変換オプション</strong><small id="conversionSettingsSummary">1件有効</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
+            <div class="conversion-options">
+              <label class="toggle-row"><span><strong>先頭の見出しを本文から除外</strong><small>ONにした場合だけ、最初の見出しをコピー対象から外します</small></span><input id="removeFirstHeading" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+              <label class="toggle-row"><span><strong>行全体の斜体を注釈にする</strong><small>行全体だけが対象です。文中の斜体は通常文字にします</small></span><input id="italicAsNote" type="checkbox" checked><span class="switch" aria-hidden="true"></span></label>
+              <label class="toggle-row"><span><strong>Markdownの区切り線を削除</strong><small>--- / *** / ___ を取り除きます</small></span><input id="removeHorizontalRules" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+              <label class="toggle-row danger-toggle"><span><strong>ファイル容量の制限を解除</strong><small>通常は単体10MB、フォルダ内の対象原稿合計100MBまで。解除すると動作が重くなる場合があります</small></span><input id="disableSizeLimits" type="checkbox"><span class="switch" aria-hidden="true"></span></label>
+            </div>
+          </details>
+          <p id="sizeLimitWarning" class="limit-warning" role="alert" hidden>容量制限を解除しています。大きな原稿では画面が固まる可能性があります。必要な読み込み後はOFFへ戻してください。</p>
+          <section class="settings-files" aria-labelledby="settingsFilesHeading"><div><strong id="settingsFilesHeading">設定の管理</strong><p>原稿本文を含まないJSON形式の設定ファイルです。.txtまたは.jsonを読み込めます。</p></div><div class="settings-file-actions"><button id="resetSettings" type="button" class="secondary">設定を初期化</button><label class="secondary settings-import" for="importSettings">設定を読み込む<input id="importSettings" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="exportSettings" type="button" class="primary">設定を保存</button></div><p id="settingsFileFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p></section>
+        </section>
+      </div>
+      <!-- 04 確認：TALTO相当の結果を見て、3種類のコピー方法から選びます。 -->
+      <section class="card result-card" id="previewPanel" aria-labelledby="previewHeading">
+        <div class="section-heading"><div><span class="step-number">04</span><h2 id="previewHeading">確認</h2></div></div>
+        <div class="preview-toolbar"><span id="resultCount">原稿を待っています</span><div class="segmented device-switch" role="group" aria-label="プレビューの表示幅"><button id="previewDesktop" type="button" aria-pressed="true">PC</button><button id="previewMobile" type="button" aria-pressed="false">スマホ</button></div></div>
+        <div class="copy-choice"><label for="copyFormat">コピーする形式</label><select id="copyFormat"><option value="rich">リッチテキスト</option><option value="plain">書式なしテキスト</option><option value="html">HTML</option></select></div>
+        <div class="preview-stage" id="previewStage" data-device="desktop">
+          <div class="preview-paper">
+            <div id="emptyPreview" class="empty-preview"><p>原稿を入力すると、変換結果がここに表示されます。</p></div>
+            <article id="preview" aria-label="変換された本文"></article>
+          </div>
+        </div>
+        <p class="preview-note">PC／スマホ切替は表示幅の目安です。TALTOの画面を完全には再現しないため、貼り付け後に最終確認してください。</p>
+        <details id="warningDetails" class="warning-details" hidden><summary id="warningSummary">変換メモ</summary><ul id="warnings"></ul></details>
+        <div class="export-area"><button id="copyResult" type="button" class="primary copy-primary" disabled><span id="copyResultText">リッチテキストをコピー</span><span aria-hidden="true">↗</span></button><p id="copyFeedback" class="copy-feedback" role="status" aria-live="polite" hidden></p></div>
+        <p class="paste-hint">コピーした内容をTALTOの本文欄へ貼り付けてください。</p>
+      </section>
+    </div>
+    </div>
+  </main>
+  <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+  <!-- スマホだけに表示する次工程ボタンです。PCでは各カードを同時に表示します。 -->
+  <div class="mobile-action"><button id="mobileAction" class="primary" type="button"><span id="mobileActionText">形式へ</span><span aria-hidden="true">→</span></button></div>
+  <!-- 読み込み順が依存関係です。変換→形式カタログ→画面制御の順を変えないでください。 -->
+  <script src="src/scripts/converter.js"></script>
+  <script src="src/scripts/format-catalog.js"></script>
+  <script src="src/scripts/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# 依存パッケージ（Playwright など開発専用）
+node_modules/
+
+# Web版ビルド出力と単一ファイル版（tools/ から再生成できる）
+dist/
+
+# Playwright の実行結果
+test-results/
+playwright-report/
+e2e/__screenshots__/
+
+# OS・エディタ
+.DS_Store
+Thumbs.db

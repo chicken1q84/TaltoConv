@@ -59,12 +59,14 @@ ZIP は使いません。Safari または Chrome で次の URL を開いてく�
 
 | 端末 | 対応 |
 |---|---|
-| Windows 11 | 最新の Microsoft Edge または Google Chrome |
-| iPhone・iPad | 最新の iOS / iPadOS と Safari |
-| Android | 最新の Android と Google Chrome |
+| Windows 11 25H2 | Microsoft Edge 153 / Google Chrome 153 以降 |
+| iPhone・iPad | iOS 27 / iPadOS 27 の Safari |
+| Android 17 | Google Chrome 153 以降 |
+
+（2026 年 9 月 17 日時点の最新正式版。1 つ前の版でもたいてい動きます）
 
 古い OS、アプリ内ブラウザ（X・LINE など）、上記以外のブラウザは動作保証の対象外です。
-iPad と Android は制作者の手元に実機がなく、画面のエミュレーションで確認しています。不具合があれば教えてください。
+**Android は制作者の手元に実機がなく未検証です**（画面のエミュレーションのみ確認）。iPad も実機では未確認です。動作報告をいただけると助かります。
 
 ### 対応する原稿
 

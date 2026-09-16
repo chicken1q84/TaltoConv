@@ -80,11 +80,15 @@ TALTO の運営とは関係のない、個人が制作した非公式ツール�
 
 ■ 6. 対応環境
 
-  Windows 11    … 最新の Microsoft Edge または Google Chrome
-  iPhone・iPad  … 最新の iOS / iPadOS の Safari（Web 版）
-  Android       … 最新の Android の Google Chrome（Web 版）
+  Windows 11 25H2   … Microsoft Edge 153 / Google Chrome 153 以降
+  iPhone・iPad      … iOS 27 / iPadOS 27 の Safari（Web 版）
+  Android 17        … Google Chrome 153 以降（Web 版）
+
+  （2026 年 9 月 17 日時点の最新正式版。1 つ前の版でもたいてい動きます）
 
   古い OS、アプリ内ブラウザ（X・LINE など）、上記以外のブラウザは動作保証の対象外です。
+  Android は制作者の手元に実機がなく未検証です（画面のエミュレーションのみ確認）。
+  動作報告をいただけると助かります。
   詳しくは TaltoConv_files/docs/対応環境.md と 既知の問題.md をご覧ください。
 
 

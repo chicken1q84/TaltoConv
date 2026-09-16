@@ -13,6 +13,8 @@
 | iOS・Android | **PWA** を主経路。https://chicken1q84.github.io/TaltoConv/ を一度開き「ホーム画面に追加」。単一ファイル HTML は予備（ZIP 同梱） |
 | ホスティング | GitHub Pages。リポジトリ https://github.com/chicken1q84/TaltoConv の `main` へ push すると Actions が `dist/` を配信 |
 | ライセンス | MIT |
+| アイコン | ビルド生成の「TC」で確定 |
+| 対応環境の表記 | 具体的な版を書く（2026-09-17 時点: Windows 11 25H2、iOS/iPadOS 27、Android 17、Edge/Chrome 153）。Android は実機未検証と明記 |
 | テスト | Node 単体の `tests/`（ZIP 同梱）と Playwright の `e2e/`（Chromium + WebKit、開発専用） |
 | 更新の届け方 | `VERSION.txt` と配信ファイルのハッシュを Service Worker のキャッシュ名に含める。ファイルが1つでも変われば利用者側に「新しい版があります」が出る |
 | 変えないこと | 原稿を外部送信しない。TALTO の非公開 API を使わない。貼り付け・画像挿入・保存確認は手作業 |
@@ -106,7 +108,7 @@
 - [x] `docs/対応環境.md`、`docs/既知の問題.md` を新規作成
 - [x] `CHANGELOG.txt` の v1.0.0 項目（利用者向けの言葉で分類）
 - [x] `docs/BOOTH_DESCRIPTION.md` の最終版（説明書・画面と用語を統一。実機未確認の端末を明記）
-- [ ] アイコンを正式な絵柄に差し替えるか判断（現状はビルド生成の「TC」）— 制作者の判断待ち
+- [x] アイコンは「TC」のままにする（制作者判断、2026-09-17）
 
 観点: 開発者向けの語（リポジトリ、ビルド、Service Worker）を利用者向け文章から外す。「非公式」「外部送信なし」「元原稿の保管」「画像は手動挿入」がどの入口からも1画面以内で目に入る。ZIP 版と Web 版で説明が食い違わない。文体・用語・記号を統一する。
 

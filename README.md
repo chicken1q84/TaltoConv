@@ -32,11 +32,13 @@ TALTO の運営とは関係のない、個人制作の非公式ツールです�
 
 | 端末 | 対応 |
 |---|---|
-| Windows 11 | 最新の Microsoft Edge または Google Chrome |
-| iPhone・iPad | 最新の iOS / iPadOS と Safari（Web 版） |
-| Android | 最新の Android と Google Chrome（Web 版） |
+| Windows 11 25H2 | Microsoft Edge 153 / Google Chrome 153 以降 |
+| iPhone・iPad | iOS 27 / iPadOS 27 の Safari（Web 版） |
+| Android 17 | Google Chrome 153 以降（Web 版）。**実機では未検証** |
 
-古い OS、アプリ内ブラウザ（X・LINE など）、上記以外のブラウザは動作保証の対象外です。
+バージョンは 2026 年 9 月 17 日時点の最新正式版です。古い OS、アプリ内ブラウザ（X・LINE など）、上記以外のブラウザは動作保証の対象外です。
+
+Android は制作者の手元に実機がなく、**未検証**です（画面のエミュレーションのみ確認）。動作報告をいただけると助かります。
 
 ## 対応する原稿
 

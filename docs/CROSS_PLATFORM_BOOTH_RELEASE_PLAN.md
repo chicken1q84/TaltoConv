@@ -1,6 +1,6 @@
 # クロスプラットフォーム対応・BOOTH無料配布計画（改訂版）
 
-更新日: 2026-09-16（初版を同日中に改訂。変更理由は [PLAN_REVIEW_2026-09-16.md](PLAN_REVIEW_2026-09-16.md)）
+更新日: 2026-09-17（初版 2026-09-16 を改訂。変更理由は [PLAN_REVIEW_2026-09-16.md](PLAN_REVIEW_2026-09-16.md)）
 
 ## 位置づけ
 
@@ -82,7 +82,7 @@
 - [x] GitHubアカウントを用意する（`chicken1q84`）。
 - [x] `migration-helper-v2/` を公開リポジトリとして作成する（`chicken1q84/talto-migration-helper`。Pages URL は `https://chicken1q84.github.io/talto-migration-helper/`）。
 - [x] リポジトリの Settings → Pages で配信元を「GitHub Actions」にする。
-- [ ] gitのユーザー名とメールを設定し（設定済み。メールはGitHubのnoreplyアドレス）、初回コミットとプッシュを行う。
+- [x] gitのユーザー名とメールを設定し（設定済み。メールはGitHubのnoreplyアドレス）、初回コミットとプッシュを行う。
 
 ```powershell
 cd D:\Coding\Workbench\talto\migration-helper-v2
@@ -95,8 +95,8 @@ git push -u origin main
 
 - [x] `.gitignore`、`package.json`、Playwright（Chromium・WebKit）を追加する。
 - [x] `LICENSE.txt`（MIT）を置く。
-- [ ] `VERSION.txt` と `CHANGELOG.txt` を作る。初期値は `1.0.0-dev`。
-- [ ] `docs/対応環境.md` と `docs/既知の問題.md` を作り始める（Phase 8まで育てる）。
+- [x] `VERSION.txt` と `CHANGELOG.txt` を作る。初期値は `1.0.0-dev`。
+- [ ] `docs/対応環境.md` と `docs/既知の問題.md` を作り始める（Phase 8で仕上げる）。
 - [ ] 見出し、注釈、本文、空行、太字、下線、リスト、表、リンク、画像プレースホルダーを含む共通テスト原稿を `tests/fixtures/` に保存する。
 - [ ] Windowsでの現行変換結果とTALTO貼り付け結果を基準として記録する。
 
@@ -112,24 +112,24 @@ git push -u origin main
 
 実装:
 
-- [ ] `tools/build-release.mjs` を作り、`VERSION.txt` を読み込んでZIP版と `dist/` を同時に出力する。既存の `build-debug-package.mjs` はこれに統合する。
-- [ ] `dist/index.html` を生成する（現行HTMLはファイル名が日本語なのでWeb版では `index.html` に改名する。ZIP版は日本語名のまま）。
-- [ ] `manifest.webmanifest`（名前、アイコン、`display: standalone`、`start_url`）とアイコン画像を追加する。
-- [ ] `sw.js` を追加する。precache一覧はビルド時に生成し、キャッシュ名にバージョンを含める。
-- [ ] 新しい版の検出と「再読み込みしてください」の表示を `app.js` に追加する。
-- [ ] 単一ファイル版（CSS・JSをインライン化したHTML）を生成する。
-- [ ] 画面、README、設定ファイルへバージョン番号を表示する。
-- [ ] Web版にも非公式ツール・外部送信なし・元原稿保管の注意を表示する。
-- [ ] GitHub Actionsのワークフローを追加し、`main` へのpushで `dist/` をPagesへ配信する。
-- [ ] 配布物の自動検査に「`app/` `vendor/` `project-capture/` 由来のファイルが含まれていないこと」を加える。
+- [x] `tools/build-release.mjs` を作り、`VERSION.txt` を読み込んでZIP版と `dist/` を同時に出力する。既存の `build-debug-package.mjs` はこれに統合する。
+- [x] `dist/index.html` を生成する（現行HTMLはファイル名が日本語なのでWeb版では `index.html` に改名する。ZIP版は日本語名のまま）。
+- [x] `manifest.webmanifest`（名前、アイコン、`display: standalone`、`start_url`）とアイコン画像を追加する。アイコンはビルド時に生成する仮の「T」。正式な絵柄は Phase 8 で差し替える。
+- [x] `sw.js` を追加する。precache一覧はビルド時に生成し、キャッシュ名にバージョンを含める。
+- [x] 新しい版の検出と「再読み込みしてください」の表示を `app.js` に追加する。
+- [x] 単一ファイル版（CSS・JSをインライン化したHTML）を生成する。
+- [x] 画面、README、設定ファイルへバージョン番号を表示する。
+- [x] Web版にも非公式ツール・外部送信なし・元原稿保管の注意を表示する。
+- [x] GitHub Actionsのワークフローを追加し、`main` へのpushで `dist/` をPagesへ配信する。
+- [x] 配布物の自動検査に「`app/` `vendor/` `project-capture/` 由来のファイルが含まれていないこと」を加える。
 
-人力テスト:
+人力テスト（2026-09-17 にローカルで確認済みの項目に印）:
 
-- ZIP版・Web版・単一ファイル版へ同じ原稿と設定を入れ、HTMLと書式なしテキストが一致すること。
-- Web版で原稿入力時に外部への通信が発生しないこと（ブラウザの開発者ツールのネットワーク欄で確認）。
+- [ ] ZIP版・Web版・単一ファイル版へ同じ原稿と設定を入れ、HTMLと書式なしテキストが一致すること。
+- [ ] Web版で原稿入力時に外部への通信が発生しないこと（ブラウザの開発者ツールのネットワーク欄で確認）。
 - 再読み込み後も原稿本文は復元されず、設定だけが復元されること。
-- Web版を一度開いてから機内モードにし、再度開けること。ホーム画面に追加した状態でも同様。
-- 版を上げて再配信した後、古い版を開いている端末に更新案内が出ること。
+- [x] Web版を一度開いてから機内モードにし、再度開けること（ローカルサーバーを停止した状態で起動・変換できることを確認）。ホーム画面に追加した状態は実機で確認する。
+- [x] 版を上げて再配信した後、古い版を開いている端末に更新案内が出ること（1.0.0-dev → 1.0.1-dev で案内表示・再読み込み・旧キャッシュ削除を確認）。
 
 完了条件: 3つの版が同じソースから生成され、変換仕様に差がなく、Web版が機内モードで起動する。
 
@@ -273,7 +273,32 @@ PlaywrightのWebKitはiOS実機の代替にはなりません。OSのファイ�
 
 完了条件: BlockerとMajorが0件。Minorは影響範囲と回避策を `docs/既知の問題.md` に記載している。
 
-### Phase 8: BOOTH正式配布
+### Phase 8: 利用者向け文章の最終整理
+
+コードが固まった後、利用者が最初に目にする文章をまとめて見直す段階です。開発中に書いた説明は開発者向けの言い回しや古い前提が残りやすいため、公開直前に一度だけ通しで整えます。
+
+対象:
+
+- [ ] `はじめにお読みください.txt`（ZIP同梱。現在の `tools/templates/README-DEBUG.txt` を利用者向けに書き直す）
+- [ ] `README.md`（GitHub上で最初に表示される。開発手順は後ろへ下げ、使い方と対応環境を前に出す）
+- [ ] 画面内の文章（ホーム画面の説明・注意・免責、各工程の案内、エラーと警告の文言、更新案内）
+- [ ] `docs/MIGRATION_GUIDE.md`（手順の順序、TALTO側の画面名、スクリーンショットの要否）
+- [ ] `docs/対応環境.md`、`docs/既知の問題.md`
+- [ ] `CHANGELOG.txt`（v1.0.0の項目を利用者向けの言葉で書く）
+- [ ] BOOTH商品説明の下書き（`docs/BOOTH_DESCRIPTION.md` に保存し、Phase 9で転記する）
+- [ ] PWA版の「ホーム画面に追加」手順（iOS Safari・Android Chrome それぞれ）
+
+観点:
+
+- 開発者向けの語（リポジトリ、ビルド、Service Worker など）を利用者向け文章から外すか、初出で一言説明する。
+- 「非公式」「外部送信なし」「元原稿の保管」「画像は手動挿入」の4点が、どの入口から入っても1画面以内で目に入る。
+- ZIP版とPWA版で説明が食い違っていない。
+- 文体（です・ます）、用語（原稿／本文、貼り付け／ペースト）、記号（「」と『』）を統一する。
+- Windows・iPhone・iPad・Android の利用者がそれぞれ自分の手順だけを読めばよい構成になっている。
+
+完了条件: 上記の文書をすべて見直し、Phase 7の実機ベータ参加者（または制作者以外の1人）が説明書だけで起動からコピーまで到達できる。
+
+### Phase 9: BOOTH正式配布
 
 推奨パッケージ:
 
@@ -327,7 +352,7 @@ BOOTHではダウンロード商品を0円に設定でき、登録済みファ�
 - BOOTH公式ガイド: https://booth.pm/guide
 - BOOTHアップロード容量ヘルプ: https://booth.pixiv.help/hc/ja/articles/230690347
 
-### Phase 9: 公開後の保守
+### Phase 10: 公開後の保守
 
 サーバーが存在しないため、OS更新・バックアップ・障害対応は発生しません。やることはZIP版と同じで「直したら置き直す」だけです。
 
@@ -399,7 +424,8 @@ BOOTHではダウンロード商品を0円に設定でき、登録済みファ�
 | 6 | モバイルの容量警告と処理中表示 | 5 |
 | 7 | Playwrightテストの整備 | 6 |
 | 8 | 実機ベータ | 7 |
-| 9 | 正式ビルドとBOOTH商品ページ | 8 |
+| 9 | 利用者向け文章の最終整理 | 8 |
+| 10 | 正式ビルドとBOOTH商品ページ | 9 |
 
 Phase 3 を Phase 2 より先に行うのは、iOSで動くかどうかの最大の不確定要素がクリップボードだからです。
 

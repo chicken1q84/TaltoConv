@@ -6,7 +6,7 @@
   "use strict";
   // ===== 1. HTML部品と画面状態 =====
   const ids = [
-    "homeLink", "homeView", "appView", "startHelper", "startHelperFooter", "themeMode", "themeColor",
+    "homeLink", "homeView", "appView", "startHelper", "startHelperFooter", "themeMode", "themeColor", "appVersion", "installHint", "updateNotice", "reloadForUpdate",
     "pasteSourcePanel", "fileSourcePanel", "folderSourcePanel", "collectionSourcePanel", "sourcePriority", "files", "folderFiles", "loadedRow", "loadedFiles", "loadedSummary", "fileCount", "clearFiles",
     "mixedFormatWarning", "forceMixedFormats", "format", "formatHelp", "source", "sourceCount", "sourceFeedback", "sample", "clear",
     "unifiedSpacing", "customSpacing", "applyUnified", "includeLeadingSpacing", "includeTrailingSpacing",
@@ -45,6 +45,10 @@
   let statusTimer;
   let draggedFileIndex = -1;
   const storageKey = "talto-helper-settings-v1";
+  // ビルド時に VERSION.txt の値が meta へ埋め込まれます。ソースを直接開いたときは "dev" です。
+  const appVersion = document.querySelector('meta[name="app-version"]')?.content || "dev";
+  // "web" は GitHub Pages 向け、"single" は単一ファイル版、未指定はソースまたはZIP版（分割ファイル）です。
+  const buildKind = document.documentElement.dataset.build || "split";
   const themeStorageKey = "talto-helper-theme-v1";
   const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
   const toggleIds = [
@@ -414,7 +418,7 @@
       return [id, count(el[id].value)];
     })));
     return {
-      app: "unofficial-talto-migration-helper", version: 2, mode, sourceMode, format: el.format.value,
+      app: "unofficial-talto-migration-helper", version: 2, appVersion, mode, sourceMode, format: el.format.value,
       values, consecutiveHeadingSpacing: count(el.consecutiveHeadingSpacing.value), listMarker: el.listMarker.value,
       markers: Object.fromEntries(markerTypes.map((type) => [type, markerConfig(type)])),
       toggles: Object.fromEntries(toggleIds.map((id) => [id, el[id].checked])),
@@ -1127,7 +1131,46 @@
    * 最後に初期化を一定の順序で実行します。
    * 部品準備→保存値復元→表示更新→初回変換の順なので、途中の未設定状態が見えません。
    */
-  // ===== 10. 起動時の初期化 =====
+  // ===== 10. Web版のオフライン対応と更新案内 =====
+  /**
+   * Web版（https で配信された場合）だけ Service Worker を登録します。
+   * 登録後は配信ファイル一式がキャッシュされ、ネット接続なしでも起動できます。
+   * ZIP版や単一ファイル版（file://）では何もしません。ブラウザが file:// での登録を許可しないためです。
+   *
+   * 新しい版の検出は「すでに動作中の SW がある状態で、別の SW がインストール完了した」ことで判定します。
+   * 初回訪問時にも installed は起きますが、その時点では controller が無いので案内を出しません。
+   */
+  function registerServiceWorker() {
+    if (buildKind !== "web" || !("serviceWorker" in navigator) || !/^https?:$/.test(location.protocol)) return;
+    el.installHint.hidden = false;
+    let reloading = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      // 再読み込みボタンを押した後にだけ再読み込みします。初回登録時の controllerchange では動かしません。
+      if (reloading) location.reload();
+    });
+    navigator.serviceWorker.register("./sw.js").then((registration) => {
+      const watch = (worker) => {
+        if (!worker) return;
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) el.updateNotice.hidden = false;
+        });
+      };
+      watch(registration.installing);
+      registration.addEventListener("updatefound", () => watch(registration.installing));
+      // 起動時にすでに待機中の SW がある場合（前回の更新案内を閉じたまま再訪した場合など）も案内します。
+      if (registration.waiting && navigator.serviceWorker.controller) el.updateNotice.hidden = false;
+      el.reloadForUpdate.addEventListener("click", () => {
+        reloading = true;
+        const waiting = registration.waiting;
+        if (waiting) waiting.postMessage({ type: "SKIP_WAITING" });
+        else location.reload();
+      });
+    }).catch(() => { /* 登録できなくても通常の Web ページとして動作は続きます */ });
+  }
+
+  // ===== 11. 起動時の初期化 =====
+  el.appVersion.textContent = appVersion;
+  registerServiceWorker();
   initializeNumberSteppers();
   restoreTheme();
   restoreSettings();

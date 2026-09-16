@@ -5,6 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f7f6f2" id="themeColor">
+  <!-- ビルド時に VERSION.txt の値へ置き換わります。ソースを直接開いたときは dev のままです。 -->
+  <meta name="app-version" content="dev">
   <title>非公式TALTO移行ヘルパー</title>
   <link rel="stylesheet" href="src/styles/app.css">
 </head>
@@ -32,6 +34,7 @@
           <li><span>4</span><div><strong>確認</strong><p>変換結果を確認し、コピー方法を選びます。</p></div></li>
         </ol>
         <p class="image-support-note"><strong>画像について</strong>画像ファイル自体は読み込みません。対応記法の画像参照は「【画像：説明｜参照先】」として残すため、それを目印にTALTO側で挿入してください。</p>
+        <p class="image-support-note"><strong>原稿の扱い</strong>原稿の変換はこの端末の中だけで行い、原稿本文や読み込んだファイルを外部へ送信しません。ネット接続がなくても動きます。<span id="installHint" hidden>Web版はSafariやChromeの「ホーム画面に追加」を行うと、次回からはオフラインでも起動できます。</span></p>
         <aside class="usage-caution" aria-labelledby="usageCautionHeading">
           <strong id="usageCautionHeading">使用上の注意</strong>
           <p>このツールは変換専用で、原稿を管理・編集するエディタではありません。元の原稿は必ず別に保管してください。重要な修正は元の原稿で行い、修正後にもう一度読み込んでください。</p>
@@ -41,7 +44,7 @@
         <section aria-labelledby="rightsHeading"><h2 id="rightsHeading">権利・運営について</h2><p>本ツールは個人が制作した非公式ツールであり、TALTOおよびその運営元とは関係ありません。TALTOの名称、サービス、掲載作品その他の権利は、それぞれの権利者に帰属します。変換する原稿は、利用者自身が使用・移行する権利を持つものに限ってください。</p></section>
         <section aria-labelledby="disclaimerHeading"><h2 id="disclaimerHeading">免責事項</h2><p>本ツールの利用によって生じたデータの消失、表示崩れ、保存失敗、その他の損害について、制作者は一切の責任を負いません。元の原稿を必ず保管し、少量の原稿で動作を確認してから利用してください。</p></section>
       </div>
-      <footer class="home-footer"><p>連絡先：<a href="https://x.com/chicken1_skin" target="_blank" rel="noopener noreferrer">@chicken1_skin</a></p><p><button id="startHelperFooter" type="button" class="text-button">変換を始める <span aria-hidden="true">→</span></button></p></footer>
+      <footer class="home-footer"><p>連絡先：<a href="https://x.com/chicken1_skin" target="_blank" rel="noopener noreferrer">@chicken1_skin</a><span class="version-label">バージョン <span id="appVersion">dev</span></span></p><p><button id="startHelperFooter" type="button" class="text-button">変換を始める <span aria-hidden="true">→</span></button></p></footer>
     </section>
     <!-- 変換画面：4工程を順にたどれる構造です。hidden属性でホームと切り替えます。 -->
     <div id="appView" hidden>
@@ -204,6 +207,8 @@
     </div>
   </main>
   <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+  <!-- Web版で新しい版を検出したときだけ表示します。ZIP版では使いません。 -->
+  <div id="updateNotice" class="update-notice" role="status" hidden><span>新しい版があります。再読み込みすると最新の状態になります。</span><button id="reloadForUpdate" type="button" class="primary">再読み込み</button></div>
   <!-- スマホだけに表示する次工程ボタンです。PCでは各カードを同時に表示します。 -->
   <div class="mobile-action"><button id="mobileAction" class="primary" type="button"><span id="mobileActionText">形式へ</span><span aria-hidden="true">→</span></button></div>
   <!-- 読み込み順が依存関係です。変換→形式カタログ→画面制御の順を変えないでください。 -->

@@ -2,7 +2,13 @@
 
 プレーンテキスト、各種Markdown、pixiv小説形式、HTML原稿を、TALTOの本文欄へ貼り付けやすい形へ変換するローカルツールです。TALTOへの貼り付けと保存確認は手作業で行います。
 
-配布は、ソース・テスト・設計資料を同梱した「改修デバッグ版」に統一しています。動作だけを隠した簡易版は生成しません。
+配布物は次の3つを同じソースから生成します。動作だけを隠した簡易版は生成しません。
+
+- **ZIP版**（Windows向け、BOOTHで配布）: ソース・テスト・設計資料を同梱。展開して `非公式TALTO移行ヘルパー.html` を開く
+- **Web版**（iPhone・iPad・Android向け、GitHub Pagesで配信）: 一度開いて「ホーム画面に追加」すると、以降はネット接続なしで起動できる
+- **単一ファイル版**（ZIPに同梱）: CSS・JSを1つのHTMLに埋め込んだ予備版
+
+いずれも原稿は端末内だけで処理し、外部へ送信しません。
 
 ## 使い方
 
@@ -31,9 +37,10 @@ Windows優先の品質を維持しながら、最新OSのiPad・iPhone・Android
 - ランダム入力テスト: `node tests/fuzz-converter.cjs`
 - 画面幅・操作テスト（Playwright）: `npx playwright test`（初回は `npm install` と `npx playwright install chromium webkit`）
 - ローカル表示: `node tools/serve.mjs`
-- 改修デバッグ版作成: `node tools/build-debug-package.mjs [YYYY-MM-DD]`
+- Web版の表示: `node tools/serve.mjs 8767 dist`（先に配布物作成が必要）
+- 配布物作成: `node tools/build-release.mjs`（`--web-only` で `dist/` だけ）
 
-改修デバッグ版作成は、上記3種のテストを実行してから `../release/非公式TALTO移行ヘルパー_改修デバッグ版_<日付>/` とその zip を作ります。日付を省略すると実行日になります。テストが1つでも失敗した場合は配布物を作りません。
+配布物作成は、上記3種のテストを実行してから `VERSION.txt` の値で `../release/非公式TALTO移行ヘルパー_v<版>/` とその zip、および Web版の `dist/` を作ります。テストが1つでも失敗した場合は配布物を作りません。`main` へ push すると GitHub Actions が同じコマンドで `dist/` を作り、GitHub Pages へ配信します。
 
 原稿はブラウザ上で処理されます。このツールはTALTOの非公開APIへ原稿を送信したり、TALTO上のデータを直接変更したりしません。
 

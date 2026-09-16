@@ -1,0 +1,16 @@
+{
+  "name": "非公式TALTO移行ヘルパー",
+  "short_name": "TALTO移行",
+  "description": "原稿をTALTOへ貼り付けやすい形に変換する非公式ツール。原稿は端末内だけで処理し、外部へ送信しません。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f6f2",
+  "theme_color": "#655181",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -15,7 +15,14 @@ migration-helper-v2/
 │     └─ app.js                  画面操作・ファイル読込・コピー
 ├─ tests/                        通常テスト・構造テスト・ランダム入力テスト（Nodeのみ。配布物に同梱）
 ├─ e2e/                          Playwrightによる画面幅・操作の検査（開発専用。配布物に含めない）
-├─ tools/                        ローカル表示・配布物（フォルダとzip）作成
+├─ tools/
+│  ├─ serve.mjs                  ローカル表示（ソースまたは dist を配信）
+│  ├─ build-release.mjs          ZIP版・Web版・単一ファイル版を同時に作る
+│  ├─ pwa/                       Web版だけで使う Service Worker と manifest の雛形
+│  └─ templates/                 ZIP に同梱する説明書の雛形
+├─ .github/workflows/pages.yml   main への push で dist/ を GitHub Pages へ配信
+├─ VERSION.txt                   画面表示・zip名・キャッシュ名の唯一の情報源
+├─ CHANGELOG.txt                 変更履歴
 ├─ docs/                         設計・移行・コメント方針・配布計画
 ├─ package.json                  Playwrightなど開発専用の依存だけを管理
 ├─ playwright.config.mjs         e2e の実行設定（Chromium と WebKit）
@@ -47,7 +54,9 @@ tests → converter.js / format-catalog.js
 | ボタン、設定、ファイル一覧、コピー | `src/scripts/app.js` |
 | 色、余白、PC・スマホ表示 | `src/styles/app.css` |
 | 項目や画面構造 | `非公式TALTO移行ヘルパー.html` |
-| 配布内容 | `tools/build-debug-package.mjs` |
+| 配布内容 | `tools/build-release.mjs` |
+| Web版のオフライン動作・更新案内 | `tools/pwa/sw.js`、`app.js` の「Web版のオフライン対応と更新案内」 |
+| バージョン番号 | `VERSION.txt`（ビルド時に各所へ埋め込まれる） |
 
 ## 安全な改修手順
 
@@ -55,7 +64,8 @@ tests → converter.js / format-catalog.js
 2. 対象の責務を持つファイルだけを変更する。
 3. 通常テスト、構造テスト、`node tests/fuzz-converter.cjs` を再実行する。HTMLの参照先や形式の選択肢を変えた場合は、構造テスト側の期待値も更新する。
 4. `node tools/serve.mjs` でPC幅とスマホ幅を確認する。見た目を変えた場合は `npx playwright test` で代表幅の横スクロールも検査する。
-5. `node tools/build-debug-package.mjs` で改修デバッグ版を作る。3種のテストが自動で走り、`release/` に実行日付のフォルダとzipができる。配布フォルダ内のHTMLを直接開いて起動を確認する。
+5. `node tools/build-release.mjs` で配布物を作る。3種のテストが自動で走り、`release/` にバージョン名のフォルダとzip、`dist/` にWeb版ができる。配布フォルダ内のHTMLを直接開いて起動を確認し、`node tools/serve.mjs 8767 dist` でWeb版も確認する。
+6. 版を上げるときは `VERSION.txt` と `CHANGELOG.txt` を先に更新する。Service Worker のキャッシュ名にバージョンが含まれるため、`VERSION.txt` を変えずに配信すると利用者側で古いファイルが使われ続ける。
 
 ## 今後の分割基準
 

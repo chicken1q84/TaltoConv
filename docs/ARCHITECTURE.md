@@ -19,11 +19,11 @@ migration-helper-v2/
 │  ├─ serve.mjs                  ローカル表示（ソースまたは dist を配信）
 │  ├─ build-release.mjs          ZIP版・Web版・単一ファイル版を同時に作る
 │  ├─ pwa/                       Web版だけで使う Service Worker と manifest の雛形
-│  └─ templates/                 ZIP に同梱する説明書の雛形
+│  └─ templates/                 ZIP に同梱する「はじめにお読みください.txt」
 ├─ .github/workflows/pages.yml   main への push で dist/ を GitHub Pages へ配信。別ジョブで Playwright（Chromium）も実行
 ├─ VERSION.txt                   画面表示・zip名・キャッシュ名の唯一の情報源
 ├─ CHANGELOG.txt                 変更履歴
-├─ docs/                         設計・移行・コメント方針・配布計画
+├─ docs/                         設計・移行ガイド・対応環境・既知の問題・コメント方針・配布計画・BOOTH 説明
 ├─ package.json                  Playwrightなど開発専用の依存だけを管理
 ├─ playwright.config.mjs         e2e の実行設定（Chromium と WebKit）
 └─ LICENSE.txt                   MIT

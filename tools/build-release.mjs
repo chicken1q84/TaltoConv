@@ -409,7 +409,7 @@ if (webOnly) {
   await mkdir(filesDir, { recursive: true });
   await Promise.all([
     writeFile(resolve(packageDir, "TaltoConv.html"), withFilesDir(versionedHtml), "utf8"),
-    copyFile(resolve(root, "tools", "templates", "README-DEBUG.txt"), resolve(packageDir, "はじめにお読みください.txt")),
+    copyFile(resolve(root, "tools", "templates", "はじめにお読みください.txt"), resolve(packageDir, "はじめにお読みください.txt")),
     buildSingleFileHtml(versionedHtml).then((html) => writeFile(resolve(filesDir, "TaltoConv_単一ファイル版.html"), html, "utf8")),
     cp(resolve(root, "src"), resolve(filesDir, "src"), { recursive: true }),
     cp(resolve(root, "tests"), resolve(filesDir, "tests"), { recursive: true }),

@@ -13,14 +13,14 @@ migration-helper-v2/
 │     ├─ converter.js            原稿の解析・TALTO向け変換
 │     ├─ format-catalog.js       入力形式の対応表
 │     └─ app.js                  画面操作・ファイル読込・コピー
-├─ tests/                        通常テスト・構造テスト・ランダム入力テスト（Nodeのみ。配布物に同梱）
-├─ e2e/                          Playwrightによる画面幅・操作の検査（開発専用。配布物に含めない）
+├─ tests/                        変換・構造・共通原稿（fixtures/）・ランダム入力・配布物の検査（Nodeのみ。配布物に同梱）
+├─ e2e/                          Playwrightによる画面幅・操作・端末エミュレーション・PWA（オフライン起動と更新）の検査（開発専用）
 ├─ tools/
 │  ├─ serve.mjs                  ローカル表示（ソースまたは dist を配信）
 │  ├─ build-release.mjs          ZIP版・Web版・単一ファイル版を同時に作る
 │  ├─ pwa/                       Web版だけで使う Service Worker と manifest の雛形
 │  └─ templates/                 ZIP に同梱する説明書の雛形
-├─ .github/workflows/pages.yml   main への push で dist/ を GitHub Pages へ配信
+├─ .github/workflows/pages.yml   main への push で dist/ を GitHub Pages へ配信。別ジョブで Playwright（Chromium）も実行
 ├─ VERSION.txt                   画面表示・zip名・キャッシュ名の唯一の情報源
 ├─ CHANGELOG.txt                 変更履歴
 ├─ docs/                         設計・移行・コメント方針・配布計画
@@ -62,7 +62,7 @@ tests → converter.js / format-catalog.js
 
 1. 変更前に `node tests/test-converter.cjs` と `node tests/test-structure.cjs` を実行する。
 2. 対象の責務を持つファイルだけを変更する。
-3. 通常テスト、構造テスト、`node tests/fuzz-converter.cjs` を再実行する。HTMLの参照先や形式の選択肢を変えた場合は、構造テスト側の期待値も更新する。
+3. `npm test` を再実行する。HTMLの参照先や形式の選択肢を変えた場合は構造テストの期待値を、変換規則を意図して変えた場合は `node tests/test-fixtures.cjs --update` で共通原稿の期待出力を更新し、差分を確認する。
 4. `node tools/serve.mjs` でPC幅とスマホ幅を確認する。見た目を変えた場合は `npx playwright test` で代表幅の横スクロールも検査する。
 5. `node tools/build-release.mjs` で配布物を作る。3種のテストが自動で走り、`release/` にバージョン名のフォルダとzip、`dist/` にWeb版ができる。配布フォルダ内のHTMLを直接開いて起動を確認し、`node tools/serve.mjs 8767 dist` でWeb版も確認する。
 6. 版を上げるときは `VERSION.txt` と `CHANGELOG.txt` を先に更新する。Service Worker のキャッシュ名にバージョンが含まれるため、`VERSION.txt` を変えずに配信すると利用者側で古いファイルが使われ続ける。

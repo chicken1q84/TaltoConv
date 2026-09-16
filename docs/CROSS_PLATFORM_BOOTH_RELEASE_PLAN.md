@@ -84,15 +84,16 @@
 
 実装:
 
-- [ ] `tests/fixtures/` に共通テスト原稿（見出し・注釈・本文・空行・太字・下線・リスト・表・リンク・画像プレースホルダー）と、その期待出力を置く
-- [ ] Node テスト: ZIP 版・単一ファイル版・Web 版の HTML が同じ `converter.js` を含み、共通原稿の変換結果が一致すること
-- [ ] Node テスト: `dist/` と ZIP 版の構造（index.html / manifest / sw.js / precache 一覧と実ファイルの一致 / 禁止フォルダなし / VERSION の一致）
-- [ ] Playwright: Service Worker 登録後に `context.setOffline(true)` で再読み込みできること
-- [ ] Playwright: 版を上げた `dist/` へ差し替えたときに更新案内が出ること
-- [ ] Playwright: タッチ端末エミュレーション（iPhone / iPad / Pixel）で入力方法の並びと工程表示を確認
-- [ ] GitHub Actions に Playwright（Chromium のみ）を追加するか判断する。配信を遅らせない構成（配信ジョブとは別ジョブ）にする
+- [x] `tests/fixtures/` に共通テスト原稿（見出し・注釈・本文・空行・太字・下線・リスト・表・リンク・画像プレースホルダー）と、その期待出力を置く（`tests/test-fixtures.cjs`。`--update` で期待出力を再生成）
+- [x] Node テスト: ZIP 版・単一ファイル版・Web 版の HTML が同じ `converter.js` を含み、共通原稿の変換結果が一致すること（`tests/test-release.cjs`）
+- [x] Node テスト: `dist/` と ZIP 版の構造（index.html / manifest / sw.js / precache 一覧と実ファイルの一致 / 禁止フォルダなし / VERSION の一致 / ZIP 最上位が 3 項目だけ）
+- [x] Playwright: Service Worker 登録後に `context.setOffline(true)` で再読み込みできること（`e2e/pwa.spec.mjs`、Chromium）
+- [x] Playwright: 版を上げた `dist/` へ差し替えたときに更新案内が出ること（配信中の一時フォルダを書き換えて確認。旧キャッシュの削除まで）
+- [x] Playwright: タッチ端末エミュレーション（iPhone / iPad 縦・横）で入力方法の表記と工程表示を確認（`e2e/mobile.spec.mjs`。Phase B で実施）
+- [x] GitHub Actions に Playwright（Chromium のみ）を別ジョブで追加。配信ジョブとは独立で、失敗しても配信は止めない（一覧で赤くなるので気づける）
 
 完了条件: `npm test` と `npx playwright test` の両方が通らないと配布物を作らない状態にする（`build-release.mjs` から e2e も呼ぶか、リリース手順で必須にする）。
+→ `build-release.mjs` は Node テスト（配布物検査を含む）を必須にした。Playwright はリリース手順（Phase F）で必須にする。ビルドのたびに 10 秒以上待たせないため。
 
 ### Phase D: 利用者向け文章の最終整理（旧 Phase 8）
 

@@ -35,12 +35,14 @@ Windows優先の品質を維持しながら、最新OSのiPad・iPhone・Android
 - 通常テスト: `node tests/test-converter.cjs`
 - 構造テスト: `node tests/test-structure.cjs`
 - ランダム入力テスト: `node tests/fuzz-converter.cjs`
-- 画面幅・操作テスト（Playwright）: `npx playwright test`（初回は `npm install` と `npx playwright install chromium webkit`）
+- 共通原稿の一致テスト: `node tests/test-fixtures.cjs`（規則を変えたときは `--update` で期待出力を作り直し、差分を確認）
+- 配布物の検査: `node tests/test-release.cjs`（`dist/` と `release/` があるときだけ検査。3つの版の変換結果が一致すること）
+- 画面幅・操作・PWAテスト（Playwright）: `npx playwright test`（初回は `npm install` と `npx playwright install chromium webkit`。PWAの検査は先に `dist/` を作る）
 - ローカル表示: `node tools/serve.mjs`
 - Web版の表示: `node tools/serve.mjs 8767 dist`（先に配布物作成が必要）
 - 配布物作成: `node tools/build-release.mjs`（`--web-only` で `dist/` だけ）
 
-配布物作成は、上記3種のテストを実行してから `VERSION.txt` の値で `../release/TaltoConv_v<版>/` とその zip、および Web版の `dist/` を作ります。テストが1つでも失敗した場合は配布物を作りません。`main` へ push すると GitHub Actions が同じコマンドで `dist/` を作り、GitHub Pages へ配信します。
+配布物作成は、Node のテスト（変換・構造・共通原稿・ランダム入力）を実行してから `VERSION.txt` の値で `../release/TaltoConv_v<版>/` とその zip、および Web版の `dist/` を作ります。テストが1つでも失敗した場合は配布物を作りません。`main` へ push すると GitHub Actions が同じコマンドで `dist/` を作り、GitHub Pages へ配信します。
 
 原稿はブラウザ上で処理されます。このツールはTALTOの非公開APIへ原稿を送信したり、TALTO上のデータを直接変更したりしません。
 

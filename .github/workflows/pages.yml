@@ -41,3 +41,25 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # ブラウザ検査（Playwright、Chromium のみ）。配信ジョブとは独立に走らせ、配信を待たせません。
+  # 失敗しても配信は止めない代わりに、Actions の一覧で赤く表示されるので気づけます。
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build web version for the PWA checks
+        run: node tools/build-release.mjs --web-only
+      - run: npx playwright test --project=chromium
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

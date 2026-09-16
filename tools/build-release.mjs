@@ -359,7 +359,7 @@ function buildWebHtml(html) {
 
 // ================================================================
 // ---- 1. ソース側のテスト ----
-runTests(root, ["tests/test-converter.cjs", "tests/test-structure.cjs", "tests/fuzz-converter.cjs"]);
+runTests(root, ["tests/test-converter.cjs", "tests/test-structure.cjs", "tests/test-fixtures.cjs", "tests/fuzz-converter.cjs"]);
 
 // ---- 2. HTML の読み込みとバージョン埋め込み ----
 const sourceHtml = await readFile(resolve(root, "TaltoConv.html"), "utf8");
@@ -394,6 +394,7 @@ await writeFile(
 console.log(`Web版: ${distDir} (${distFiles.length + 1}ファイル, build ${buildId})`);
 
 if (webOnly) {
+  runTests(root, ["tests/test-release.cjs"]);
   console.log("--web-only のため ZIP版は作成しません。");
 } else {
   // ---- 4. ZIP版（release/） ----
@@ -428,6 +429,8 @@ if (webOnly) {
   await assertNoForbiddenFiles(packageDir, "ZIP版");
 
   // ---- 6. zip の作成 ----
+  // 直前に dist/ と配布フォルダの両方を対象に、構造と3つの版の変換結果の一致を検査します。
+  runTests(root, ["tests/test-release.cjs"]);
   const zip = await buildZip(packageDir, packageName);
   await writeFile(zipPath, zip.buffer);
   console.log(`配布フォルダ: ${packageDir}`);

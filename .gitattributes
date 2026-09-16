@@ -1,0 +1,4 @@
+# 改行コードはリポジトリ内でLFに統一し、Windowsでの取得時もLFのまま扱う
+* text=auto eol=lf
+*.zip binary
+*.png binary

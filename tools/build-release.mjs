@@ -95,7 +95,7 @@ async function assertNoForbiddenFiles(baseDir, label) {
 }
 
 // ---- PNG アイコンの生成 ----
-// 画像ツールに依存せず、単色の角丸四角と「T」の字を描いた PNG を作ります。
+// 画像ツールに依存せず、単色の角丸四角と「TC」の字を描いた PNG を作ります。
 // 正式な絵柄に差し替える場合は tools/pwa/icons/ に PNG を置き、buildIcons() を差し替えてください。
 
 /** PNG のチャンク（長さ・種類・データ・CRC）を組み立てます。 */
@@ -132,19 +132,30 @@ function encodePng(size, pixels) {
 }
 
 /**
- * アイコンを1枚描きます。
+ * アイコンを1枚描きます。文字は「TC」（Talto_Converter）です。
+ * TALTO 本体のアイコンと紛らわしくならないよう、単独の「T」は使いません。
  * maskable は OS 側で丸や角丸に切り抜かれる前提なので、背景を全面に塗り、字を中央 70% に収めます。
  */
 function drawIcon(size, { maskable = false } = {}) {
   const pixels = Buffer.alloc(size * size * 4);
   const background = [0x65, 0x51, 0x81];
   const radius = maskable ? 0 : size * 0.22;
-  const glyphScale = maskable ? 0.7 : 0.85;
+  const glyphScale = maskable ? 0.7 : 0.9;
   const center = size / 2;
-  // 「T」の横棒と縦棒を、アイコン中心を基準にした比率で定義します。
-  const bar = { x0: -0.30, x1: 0.30, y0: -0.28, y1: -0.14 };
-  const stem = { x0: -0.07, x1: 0.07, y0: -0.14, y1: 0.30 };
+  // アイコン中心を原点とした比率で字形を定義します。左に「T」、右に「C」。
+  const tBar = { x0: -0.44, x1: -0.06, y0: -0.22, y1: -0.10 };
+  const tStem = { x0: -0.31, x1: -0.19, y0: -0.10, y1: 0.22 };
+  const c = { cx: 0.24, cy: 0.0, outer: 0.22, inner: 0.105, gapDegrees: 42 };
   const inRect = (rect, nx, ny) => nx >= rect.x0 && nx <= rect.x1 && ny >= rect.y0 && ny <= rect.y1;
+  const inC = (nx, ny) => {
+    const dx = nx - c.cx;
+    const dy = ny - c.cy;
+    const distance = Math.hypot(dx, dy);
+    if (distance > c.outer || distance < c.inner) return false;
+    // 右側（角度0°付近）を切り欠いて C の開口部にします。
+    const angle = Math.abs((Math.atan2(dy, dx) * 180) / Math.PI);
+    return angle > c.gapDegrees;
+  };
 
   for (let y = 0; y < size; y += 1) {
     for (let x = 0; x < size; x += 1) {
@@ -155,7 +166,7 @@ function drawIcon(size, { maskable = false } = {}) {
       if (radius && dx * dx + dy * dy > radius * radius) continue;
       const nx = ((x + 0.5) - center) / (size * glyphScale);
       const ny = ((y + 0.5) - center) / (size * glyphScale);
-      const white = inRect(bar, nx, ny) || inRect(stem, nx, ny);
+      const white = inRect(tBar, nx, ny) || inRect(tStem, nx, ny) || inC(nx, ny);
       pixels[offset] = white ? 0xff : background[0];
       pixels[offset + 1] = white ? 0xff : background[1];
       pixels[offset + 2] = white ? 0xff : background[2];
@@ -312,7 +323,7 @@ function buildWebHtml(html) {
     '  <meta name="mobile-web-app-capable" content="yes">',
     '  <meta name="apple-mobile-web-app-capable" content="yes">',
     '  <meta name="apple-mobile-web-app-status-bar-style" content="default">',
-    '  <meta name="apple-mobile-web-app-title" content="TALTO移行">'
+    '  <meta name="apple-mobile-web-app-title" content="Talto_Converter">'
   ].join("\n");
   return withBuildKind(html.replace("</head>", `${head}\n</head>`), "web");
 }

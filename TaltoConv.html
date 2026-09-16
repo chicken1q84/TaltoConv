@@ -112,7 +112,7 @@
           <fieldset class="source-mode-fieldset"><legend>原稿の入力方法</legend><div class="segmented source-mode-switch">
             <label><input type="radio" name="sourceMode" value="paste" checked><span>貼り付け</span></label>
             <label><input type="radio" name="sourceMode" value="files"><span>ファイル</span></label>
-            <label><input type="radio" name="sourceMode" value="folder"><span>フォルダ</span></label>
+            <label><input type="radio" name="sourceMode" value="folder"><span id="folderModeLabel">フォルダ</span></label>
           </div></fieldset>
           <p id="sourcePriority" class="source-priority" role="status" aria-live="polite"></p>
           <div id="pasteSourcePanel">
@@ -127,6 +127,7 @@
           <div id="folderSourcePanel" hidden>
             <label class="file-drop" for="folderFiles"><span class="upload-icon folder-icon" aria-hidden="true">＋</span><strong>フォルダを追加</strong><span>対応ファイルだけを相対パス順で読み込みます</span><input id="folderFiles" type="file" accept=".md,.markdown,.html,.htm,.txt,text/markdown,text/html,text/plain" webkitdirectory directory multiple></label>
             <p class="file-format-note">フォルダ内の対応ファイルを一覧へ追加します。画像と未対応ファイルは読み込みません。</p>
+            <p id="folderTouchNote" class="inline-feedback" hidden>iPhone・iPadではフォルダを選べません。Androidも端末によります。「ファイル」から複数のファイルをまとめて選んでください。</p>
           </div>
           <div id="collectionSourcePanel" hidden>
             <aside class="file-support-summary" aria-label="ファイルとフォルダ読み込みの仕様"><strong>読み込みの仕様</strong><ul><li>対応拡張子：.md / .markdown / .html / .htm / .txt</li><li>対応する記述形式：プレーンテキスト、CommonMark、GFM、Obsidian Markdown、pixiv小説形式、HTML</li><li>一覧の上から下へ結合し、全体を「02 形式」で選んだ1種類として読み取ります</li><li>HTML拡張子とそれ以外が混在する場合は、確認のため自動変換を停止します</li></ul></aside>

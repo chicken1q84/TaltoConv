@@ -17,7 +17,8 @@
     "emptyPreview", "preview", "resultCount", "warningDetails", "warningSummary", "warnings",
     "copyFormat", "copyResult", "copyResultText", "copyFeedback", "status", "mobileAction", "mobileActionText",
     "openManualCopy", "manualCopy", "manualCopyReason", "selectManualCopy", "closeManualCopy", "manualCopyRich", "manualCopyText", "manualCopyFeedback",
-    "openHelp", "closeHelp", "helpDialog", "helpTabPc", "helpTabMobile", "helpPc", "helpMobile", "pasteHintText"
+    "openHelp", "closeHelp", "helpDialog", "helpTabPc", "helpTabMobile", "helpPc", "helpMobile", "pasteHintText",
+    "folderModeLabel", "folderTouchNote"
   ];
   const spacingTypes = ["all", "h1", "h2", "h3", "note", "body"];
   const markerTypes = ["bold", "underline"];
@@ -46,7 +47,32 @@
   let conversionTimer;
   let statusTimer;
   let draggedFileIndex = -1;
+  let busy = false;
   const storageKey = "talto-helper-settings-v1";
+  /**
+   * 端末の種類を判定します。案内文の出し分け、フォルダ選択の扱い、容量警告の閾値に使います。
+   * 判定は表示と警告にだけ使い、機能そのものは制限しません（誤判定しても操作できる）。
+   * iPadOS 13 以降の Safari は Mac と同じ UA を名乗るため、タッチ点数で見分けます。
+   */
+  function detectDevice() {
+    const ua = navigator.userAgent;
+    const touch = navigator.maxTouchPoints > 1;
+    if (/iPhone|iPod/.test(ua)) return "iphone";
+    if (/iPad/.test(ua) || (/Macintosh/.test(ua) && touch)) return "ipad";
+    if (/Android/.test(ua)) return "android";
+    return "windows";
+  }
+  const device = detectDevice();
+  const isMobileDevice = device !== "windows";
+  // タッチ主体の端末（指で操作するスマホ・タブレット）。UA で判定した端末に加え、タッチ点があり主入力が粗い（指）場合も含めます。
+  // maxTouchPoints は実機で 5 前後ですが、エミュレーションでは 0〜1 のことがあるため「1 以上」ではなく「0 より大きい」で見ます。
+  const isTouchDevice = isMobileDevice || (navigator.maxTouchPoints > 0 && window.matchMedia("(pointer: coarse)").matches);
+  // タブレット判定: iPad、または短辺 600px 以上の Android。容量警告の閾値に使います。
+  const isTablet = device === "ipad" || (device === "android" && Math.min(screen.width, screen.height) >= 600);
+  // モバイルの容量警告の基準（計画書 Phase B の初期案。実機計測後に見直す）。超えても読み込みは止めず、確認だけ求めます。
+  const mobileSizeWarning = isTablet
+    ? { file: 10 * 1024 * 1024, total: 30 * 1024 * 1024 }
+    : { file: 5 * 1024 * 1024, total: 20 * 1024 * 1024 };
   // ビルド時に VERSION.txt の値が meta へ埋め込まれます。ソースを直接開いたときは "dev" です。
   const appVersion = document.querySelector('meta[name="app-version"]')?.content || "dev";
   // "web" は GitHub Pages 向け、"single" は単一ファイル版、未指定はソースまたはZIP版（分割ファイル）です。
@@ -546,7 +572,7 @@
     updateMobileAction();
     // スマホでは工程ごとにカードを切り替えるため、新しいカードの先頭から読めるよう最上部へ戻します。
     // 工程タブ自体は画面上部に固定されているので、scrollIntoView では位置が変わりません。
-    if (window.matchMedia("(max-width: 760px)").matches) {
+    if (window.matchMedia("(max-width: 900px)").matches) {
       window.scrollTo({ top: 0, behavior: "auto" });
     }
   }
@@ -725,6 +751,9 @@
    */
   async function loadFiles(fileList, collectionMode = "files") {
     if (!fileList.length) return;
+    // 読み込み中に再度選択されても二重に追加しないようにします。
+    if (busy) return;
+    setBusy("ファイルを読み込んでいます…");
     try {
       const allFiles = Array.from(fileList);
       const textFiles = allFiles
@@ -752,10 +781,30 @@
       const sizeOverrideMessage = sizeCheck.exceeded
         ? " 容量制限を解除して読み込みました。処理が重い場合は操作を中止してください。"
         : "";
-      const loaded = await Promise.all(textFiles.map(async (file) => ({
-        name: collectionMode === "folder" ? file.webkitRelativePath || file.name : file.name,
-        format: detectFormat(file.name), text: await file.text()
-      })));
+      // スマホ・タブレットでは PC より小さい容量で固まりやすいため、上限内でも確認を求めます。
+      if (isMobileDevice) {
+        const largest = textFiles.reduce((max, file) => Math.max(max, Number(file.size) || 0), 0);
+        const total = textFiles.reduce((sum, file) => sum + (Number(file.size) || 0), 0);
+        if (largest > mobileSizeWarning.file || total > mobileSizeWarning.total) {
+          const detail = largest > mobileSizeWarning.file
+            ? `1ファイルが${formatMegabytes(largest)}あります`
+            : `合計${formatMegabytes(total)}あります`;
+          const proceed = window.confirm(`${detail}。スマートフォン・タブレットでは処理に時間がかかったり、画面が固まったりする可能性があります。\n読み込みますか？（元のファイルは変更されません）`);
+          if (!proceed) {
+            setSourceFeedback("読み込みを中止しました。原稿を分割するか、PCでの読み込みをお試しください。");
+            if (collectionMode === "folder") el.folderFiles.value = "";
+            else el.files.value = "";
+            return;
+          }
+        }
+      }
+      const loaded = await Promise.all(textFiles.map(async (file) => {
+        // どのファイルで失敗したか分かるよう、ファイル名を付けて投げ直します。
+        let text;
+        try { text = await file.text(); }
+        catch (error) { throw new Error(`「${file.name}」を読めませんでした（${error.message}）`); }
+        return { name: collectionMode === "folder" ? file.webkitRelativePath || file.name : file.name, format: detectFormat(file.name), text };
+      }));
       const collection = collections[collectionMode];
       collection.documents.push(...loaded);
       const formats = new Set(collection.documents.map((item) => item.format));
@@ -776,8 +825,10 @@
       setStatus(`${loaded.length}ファイルを追加しました。合計${collection.documents.length}ファイルです。${ignoredMessage}`);
     } catch (error) {
       const message = `ファイルを読み込めませんでした：${error.message}`;
-      setSourceFeedback(`${message} ファイル形式と読み取り権限を確認してください。`, true);
+      setSourceFeedback(`${message} ファイル形式と読み取り権限を確認し、そのファイルを外して再度お試しください。`, true);
       setStatus(message, true);
+    } finally {
+      clearBusy();
     }
   }
 
@@ -934,6 +985,7 @@
    * 経路は Clipboard API → execCommand の予備 → 手動コピー欄 の順で、後ろへ行くほど利用者の操作が増えます。
    */
   async function copySelectedResult() {
+    if (busy) return;
     if (!activeSource().trim()) {
       const message = "先に原稿を入力してください。";
       showCopyFeedback(message, true);
@@ -949,13 +1001,18 @@
       showCopyFeedback(message);
       setStatus(message);
     };
+    // writeClipboard() は同期的に呼び出す必要があるため、処理中表示はその後に立てます（await を挟まない）。
+    const pending = writeClipboard(payload);
+    setBusy("コピーしています…");
     let reason;
     try {
-      await writeClipboard(payload);
+      await pending;
+      clearBusy();
       return succeed();
     } catch (error) {
       reason = classifyCopyFailure(error);
     }
+    clearBusy();
     // 予備経路。iOS では効かないことが多いので、失敗しても例外を表に出さず手動コピー欄へ進みます。
     try {
       fallbackCopy(payload.text, payload.html);
@@ -1244,6 +1301,47 @@
    * 最後に初期化を一定の順序で実行します。
    * 部品準備→保存値復元→表示更新→初回変換の順なので、途中の未設定状態が見えません。
    */
+  // ===== 9b. 処理中表示・ソフトウェアキーボード・タッチ端末の入力方法 =====
+  /**
+   * 読み込み中・コピー中の状態を表示し、その間の二重操作を防ぎます。
+   * CSS 側で body[data-busy] のボタンを無効化しているため、ここでは状態と通知だけを扱います。
+   */
+  function setBusy(label) {
+    busy = true;
+    document.body.dataset.busy = "true";
+    setStatus(label);
+  }
+  function clearBusy() {
+    busy = false;
+    delete document.body.dataset.busy;
+  }
+
+  /**
+   * ソフトウェアキーボードが出ている間は、画面下の固定ボタンを隠します。
+   * visualViewport の高さが window より大きく縮んだときをキーボード表示とみなします（iOS Safari・Android Chrome 共通）。
+   */
+  function watchSoftwareKeyboard() {
+    const viewport = window.visualViewport;
+    if (!viewport || !isTouchDevice) return;
+    const update = () => {
+      const keyboardOpen = viewport.height < window.innerHeight * 0.75;
+      if (keyboardOpen) document.body.dataset.keyboard = "open";
+      else delete document.body.dataset.keyboard;
+    };
+    viewport.addEventListener("resize", update);
+    update();
+  }
+
+  /**
+   * タッチ主体の端末では、フォルダ選択が使えないことが多い（iPhone・iPad は不可、Android は端末次第）ため、
+   * 選択肢に「PC向け」と添えて後回しにできるようにし、フォルダ欄に代替手段を示します。機能自体は無効化しません。
+   */
+  function markFolderForTouch() {
+    if (!isTouchDevice) return;
+    el.folderModeLabel.textContent = "フォルダ（PC向け）";
+    el.folderTouchNote.hidden = false;
+  }
+
   // ===== 10. Web版のオフライン対応と更新案内 =====
   /**
    * Web版（https で配信された場合）だけ Service Worker を登録します。
@@ -1284,19 +1382,7 @@
   /**
    * ホーム画面の「端末ごとの始め方」で、いま使っている端末の項目を開きます。
    * 判定は表示の順序と開閉にだけ使い、機能を制限したり隠したりはしません（誤判定しても他の項目を開けば済む）。
-   * iPadOS 13 以降の Safari は Mac と同じ UA を名乗るため、タッチ点数で見分けます。
    */
-  function detectDevice() {
-    const ua = navigator.userAgent;
-    const touch = navigator.maxTouchPoints > 1;
-    if (/iPhone|iPod/.test(ua)) return "iphone";
-    if (/iPad/.test(ua) || (/Macintosh/.test(ua) && touch)) return "ipad";
-    if (/Android/.test(ua)) return "android";
-    return "windows";
-  }
-  const device = detectDevice();
-  const isMobileDevice = device !== "windows";
-
   function openDeviceGuide() {
     const item = document.querySelector(`.device-item[data-device="${device}"]`);
     if (!item) return;
@@ -1340,6 +1426,8 @@
 
   // ===== 11. 起動時の初期化 =====
   openDeviceGuide();
+  markFolderForTouch();
+  watchSoftwareKeyboard();
   el.appVersion.textContent = appVersion;
   registerServiceWorker();
   initializeNumberSteppers();

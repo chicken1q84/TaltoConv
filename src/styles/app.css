@@ -371,8 +371,8 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
 :root[data-resolved-theme="dark"] .switch { background:#514b58; }
 :root[data-resolved-theme="dark"] .toggle-row input:checked + .switch { background:#8063a5; }
 :root[data-resolved-theme="dark"] .danger-toggle input:checked + .switch { background:#a9585e; }
-/* ===== 10. 画面幅別の配置 ===== 761〜1060pxは中間幅、760px以下はスマホです。 */
-@media (min-width:761px) and (max-width:1060px) {
+/* ===== 10. 画面幅別の配置 ===== 901〜1060pxは中間幅（iPad横向きなど）、900px以下はスマホ・iPad縦向き・狭いSplit Viewで工程表示です。 */
+@media (min-width:901px) and (max-width:1060px) {
   main { padding:0 20px; }
   .workspace { grid-template-columns:minmax(330px,1fr) minmax(0,1.1fr); gap:15px; }
   .card { padding:18px; }
@@ -380,7 +380,7 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   .preview-paper { padding:22px; }
   .usage-steps { grid-template-columns:1fr 1fr; }
 }
-@media (max-width:760px) {
+@media (max-width:900px) {
   .site-header { height:73px; padding:0 18px; gap:8px; }
   .help-button { min-height:36px; padding:6px 10px; font-size:13px; }
   .help-dialog { padding:18px 16px 20px; }
@@ -437,6 +437,11 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   .mobile-action button { width:100%; min-height:50px; font-size:15px; justify-content:space-between; padding:12px 18px; }
   .status { bottom:calc(88px + env(safe-area-inset-bottom)); }
 }
+/* ソフトウェアキーボード表示中（visualViewport が縮んだとき）は固定ボタンを隠し、入力欄を覆わないようにします。 */
+body[data-keyboard="open"] .mobile-action { display:none !important; }
+body[data-keyboard="open"] main { padding-bottom:24px; }
+/* 処理中はボタン類を薄くし、二重操作を防ぎます。 */
+body[data-busy] .copy-primary,body[data-busy] .mobile-action button,body[data-busy] .file-drop { pointer-events:none; opacity:.6; }
 @media (max-width:360px) {
   main { padding:0 10px; }
   .card { padding:17px 13px; }

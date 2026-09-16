@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
-const html = fs.readFileSync(path.join(root, "非公式TALTO移行ヘルパー.html"), "utf8");
+const html = fs.readFileSync(path.join(root, "TaltoConv.html"), "utf8");
 const catalog = require(path.join(root, "src", "scripts", "format-catalog.js"));
 
 // HTMLの参照と実ファイルの存在を同時に確認します。

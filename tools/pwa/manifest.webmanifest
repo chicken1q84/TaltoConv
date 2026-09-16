@@ -1,6 +1,6 @@
 {
-  "name": "非公式TALTO移行ヘルパー",
-  "short_name": "Talto_Converter",
+  "name": "TaltoConv（非公式TALTO移行ヘルパー）",
+  "short_name": "TaltoConv",
   "description": "原稿をTALTOへ貼り付けやすい形に変換する非公式ツール。原稿は端末内だけで処理し、外部へ送信しません。",
   "lang": "ja",
   "start_url": "./",

@@ -19,7 +19,7 @@ http.createServer((request, response) => {
   // URLを配布フォルダ内のファイルへ変換します。上位フォルダへ出る要求は404にします。
   const requestPath = new URL(request.url, "http://127.0.0.1").pathname;
   // 「/」は index.html があればそれを、なければソースの日本語名HTMLを返します。
-  const indexName = fs.existsSync(path.join(root, "index.html")) ? "index.html" : "非公式TALTO移行ヘルパー.html";
+  const indexName = fs.existsSync(path.join(root, "index.html")) ? "index.html" : "TaltoConv.html";
   const relative = requestPath === "/" ? indexName : decodeURIComponent(requestPath.slice(1));
   const filePath = path.resolve(root, relative);
   if (!filePath.startsWith(`${root}${path.sep}`) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {

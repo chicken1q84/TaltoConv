@@ -43,6 +43,23 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .usage-steps li > span { display:grid; place-items:center; flex:0 0 29px; width:29px; height:29px; border-radius:50%; background:var(--soft); color:var(--accent); font-size:13px; font-weight:700; }
 .usage-steps strong { display:block; margin:4px 0 8px; font-size:15px; }
 .usage-steps p { margin:0; color:var(--muted); font-size:14px; line-height:1.75; }
+/* 端末ごとの始め方。設定欄と同じ開閉部品を使い、該当端末の項目だけ app.js が開きます。 */
+.device-guide-lead { margin:10px 0 14px; color:var(--muted); font-size:14px; line-height:1.8; }
+.device-guide-lead a { color:var(--accent); overflow-wrap:anywhere; }
+.device-guide-lead #deviceGuideDetected { display:block; margin-top:6px; color:var(--accent-dark); }
+.device-item { border:1px solid var(--line); border-radius:12px; background:var(--surface); padding:0 20px; }
+.device-item + .device-item { margin-top:10px; }
+.device-item > summary { display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:60px; cursor:pointer; list-style:none; }
+.device-item > summary::-webkit-details-marker { display:none; }
+.device-item > summary strong,.device-item > summary small { display:block; }
+.device-item > summary strong { font-size:15px; }
+.device-item > summary small { margin-top:3px; color:var(--muted); font-size:13px; }
+.device-item[open] .details-mark { transform:rotate(45deg); }
+.device-item[data-recommended] > summary strong::after { content:"この端末"; display:inline-block; white-space:nowrap; margin-left:10px; padding:2px 8px; border-radius:99px; background:var(--soft); color:var(--accent-dark); font-size:12px; font-weight:600; vertical-align:middle; }
+.device-item ol { margin:0 0 18px; padding-left:22px; color:var(--ink); font-size:14px; line-height:1.85; }
+.device-item li + li { margin-top:8px; }
+.device-item code,.device-item kbd { padding:1px 6px; border-radius:5px; background:var(--soft); font-size:13px; }
+.device-guide-note { margin:14px 0 0; color:var(--muted); font-size:13px; line-height:1.8; }
 .usage-caution { margin-top:14px; padding:16px 18px; border:1px solid #d8c99f; border-radius:10px; background:#fff9e9; color:#624f27; }
 .usage-caution strong { display:block; font-size:15px; }
 .usage-caution p { margin:7px 0 0; font-size:14px; line-height:1.8; }

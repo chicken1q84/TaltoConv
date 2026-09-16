@@ -1280,7 +1280,28 @@
     }).catch(() => { /* 登録できなくても通常の Web ページとして動作は続きます */ });
   }
 
+  /**
+   * ホーム画面の「端末ごとの始め方」で、いま使っている端末の項目を開きます。
+   * 判定は表示の順序と開閉にだけ使い、機能を制限したり隠したりはしません（誤判定しても他の項目を開けば済む）。
+   * iPadOS 13 以降の Safari は Mac と同じ UA を名乗るため、タッチ点数で見分けます。
+   */
+  function openDeviceGuide() {
+    const ua = navigator.userAgent;
+    const touch = navigator.maxTouchPoints > 1;
+    let device = "windows";
+    if (/iPhone|iPod/.test(ua)) device = "iphone";
+    else if (/iPad/.test(ua) || (/Macintosh/.test(ua) && touch)) device = "ipad";
+    else if (/Android/.test(ua)) device = "android";
+    const item = document.querySelector(`.device-item[data-device="${device}"]`);
+    if (!item) return;
+    item.open = true;
+    item.dataset.recommended = "true";
+    // 該当項目を先頭へ移し、スクロールせずに目に入るようにします。
+    item.parentElement.insertBefore(item, item.parentElement.querySelector(".device-item"));
+  }
+
   // ===== 11. 起動時の初期化 =====
+  openDeviceGuide();
   el.appVersion.textContent = appVersion;
   registerServiceWorker();
   initializeNumberSteppers();

@@ -1,5 +1,5 @@
-非公式TALTO移行ヘルパー
-======================
+TaltoConv（非公式TALTO移行ヘルパー）
+====================================
 
 バージョンは同梱の VERSION.txt と画面下部に表示されます。変更内容は CHANGELOG.txt を参照してください。
 
@@ -9,12 +9,12 @@
 
 ■ 起動方法
 
-同じフォルダにある「非公式TALTO移行ヘルパー.html」をダブルクリックし、
+同じフォルダにある「TaltoConv.html」をダブルクリックし、
 Microsoft EdgeまたはGoogle Chromeで開いてください。
 
 ファイル同士の参照に相対パスを使っています。「src」フォルダはHTMLと同じ位置関係のまま利用してください。
 
-「非公式TALTO移行ヘルパー_単一ファイル版.html」は、CSSとJavaScriptを1つのファイルに埋め込んだ予備版です。
+「TaltoConv_単一ファイル版.html」は、CSSとJavaScriptを1つのファイルに埋め込んだ予備版です。
 srcフォルダなしで動くため、HTMLを1ファイルだけ別の場所へ持ち出したい場合に使えます。動作は通常版と同じです。
 
 iPhone・iPad・AndroidではこのZIPではなく、Web版をSafariまたはChromeで開いて「ホーム画面に追加」してください。
@@ -38,10 +38,10 @@ iPhone・iPad・AndroidではこのZIPではなく、Web版をSafariまたはChr
 README.txt
   この説明書です。
 
-非公式TALTO移行ヘルパー.html
+TaltoConv.html
   画面の構造と表示する項目を定義します。
 
-非公式TALTO移行ヘルパー_単一ファイル版.html
+TaltoConv_単一ファイル版.html
   上のHTMLにCSSとJavaScriptを埋め込んだ予備版です。
 
 VERSION.txt / CHANGELOG.txt / LICENSE.txt

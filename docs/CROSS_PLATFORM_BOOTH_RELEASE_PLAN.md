@@ -4,7 +4,7 @@
 
 ## 位置づけ
 
-非公式TALTO移行ヘルパーをWindows優先で維持しながら、最新OSのiPad・iPhone・Androidへ段階的に対応し、最終的にBOOTHで無料配布するための計画です。
+TaltoConv（非公式TALTO移行ヘルパー）をWindows優先で維持しながら、最新OSのiPad・iPhone・Androidへ段階的に対応し、最終的にBOOTHで無料配布するための計画です。
 
 これは計画であり、書かれた項目がすべて実装済みという意味ではありません。完了した項目は各Phaseのチェックボックスと `CHANGELOG.txt` へ反映します。
 
@@ -18,6 +18,7 @@
 | 予備経路 | CSS・JSをすべて埋め込んだ**単一ファイルHTML**をZIPへ同梱。Androidの一部環境で直接開ける。iOSでは動作保証しない |
 | ホスティング | **GitHub Pages**（無料・カード不要・広告や解析の差し込みなし・サーバー保守なし） |
 | ライセンス | **MIT**（ZIP同梱分・Web公開分とも同じ） |
+| アプリ名 | **TaltoConv**（正式名称は「非公式TALTO移行ヘルパー」。ホーム画面・ZIP名・画面表示は TaltoConv） |
 | 自動テスト | Node単体の `tests/`（ZIPに同梱）と、Playwrightの `e2e/`（開発専用、ZIPに含めない） |
 | リポジトリ | `migration-helper-v2/` をルートにする。作業フォルダ直下のTALTO復元コードと通信記録は含めない |
 
@@ -51,8 +52,8 @@
 ```text
 同じソース
   ├─ tools/build-release.mjs ─┬─ release/<名前>_v<版>/ とzip   … BOOTHへ
-  │                            │    ├─ 非公式TALTO移行ヘルパー.html（分割ファイル版）
-  │                            │    ├─ 非公式TALTO移行ヘルパー_単一ファイル版.html
+  │                            │    ├─ TaltoConv.html（分割ファイル版）
+  │                            │    ├─ TaltoConv_単一ファイル版.html
   │                            │    └─ src/ tests/ docs/ tools/serve.mjs …
   │                            └─ dist/                          … GitHub Pagesへ
   │                                 ├─ index.html
@@ -286,7 +287,7 @@ PlaywrightのWebKitはiOS実機の代替にはなりません。OSのファイ�
 - [ ] `docs/対応環境.md`、`docs/既知の問題.md`
 - [ ] `CHANGELOG.txt`（v1.0.0の項目を利用者向けの言葉で書く）
 - [ ] BOOTH商品説明の下書き（`docs/BOOTH_DESCRIPTION.md` に保存し、Phase 9で転記する）
-- [ ] PWA版の「ホーム画面に追加」手順（iOS Safari・Android Chrome それぞれ）
+- [x] PWA版の「ホーム画面に追加」手順（iOS Safari・Android Chrome それぞれ）— 初期画面の「お使いの端末での始め方」に実装済み。Phase 8 で文言を見直す
 
 観点:
 
@@ -303,10 +304,10 @@ PlaywrightのWebKitはiOS実機の代替にはなりません。OSのファイ�
 推奨パッケージ:
 
 ```text
-非公式TALTO移行ヘルパー_v1.0.0/
+TaltoConv_v1.0.0/
 ├─ はじめにお読みください.txt
-├─ 非公式TALTO移行ヘルパー.html
-├─ 非公式TALTO移行ヘルパー_単一ファイル版.html
+├─ TaltoConv.html
+├─ TaltoConv_単一ファイル版.html
 ├─ src/
 ├─ docs/
 │  ├─ MIGRATION_GUIDE.md

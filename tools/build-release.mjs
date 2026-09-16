@@ -6,7 +6,7 @@ import { Script } from "node:vm";
 
 // このファイルは配布物を組み立てる配布係です。日常の変換処理には関与しません。
 // 同じソースから次の3つを同時に作り、片方だけ更新された状態を作らないようにします。
-//   ZIP版（BOOTH向け）      release/非公式TALTO移行ヘルパー_v<版>/ と同名の zip
+//   ZIP版（BOOTH向け）      release/TaltoConv_v<版>/ と同名の zip
 //                            分割ファイル版HTML・単一ファイル版HTML・ソース・テスト・設計資料を同梱
 //   Web版（GitHub Pages向け） dist/  index.html・manifest・Service Worker・アイコン
 //
@@ -23,7 +23,7 @@ import { Script } from "node:vm";
 const root = resolve(import.meta.dirname, "..");
 const webOnly = process.argv.includes("--web-only");
 const version = await readVersion();
-const packageName = `非公式TALTO移行ヘルパー_v${version}`;
+const packageName = `TaltoConv_v${version}`;
 const releaseRoot = resolve(root, "..", "release");
 const packageDir = resolve(releaseRoot, packageName);
 const zipPath = `${packageDir}.zip`;
@@ -323,7 +323,7 @@ function buildWebHtml(html) {
     '  <meta name="mobile-web-app-capable" content="yes">',
     '  <meta name="apple-mobile-web-app-capable" content="yes">',
     '  <meta name="apple-mobile-web-app-status-bar-style" content="default">',
-    '  <meta name="apple-mobile-web-app-title" content="Talto_Converter">'
+    '  <meta name="apple-mobile-web-app-title" content="TaltoConv">'
   ].join("\n");
   return withBuildKind(html.replace("</head>", `${head}\n</head>`), "web");
 }
@@ -333,7 +333,7 @@ function buildWebHtml(html) {
 runTests(root, ["tests/test-converter.cjs", "tests/test-structure.cjs", "tests/fuzz-converter.cjs"]);
 
 // ---- 2. HTML の読み込みとバージョン埋め込み ----
-const sourceHtml = await readFile(resolve(root, "非公式TALTO移行ヘルパー.html"), "utf8");
+const sourceHtml = await readFile(resolve(root, "TaltoConv.html"), "utf8");
 assertSourceHtml(sourceHtml);
 const versionedHtml = withVersion(sourceHtml);
 console.log(`バージョン: ${version}`);
@@ -371,8 +371,8 @@ if (webOnly) {
 
   // 改修する人が原因を追えるよう、実行ファイルだけでなくテストと設計資料も同梱します。
   await Promise.all([
-    writeFile(resolve(packageDir, "非公式TALTO移行ヘルパー.html"), versionedHtml, "utf8"),
-    buildSingleFileHtml(versionedHtml).then((html) => writeFile(resolve(packageDir, "非公式TALTO移行ヘルパー_単一ファイル版.html"), html, "utf8")),
+    writeFile(resolve(packageDir, "TaltoConv.html"), versionedHtml, "utf8"),
+    buildSingleFileHtml(versionedHtml).then((html) => writeFile(resolve(packageDir, "TaltoConv_単一ファイル版.html"), html, "utf8")),
     cp(resolve(root, "src"), resolve(packageDir, "src"), { recursive: true }),
     cp(resolve(root, "tests"), resolve(packageDir, "tests"), { recursive: true }),
     cp(resolve(root, "docs"), resolve(packageDir, "docs"), { recursive: true }),

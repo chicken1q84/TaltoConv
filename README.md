@@ -1,10 +1,10 @@
-# 非公式TALTO移行ヘルパー
+# TaltoConv（非公式TALTO移行ヘルパー）
 
 プレーンテキスト、各種Markdown、pixiv小説形式、HTML原稿を、TALTOの本文欄へ貼り付けやすい形へ変換するローカルツールです。TALTOへの貼り付けと保存確認は手作業で行います。
 
 配布物は次の3つを同じソースから生成します。動作だけを隠した簡易版は生成しません。
 
-- **ZIP版**（Windows向け、BOOTHで配布）: ソース・テスト・設計資料を同梱。展開して `非公式TALTO移行ヘルパー.html` を開く
+- **ZIP版**（Windows向け、BOOTHで配布）: ソース・テスト・設計資料を同梱。展開して `TaltoConv.html` を開く
 - **Web版**（iPhone・iPad・Android向け、GitHub Pagesで配信）: 一度開いて「ホーム画面に追加」すると、以降はネット接続なしで起動できる
 - **単一ファイル版**（ZIPに同梱）: CSS・JSを1つのHTMLに埋め込んだ予備版
 
@@ -12,7 +12,7 @@
 
 ## 使い方
 
-1. `非公式TALTO移行ヘルパー.html` をブラウザで開く
+1. `TaltoConv.html` をブラウザで開く
 2. 「変換を始める」を選ぶ
 3. 「原稿」で「貼り付け」「ファイル」「フォルダ」から入力方法を選ぶ
 4. 「形式」で実際の記述方法に合う原稿形式を選ぶ
@@ -40,7 +40,7 @@ Windows優先の品質を維持しながら、最新OSのiPad・iPhone・Android
 - Web版の表示: `node tools/serve.mjs 8767 dist`（先に配布物作成が必要）
 - 配布物作成: `node tools/build-release.mjs`（`--web-only` で `dist/` だけ）
 
-配布物作成は、上記3種のテストを実行してから `VERSION.txt` の値で `../release/非公式TALTO移行ヘルパー_v<版>/` とその zip、および Web版の `dist/` を作ります。テストが1つでも失敗した場合は配布物を作りません。`main` へ push すると GitHub Actions が同じコマンドで `dist/` を作り、GitHub Pages へ配信します。
+配布物作成は、上記3種のテストを実行してから `VERSION.txt` の値で `../release/TaltoConv_v<版>/` とその zip、および Web版の `dist/` を作ります。テストが1つでも失敗した場合は配布物を作りません。`main` へ push すると GitHub Actions が同じコマンドで `dist/` を作り、GitHub Pages へ配信します。
 
 原稿はブラウザ上で処理されます。このツールはTALTOの非公開APIへ原稿を送信したり、TALTO上のデータを直接変更したりしません。
 

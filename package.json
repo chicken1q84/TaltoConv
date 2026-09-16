@@ -1,8 +1,8 @@
 {
-  "name": "unofficial-talto-migration-helper",
+  "name": "taltoconv",
   "version": "0.0.0-dev",
   "private": true,
-  "description": "非公式TALTO移行ヘルパー。ツール本体は依存パッケージなしのHTML/CSS/JSで動き、このpackage.jsonはPlaywrightによる画面幅テストなど開発専用の依存だけを管理します。",
+  "description": "TaltoConv（非公式TALTO移行ヘルパー）。ツール本体は依存パッケージなしのHTML/CSS/JSで動き、このpackage.jsonはPlaywrightによる画面幅テストなど開発専用の依存だけを管理します。",
   "license": "MIT",
   "engines": {
     "node": ">=22"

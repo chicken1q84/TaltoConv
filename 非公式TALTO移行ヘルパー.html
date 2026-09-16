@@ -201,7 +201,18 @@
         <p class="preview-note">PC／スマホ切替は表示幅の目安です。TALTOの画面を完全には再現しないため、貼り付け後に最終確認してください。</p>
         <details id="warningDetails" class="warning-details" hidden><summary id="warningSummary">変換メモ</summary><ul id="warnings"></ul></details>
         <div class="export-area"><button id="copyResult" type="button" class="primary copy-primary" disabled><span id="copyResultText">リッチテキストをコピー</span><span aria-hidden="true">↗</span></button><p id="copyFeedback" class="copy-feedback" role="status" aria-live="polite" hidden></p></div>
-        <p class="paste-hint">コピーした内容をTALTOの本文欄へ貼り付けてください。</p>
+        <p class="paste-hint">コピーした内容をTALTOの本文欄へ貼り付けてください。<button id="openManualCopy" type="button" class="text-button">自動コピーがうまくいかない場合</button></p>
+        <!-- 手動コピー欄：自動コピーに失敗したとき、または利用者が自分で開いたときだけ表示します。
+             iPhone・iPadでは自動コピーが許可されないことがあるため、ここが第2の正式経路です。 -->
+        <section id="manualCopy" class="manual-copy" aria-labelledby="manualCopyHeading" hidden>
+          <h3 id="manualCopyHeading">手動でコピーする</h3>
+          <p id="manualCopyReason" class="manual-copy-reason"></p>
+          <p class="manual-copy-steps">下の欄を<strong>長押し</strong>（PCでは欄内をクリック）→<strong>すべて選択</strong>→<strong>コピー</strong>の順に操作してください。「すべて選択」ボタンを押すと選択までを代わりに行います。</p>
+          <div class="manual-copy-actions"><button id="selectManualCopy" type="button" class="secondary">すべて選択</button><button id="closeManualCopy" type="button" class="text-button">閉じる</button></div>
+          <div id="manualCopyRich" class="manual-copy-area manual-copy-rich" contenteditable="true" inputmode="none" spellcheck="false" aria-label="手動コピー用の変換結果（リッチテキスト）"></div>
+          <textarea id="manualCopyText" class="manual-copy-area" readonly aria-label="手動コピー用の変換結果（テキスト）" rows="10"></textarea>
+          <p id="manualCopyFeedback" class="copy-feedback" role="status" aria-live="polite" hidden></p>
+        </section>
       </section>
     </div>
     </div>

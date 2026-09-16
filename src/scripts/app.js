@@ -15,7 +15,8 @@
     "boldH1", "boldH2", "boldH3", "underlineH1", "underlineH2", "underlineH3", "underlineNote", "underlineBody",
     "listMarker", "listPrefixBold", "listPrefixUnderline", "listContentBold", "listContentUnderline", "previewDesktop", "previewMobile", "previewStage",
     "emptyPreview", "preview", "resultCount", "warningDetails", "warningSummary", "warnings",
-    "copyFormat", "copyResult", "copyResultText", "copyFeedback", "status", "mobileAction", "mobileActionText"
+    "copyFormat", "copyResult", "copyResultText", "copyFeedback", "status", "mobileAction", "mobileActionText",
+    "openManualCopy", "manualCopy", "manualCopyReason", "selectManualCopy", "closeManualCopy", "manualCopyRich", "manualCopyText", "manualCopyFeedback"
   ];
   const spacingTypes = ["all", "h1", "h2", "h3", "note", "body"];
   const markerTypes = ["bold", "underline"];
@@ -564,6 +565,7 @@
       ? `本文 ${result.plainText.replace(/\n/g, "").length.toLocaleString()}文字 · 画像 ${result.images.length}件`
       : "原稿を待っています";
     el.copyResult.disabled = !result.html;
+    refreshManualCopy();
     el.warnings.replaceChildren();
     for (const warning of result.warnings) {
       const item = document.createElement("li");
@@ -881,7 +883,54 @@
   }
 
   /**
+   * コピーに使う文字列と、手動コピー欄へ出す内容を、選択中の形式から決めます。
+   */
+  function copyPayload() {
+    const copyType = el.copyFormat.value;
+    if (copyType === "rich") return { copyType, text: result.plainText, html: result.html };
+    return { copyType, text: copyType === "html" ? result.html : result.plainText, html: "" };
+  }
+
+  /**
+   * 自動コピーが失敗した理由を3種類に分けます。案内文と手動コピー欄の説明がこれで変わります。
+   *   unsupported … Clipboard API がない、または https でない（file:// で開いた場合など）
+   *   denied      … ブラウザが許可しなかった（iOS Safari の権限拒否、ユーザー操作外での呼び出しなど）
+   *   failed      … それ以外の失敗
+   */
+  function classifyCopyFailure(error) {
+    if (!navigator.clipboard || !window.isSecureContext) return "unsupported";
+    if (error && (error.name === "NotAllowedError" || error.name === "SecurityError")) return "denied";
+    return "failed";
+  }
+
+  const copyFailureMessages = {
+    unsupported: "このブラウザでは自動コピーを使えません。下の欄から手動でコピーしてください。",
+    denied: "ブラウザがコピーを許可しませんでした。もう一度ボタンを押しても同じ場合は、下の欄から手動でコピーしてください。",
+    failed: "自動コピーに失敗しました。下の欄から手動でコピーしてください。"
+  };
+
+  /**
+   * Clipboard API で書き込みます。ボタン押下から write() までに await を挟みません。
+   * iOS Safari はユーザー操作の同期文脈でしか許可しないため、ここで先に別の非同期処理を待つと必ず失敗します。
+   * 戻り値は「書き込みの完了を表す Promise」で、失敗時は理由付きの Error で reject します。
+   */
+  function writeClipboard({ copyType, text, html }) {
+    if (!navigator.clipboard) return Promise.reject(Object.assign(new Error("Clipboard API がありません。"), { name: "NotSupportedError" }));
+    if (copyType !== "rich") return navigator.clipboard.writeText(text);
+    if (typeof ClipboardItem === "undefined" || !navigator.clipboard.write) {
+      // リッチテキストを書けない環境では、書式なしテキストだけでも入れておき、手動コピー欄で本命を案内します。
+      return Promise.reject(Object.assign(new Error("リッチテキストのコピーに対応していません。"), { name: "NotSupportedError" }));
+    }
+    const item = new ClipboardItem({
+      "text/html": new Blob([html], { type: "text/html" }),
+      "text/plain": new Blob([text], { type: "text/plain" })
+    });
+    return navigator.clipboard.write([item]);
+  }
+
+  /**
    * プルダウンで選んだリッチテキスト・テキスト・HTMLのコピー方法へ振り分けます。
+   * 経路は Clipboard API → execCommand の予備 → 手動コピー欄 の順で、後ろへ行くほど利用者の操作が増えます。
    */
   async function copySelectedResult() {
     if (!activeSource().trim()) {
@@ -891,29 +940,89 @@
     }
     // 変換に失敗した場合は convert() が原因を表示済みなので、ここでは上書きしません。
     if (!convert(true) || !result.html) return;
-    try {
-      const copyType = el.copyFormat.value;
-      if (copyType === "rich") {
-        try {
-          const item = new ClipboardItem({
-            "text/html": new Blob([result.html], { type: "text/html" }),
-            "text/plain": new Blob([result.plainText], { type: "text/plain" })
-          });
-          await navigator.clipboard.write([item]);
-        } catch { fallbackCopy(result.plainText, result.html); }
-      } else {
-        const text = copyType === "html" ? result.html : result.plainText;
-        try { await navigator.clipboard.writeText(text); }
-        catch { fallbackCopy(text); }
-      }
-      const label = el.copyFormat.selectedOptions[0].textContent;
+    const payload = copyPayload();
+    const label = el.copyFormat.selectedOptions[0].textContent;
+    const succeed = () => {
       const message = `${label}をコピーしました。TALTOへ貼り付けた後に表示と保存済み状態を確認してください。`;
+      closeManualCopy();
       showCopyFeedback(message);
       setStatus(message);
+    };
+    let reason;
+    try {
+      await writeClipboard(payload);
+      return succeed();
     } catch (error) {
-      showCopyFeedback(error.message, true);
-      setStatus(error.message, true);
+      reason = classifyCopyFailure(error);
     }
+    // 予備経路。iOS では効かないことが多いので、失敗しても例外を表に出さず手動コピー欄へ進みます。
+    try {
+      fallbackCopy(payload.text, payload.html);
+      return succeed();
+    } catch { /* 手動コピーへ */ }
+    const message = copyFailureMessages[reason];
+    showCopyFeedback(message, true);
+    // 理由はボタン直下と手動コピー欄に出すので、画面下部の通知は消してスマホで欄を隠さないようにします。
+    setStatus("");
+    openManualCopy(message);
+  }
+
+  /**
+   * 手動コピー欄を開き、選択中の形式に合わせて内容を入れます。
+   * リッチテキストは編集可能領域に HTML として置き、利用者が「すべて選択→コピー」すると
+   * ブラウザが text/html と text/plain の両方をクリップボードへ入れるため、TALTO へ書式付きで貼り付けられます。
+   */
+  function openManualCopy(reason = "", { scroll = true } = {}) {
+    if (!result.html) {
+      const message = "先に原稿を入力してください。";
+      showCopyFeedback(message, true);
+      return setStatus(message, true);
+    }
+    const payload = copyPayload();
+    el.manualCopyReason.textContent = reason;
+    el.manualCopyReason.hidden = !reason;
+    el.manualCopyRich.hidden = payload.copyType !== "rich";
+    el.manualCopyText.hidden = payload.copyType === "rich";
+    if (payload.copyType === "rich") el.manualCopyRich.innerHTML = payload.html;
+    else el.manualCopyText.value = payload.text;
+    el.manualCopyFeedback.hidden = true;
+    el.manualCopy.hidden = false;
+    if (scroll) el.manualCopy.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  function closeManualCopy() {
+    el.manualCopy.hidden = true;
+    el.manualCopyRich.innerHTML = "";
+    el.manualCopyText.value = "";
+  }
+
+  /** 手動コピー欄が開いている間に変換結果や形式が変わったら、欄の中身も追従させます。 */
+  function refreshManualCopy() {
+    if (el.manualCopy.hidden) return;
+    if (!result.html) return closeManualCopy();
+    // 入力のたびに呼ばれるため、画面を勝手にスクロールさせません。
+    openManualCopy(el.manualCopyReason.hidden ? "" : el.manualCopyReason.textContent, { scroll: false });
+  }
+
+  /**
+   * 手動コピー欄の内容をすべて選択します。選択後のコピーはブラウザのメニュー操作に任せます。
+   * iOS では選択範囲を作ると「コピー」の吹き出しが出るため、長押しの手間を省けます。
+   */
+  function selectManualCopy() {
+    if (!el.manualCopyText.hidden) {
+      el.manualCopyText.focus({ preventScroll: true });
+      el.manualCopyText.setSelectionRange(0, el.manualCopyText.value.length);
+    } else {
+      el.manualCopyRich.focus({ preventScroll: true });
+      const range = document.createRange();
+      range.selectNodeContents(el.manualCopyRich);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    el.manualCopyFeedback.textContent = "選択しました。表示されたメニューか、Ctrl+C（Macは⌘C）で「コピー」してください。";
+    el.manualCopyFeedback.classList.remove("error");
+    el.manualCopyFeedback.hidden = false;
   }
 
   /**
@@ -1085,8 +1194,11 @@
     if (current === "preview") copySelectedResult();
     else if (convert()) setStep({ source: "format", format: "settings", settings: "preview" }[current] || "preview");
   });
-  el.copyFormat.addEventListener("change", () => { clearCopyFeedback(); updateMobileAction(); });
+  el.copyFormat.addEventListener("change", () => { clearCopyFeedback(); updateMobileAction(); refreshManualCopy(); });
   el.copyResult.addEventListener("click", copySelectedResult);
+  el.openManualCopy.addEventListener("click", () => openManualCopy());
+  el.selectManualCopy.addEventListener("click", selectManualCopy);
+  el.closeManualCopy.addEventListener("click", closeManualCopy);
   el.exportSettings.addEventListener("click", exportSettingsFile);
   el.importSettings.addEventListener("change", () => importSettingsFile(el.importSettings.files[0]));
   el.sample.addEventListener("click", loadSample);

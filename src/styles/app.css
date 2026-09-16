@@ -296,6 +296,19 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .copy-feedback { margin:10px 0 2px; padding:11px 12px; border-radius:7px; background:#edf5ef; color:#4f6b57; font-size:13px; line-height:1.7; text-align:center; }
 .copy-feedback.error { background:#f8eded; color:#863c40; }
 .paste-hint { font-size:13px; line-height:1.8; color:var(--muted); margin:12px 0 0; text-align:center; }
+.paste-hint .text-button { margin-left:8px; font-size:13px; color:var(--accent-dark); text-decoration:underline; }
+/* 手動コピー欄：iOSでは自動コピーが許可されない場合があるため、選択→コピーを利用者の操作で行えるようにします。
+   contenteditable は「すべて選択」の呼び出しを容易にするために使い、inputmode="none" でキーボードは出しません。 */
+.manual-copy { margin-top:16px; padding:16px 18px; border:1px solid var(--line); border-radius:10px; background:var(--surface-soft); }
+.manual-copy h3 { margin:0 0 6px; font-size:15px; }
+.manual-copy-reason { margin:0 0 6px; font-size:13px; line-height:1.7; color:#863c40; }
+.manual-copy-steps { margin:0 0 12px; font-size:13px; line-height:1.8; color:var(--muted); }
+.manual-copy-actions { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+.manual-copy-actions .text-button { color:var(--accent-dark); text-decoration:underline; font-size:13px; }
+.manual-copy-area { display:block; width:100%; max-height:45vh; min-height:120px; overflow:auto; padding:16px 18px; border:1px solid var(--control-border); border-radius:8px; background:var(--preview-paper); color:var(--ink); font-size:15px; line-height:1.9; overflow-wrap:anywhere; -webkit-user-select:text; user-select:text; resize:vertical; }
+.manual-copy-rich h1,.manual-copy-rich h2,.manual-copy-rich h3 { margin:0.6em 0 0.3em; }
+.manual-copy-rich p { margin:0; }
+textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
 .status { position:fixed; z-index:20; bottom:24px; left:50%; transform:translateX(-50%); max-width:min(560px,calc(100vw - 32px)); width:max-content; border-radius:10px; padding:13px 18px; background:#393244; color:white; font-size:13px; line-height:1.7; box-shadow:0 6px 24px #302d3a24; }
 .status.error { background:#913f43; }
 .mobile-tabs,.mobile-action { display:none; }
@@ -307,6 +320,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 :root[data-resolved-theme="dark"] .mixed-warning { background:#332a18; border-color:#80662d; color:#f2d998; }
 :root[data-resolved-theme="dark"] .inline-feedback,
 :root[data-resolved-theme="dark"] .copy-feedback { background:#203328; color:#bfe0c8; }
+:root[data-resolved-theme="dark"] .manual-copy-reason { color:#f0b7bc; }
 :root[data-resolved-theme="dark"] .inline-feedback.error,
 :root[data-resolved-theme="dark"] .copy-feedback.error,
 :root[data-resolved-theme="dark"] .limit-warning { background:#3a2226; color:#f0b7bc; border-color:#784a50; }

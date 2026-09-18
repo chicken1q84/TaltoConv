@@ -3,7 +3,7 @@ const assert = require("node:assert/strict");
 const schema = require("../src/scripts/settings-schema.js");
 
 const valid = {
-  app: "unofficial-talto-migration-helper", version: 2, appVersion: "1.0.0-dev", mode: "custom", sourceMode: "paste", format: "obsidian",
+  app: "unofficial-talto-migration-helper", version: 2, appVersion: "1.0.0", mode: "custom", sourceMode: "paste", format: "obsidian",
   values: { allBefore: 0, allAfter: 1, h1Before: 2, h1After: 0, h2Before: 1, h2After: 0, h3Before: 0, h3After: 0, noteBefore: 0, noteAfter: 0, bodyBefore: 0, bodyAfter: 0 },
   consecutiveHeadingSpacing: 1, listMarker: "・ ",
   markers: { bold: { mode: "wrap", marker: "**", startMarker: "**", endMarker: "**" }, underline: { mode: "pair", marker: "==", startMarker: "<u>", endMarker: "</u>" } },

@@ -6,7 +6,7 @@
 
 | 端末 | 入手先 |
 |---|---|
-| Windows | BOOTH で配布する ZIP（準備中）を展開し、`TaltoConv.html` を Edge または Chrome で開く |
+| Windows | BOOTH で配布する ZIP（または [GitHub Releases](https://github.com/chicken1q84/TaltoConv/releases)）を展開し、`TaltoConv.html` を Edge または Chrome で開く |
 | iPhone・iPad・Android | **https://chicken1q84.github.io/TaltoConv/** を Safari または Chrome で開き、「ホーム画面に追加」 |
 
 Web版はホーム画面に追加した後、オフラインでも起動できます。

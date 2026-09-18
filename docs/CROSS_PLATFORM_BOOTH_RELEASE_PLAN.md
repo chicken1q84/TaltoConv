@@ -135,9 +135,9 @@
 
 ### Phase F: v1.0.0 リリース（旧 Phase 9）
 
-- [ ] `VERSION.txt` を `1.0.0`、`CHANGELOG.txt` を確定
-- [ ] `node tools/build-release.mjs` → `release/TaltoConv_v1.0.0/` と zip、`dist/`
-- [ ] push → Actions 成功 → Web 版で「新しい版があります」が出て 1.0.0 に切り替わることを確認
+- [x] `VERSION.txt` を `1.0.0`、`CHANGELOG.txt` を確定（2026-09-18）
+- [x] `node tools/build-release.mjs` → `release/TaltoConv_v1.0.0/` と zip、`dist/`（2026-09-18）
+- [x] push → Actions #13 成功 → Web 版が 1.0.0 で配信されていることを確認（2026-09-18。タグ v1.0.0 も push 済み）
 - [ ] GitHub の Releases に v1.0.0 を作り、ZIP を添付する（BOOTH の予備の入手先。任意）
 - [ ] BOOTH に商品登録: 0 円、`BOOTH_DESCRIPTION.md` を転記、ZIP をアップロード、商品画像 5 枚
 - [ ] 公開後、BOOTH からダウンロードした ZIP を空フォルダに展開して起動確認

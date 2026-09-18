@@ -76,4 +76,10 @@ test("自動コピーが成功すると手動コピー欄は閉じ、成功メ�
     return blob.text();
   });
   expect(html).toContain("<h1");
+  // スマホでは固定ボタンを使うため、成功通知もスクロール位置に左右されない場所へ出します。
+  await page.setViewportSize({ width: 390, height: 812 });
+  await page.locator("#mobileAction").click();
+  await expect(page.locator("#status")).toBeVisible();
+  await expect(page.locator("#status")).toHaveText("コピーしました。");
+  await expect(page.locator("#copyFeedback")).toBeHidden();
 });

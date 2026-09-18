@@ -236,8 +236,6 @@
     el.formatHelp.replaceChildren();
     const group = document.createElement("section");
     group.className = "format-help-group identifiers";
-    const heading = document.createElement("strong");
-    heading.textContent = "対応している識別子";
     const hasOfficialMeaning = description.identifiers.some((row) => row.length === 3);
     const table = document.createElement("table");
     const head = document.createElement("thead");
@@ -252,7 +250,7 @@
       for (const text of rowData) { const cell = document.createElement("td"); cell.textContent = text; row.append(cell); }
       body.append(row);
     }
-    table.append(body); group.append(heading, table);
+    table.append(body); group.append(table);
     if (description.references?.length) {
       const references = document.createElement("p");
       references.className = "official-references";
@@ -365,9 +363,12 @@
   /**
    * コピー形式の選択に合わせ、ボタンの文言も同じ言葉へ揃えます。
    */
+  function copyButtonLabel() {
+    return { rich: "書式付きでコピー", plain: "テキストをコピー", html: "HTMLをコピー" }[el.copyFormat.value] || "書式付きでコピー";
+  }
+
   function updateCopyButtonLabel() {
-    const labels = { rich: "リッチテキストをコピー", plain: "書式なしテキストをコピー", html: "HTMLをコピー" };
-    el.copyResultText.textContent = labels[el.copyFormat.value] || labels.rich;
+    el.copyResultText.textContent = copyButtonLabel();
   }
 
   /**
@@ -381,7 +382,7 @@
   }
 
   /**
-   * コピーの成功・失敗を、ボタン直下とステータス表示の両方へ知らせます。
+   * コピーの成功・失敗をボタンの近くへ知らせます。
    */
   function showCopyFeedback(message, isError = false) {
     el.copyFeedback.textContent = message;
@@ -533,7 +534,7 @@
   function updateMobileAction(temporaryLabel = "") {
     const isPreview = document.body.dataset.step === "preview";
     const nextLabels = { source: "形式へ", format: "設定へ", settings: "確認へ" };
-    el.mobileActionText.textContent = temporaryLabel || (isPreview ? `${el.copyFormat.selectedOptions[0].textContent}をコピー` : nextLabels[document.body.dataset.step] || "次へ");
+    el.mobileActionText.textContent = temporaryLabel || (isPreview ? copyButtonLabel() : nextLabels[document.body.dataset.step] || "次へ");
     el.mobileAction.lastElementChild.textContent = isPreview ? "↗" : "→";
     el.mobileAction.disabled = isPreview ? !result.html : !activeSource().trim() || mixedFilesBlocked();
   }
@@ -643,7 +644,7 @@
     collection.combinedText = texts.join("\n\n");
     collection.starts = starts.length ? starts : [0];
     if (collection === activeCollection()) {
-      el.loadedSummary.textContent = `${collection.documents.length}ファイルを上から順に結合`;
+      el.loadedSummary.textContent = `${collection.documents.length}ファイル`;
       el.fileCount.textContent = `${collection.combinedText.length.toLocaleString()}文字`;
       el.mixedFormatWarning.hidden = formats.size < 2;
       if (formats.size < 2) el.forceMixedFormats.checked = false;
@@ -700,7 +701,7 @@
     collection.documents.splice(to, 0, moved);
     rebuildFileCombination();
     renderFileList();
-    setSourceFeedback(`結合順を変更しました。${to + 1}番目は${moved.name}です。`);
+    setSourceFeedback(`${to + 1}番目：${moved.name}`);
     convert();
   }
 
@@ -717,7 +718,7 @@
     else el.files.value = "";
     el.loadedRow.hidden = collection.documents.length === 0;
     if (!collection.documents.length) el.mixedFormatWarning.hidden = true;
-    setSourceFeedback(`${removed.name}を一覧から外しました。元ファイルは変更していません。`);
+    setSourceFeedback(`${removed.name}を一覧から外しました。`);
     convert();
   }
 
@@ -792,12 +793,12 @@
         ? ` 画像${ignoredImages}件${ignoredOther ? `・その他${ignoredOther}件` : ""}は読み込んでいません。`
         : "";
       setSourceFeedback(formats.size > 1
-        ? `HTML拡張子とその他の原稿ファイルが混在しています。「02 形式」で原稿全体の記述形式を選び、内容を確認してから強制実行してください。${ignoredMessage}${sizeOverrideMessage}`
-        : `${loaded.length}ファイルを追加し、合計${collection.documents.length}ファイルを結合しました。「02 形式」で原稿全体の記述形式を確認してください。${ignoredMessage}${sizeOverrideMessage}`, formats.size > 1);
+        ? `形式の混在を確認してください。${ignoredMessage}${sizeOverrideMessage}`
+        : `${loaded.length}ファイルを追加しました。${ignoredMessage}${sizeOverrideMessage}`, formats.size > 1);
       convert();
       if (collectionMode === "folder") el.folderFiles.value = "";
       else el.files.value = "";
-      setStatus(`${loaded.length}ファイルを追加しました。合計${collection.documents.length}ファイルです。${ignoredMessage}`);
+      setStatus("");
     } catch (error) {
       const message = `ファイルを読み込めませんでした：${error.message}`;
       setSourceFeedback(`${message} ファイル形式と読み取り権限を確認し、そのファイルを外して再度お試しください。`, true);
@@ -969,12 +970,17 @@
     // 変換に失敗した場合は convert() が原因を表示済みなので、ここでは上書きしません。
     if (!convert(true) || !result.html) return;
     const payload = copyPayload();
-    const label = el.copyFormat.selectedOptions[0].textContent;
     const succeed = () => {
-      const message = `${label}をコピーしました。TALTOへ貼り付けた後に表示と保存済み状態を確認してください。`;
+      const message = "コピーしました。";
       closeManualCopy();
-      showCopyFeedback(message);
-      setStatus(message);
+      // スマホの固定ボタンからコピーした場合も、スクロール位置に関係なく結果を知らせます。
+      if (window.matchMedia("(max-width: 900px)").matches) {
+        clearCopyFeedback();
+        setStatus(message);
+      } else {
+        showCopyFeedback(message);
+        setStatus("");
+      }
     };
     // writeClipboard() は同期的に呼び出す必要があるため、処理中表示はその後に立てます（await を挟まない）。
     const pending = writeClipboard(payload);
@@ -1053,7 +1059,7 @@
       selection.removeAllRanges();
       selection.addRange(range);
     }
-    el.manualCopyFeedback.textContent = "選択しました。表示されたメニューか、Ctrl+C（Macは⌘C）で「コピー」してください。";
+    el.manualCopyFeedback.textContent = isMobileDevice ? "選択しました。長押し →「コピー」。" : "選択しました。Ctrl+C（Macは⌘C）でコピー。";
     el.manualCopyFeedback.classList.remove("error");
     el.manualCopyFeedback.hidden = false;
   }
@@ -1100,7 +1106,7 @@
       saveSettings();
       convert();
       showSettingsFileFeedback(`${file.name}を読み込み、カスタム設定として適用しました。`);
-      setStatus("設定ファイルをカスタム設定として適用しました。");
+      setStatus("");
     } catch (error) {
       showSettingsFileFeedback(`読み込めませんでした：${error.message}`, true);
       setStatus("設定ファイルを読み込めませんでした。", true);
@@ -1113,11 +1119,11 @@
    * 現在の形式に対応したテスト原稿へ置き換えます。既存原稿がある場合は先に確認します。
    */
   function loadSample() {
-    if (el.source.value.trim() && !window.confirm("貼り付けた原稿を対応識別子のテスト原稿に置き換えますか？\nこの操作は元に戻せません。")) return;
+    if (el.source.value.trim() && !window.confirm("貼り付けた原稿をサンプルに置き換えますか？\nこの操作は元に戻せません。")) return;
     setSourceMode("paste");
     el.source.value = sampleSource(el.format.value);
     convert();
-    setStatus(`${el.format.selectedOptions[0].textContent}の対応識別子を使ったテスト原稿を読み込みました。`);
+    setStatus("サンプルを読み込みました。");
   }
 
   /**
@@ -1264,7 +1270,7 @@
     el.headingSettings.open = false; el.listSettings.open = false; el.markerSettings.open = false; el.conversionSettings.open = false;
     customInitialized = false;
     for (const input of modeInputs) input.checked = input.value === "unified";
-    setMode("unified"); saveSettings(); showSettingsFileFeedback("設定を初期値に戻しました。原稿は変更していません。"); setStatus("設定を初期値に戻しました。原稿は変更していません。");
+    setMode("unified"); saveSettings(); showSettingsFileFeedback("設定を初期化しました。"); setStatus("");
   });
   el.clear.addEventListener("click", () => {
     if (el.source.value.trim() && !window.confirm("貼り付けた原稿を消しますか？読み込んだファイルは変更されません。")) return;
@@ -1394,8 +1400,8 @@
 
   // 確認画面の貼り付け案内を、端末に合わせた操作で表示します。
   el.pasteHintText.textContent = isMobileDevice
-    ? `コピーした内容を、TALTOの本文欄を長押しして「${device === "android" ? "貼り付け" : "ペースト"}」してください。`
-    : "コピーした内容を、TALTOの本文欄をクリックして Ctrl+V（Macは⌘V）で貼り付けてください。";
+    ? `TALTOの本文欄を長押し →「${device === "android" ? "貼り付け" : "ペースト"}」。`
+    : "TALTOの本文欄へ Ctrl+V（Macは⌘V）。";
 
   // ===== 11. 起動時の初期化 =====
   openDeviceGuide();

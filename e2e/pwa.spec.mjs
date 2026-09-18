@@ -51,12 +51,15 @@ async function waitForServiceWorker(page) {
 test("初回表示後、オフラインでも起動して変換できる", async ({ page, context }) => {
   await page.goto(origin);
   await waitForServiceWorker(page);
-  const cached = await page.evaluate(async () => {
+  // 制御開始の直後はページ側でキャッシュ一覧がまだ見えない場合があります。
+  // 空の一覧から caches.open(undefined) で不要なキャッシュを作らず、保存完了を確認します。
+  await expect.poll(() => page.evaluate(async () => {
     const names = await caches.keys();
-    const cache = await caches.open(names[0]);
+    const name = names.find((value) => value.startsWith("talto-helper-"));
+    if (!name) return 0;
+    const cache = await caches.open(name);
     return (await cache.keys()).length;
-  });
-  expect(cached).toBeGreaterThanOrEqual(12);
+  }), { timeout: 5_000 }).toBeGreaterThanOrEqual(12);
 
   await context.setOffline(true);
   await page.reload();

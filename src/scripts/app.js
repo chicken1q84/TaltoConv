@@ -7,7 +7,7 @@
   // ===== 1. HTML部品と画面状態 =====
   const ids = [
     "homeLink", "homeView", "appView", "startHelper", "themeMode", "themeColor", "appVersion", "updateNotice", "reloadForUpdate",
-    "pasteSourcePanel", "fileSourcePanel", "folderSourcePanel", "collectionSourcePanel", "sourcePriority", "files", "folderFiles", "loadedRow", "loadedFiles", "loadedSummary", "fileCount", "clearFiles",
+    "pasteSourcePanel", "fileSourcePanel", "folderSourcePanel", "collectionSourcePanel", "files", "folderFiles", "loadedRow", "loadedFiles", "loadedSummary", "fileCount", "clearFiles",
     "mixedFormatWarning", "forceMixedFormats", "format", "formatHelp", "source", "sourceCount", "sourceFeedback", "sample", "clear",
     "unifiedSpacing", "customSpacing", "applyUnified", "includeLeadingSpacing", "includeTrailingSpacing",
     "removeFirstHeading", "italicAsNote", "removeHorizontalRules", "disableSizeLimits", "sizeLimitWarning",
@@ -228,56 +228,44 @@
   }
 
   /**
-   * 形式カタログの内容から、対応表・残すもの・簡略化・除外の案内を組み立てます。
+   * 形式カタログの内容から、識別子の対応表と公式案内を組み立てます。
    * 説明文を変えるだけなら app.js ではなく format-catalog.js を編集します。
    */
   function updateFormatHelp() {
     const description = formatDescriptions[el.format.value] || formatDescriptions.obsidian;
     el.formatHelp.replaceChildren();
-    for (const [key, label] of [["identifiers", "対応している識別子"], ["keep", "残すもの"], ["simplify", "簡略化するもの"], ["exclude", "除外するもの"]]) {
-      const group = document.createElement("section");
-      group.className = `format-help-group ${key}`;
-      const heading = document.createElement("strong");
-      heading.textContent = label;
-      if (key === "identifiers") {
-        const hasOfficialMeaning = description.identifiers.some((row) => row.length === 3);
-        const table = document.createElement("table");
-        const head = document.createElement("thead");
-        const headRow = document.createElement("tr");
-        for (const text of hasOfficialMeaning ? ["識別子", "公式上の意味", "TALTOでの表示"] : ["原稿上の記述", "TALTOでの表示"]) {
-          const cell = document.createElement("th"); cell.scope = "col"; cell.textContent = text; headRow.append(cell);
-        }
-        head.append(headRow); table.append(head);
-        const body = document.createElement("tbody");
-        for (const rowData of description.identifiers) {
-          const row = document.createElement("tr");
-          for (const text of rowData) { const cell = document.createElement("td"); cell.textContent = text; row.append(cell); }
-          body.append(row);
-        }
-        table.append(body); group.append(heading, table);
-        if (description.references?.length) {
-          const references = document.createElement("p");
-          references.className = "official-references";
-          references.append("公式案内：");
-          description.references.forEach(([text, href], index) => {
-            if (index) references.append("・");
-            const link = document.createElement("a");
-            link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = text.replace(/^.+：/, "");
-            references.append(link);
-          });
-          group.append(references);
-        }
-        el.formatHelp.append(group); continue;
-      }
-      const list = document.createElement("ul");
-      for (const text of description[key]) {
-        const item = document.createElement("li");
-        item.textContent = text;
-        list.append(item);
-      }
-      group.append(heading, list);
-      el.formatHelp.append(group);
+    const group = document.createElement("section");
+    group.className = "format-help-group identifiers";
+    const heading = document.createElement("strong");
+    heading.textContent = "対応している識別子";
+    const hasOfficialMeaning = description.identifiers.some((row) => row.length === 3);
+    const table = document.createElement("table");
+    const head = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    for (const text of hasOfficialMeaning ? ["識別子", "公式上の意味", "TALTOでの表示"] : ["原稿上の記述", "TALTOでの表示"]) {
+      const cell = document.createElement("th"); cell.scope = "col"; cell.textContent = text; headRow.append(cell);
     }
+    head.append(headRow); table.append(head);
+    const body = document.createElement("tbody");
+    for (const rowData of description.identifiers) {
+      const row = document.createElement("tr");
+      for (const text of rowData) { const cell = document.createElement("td"); cell.textContent = text; row.append(cell); }
+      body.append(row);
+    }
+    table.append(body); group.append(heading, table);
+    if (description.references?.length) {
+      const references = document.createElement("p");
+      references.className = "official-references";
+      references.append("公式案内：");
+      description.references.forEach(([text, href], index) => {
+        if (index) references.append("・");
+        const link = document.createElement("a");
+        link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = text.replace(/^.+：/, "");
+        references.append(link);
+      });
+      group.append(references);
+    }
+    el.formatHelp.append(group);
   }
 
   // ===== 3. カスタム識別子とテーマ =====
@@ -355,18 +343,6 @@
   }
 
   /**
-   * 貼り付け・ファイル・フォルダのうち、現在どれだけが変換対象かを明示します。
-   */
-  function updateSourcePriority() {
-    const hasPaste = Boolean(el.source.value.trim());
-    const hasFiles = collections.files.documents.length > 0;
-    const hasFolder = collections.folder.documents.length > 0;
-    const retained = [hasPaste && sourceMode !== "paste", hasFiles && sourceMode !== "files", hasFolder && sourceMode !== "folder"].filter(Boolean).length;
-    const selectedLabel = sourceMode === "paste" ? "貼り付けた原稿" : sourceMode === "folder" ? "選択したフォルダ" : "追加したファイル";
-    el.sourcePriority.textContent = `変換対象：${selectedLabel}${retained ? "。ほかの入力は保持しています。" : ""}`;
-  }
-
-  /**
    * 入力方法を一つだけ有効にし、隠れた別入力が混ざらないようにします。
    */
   function setSourceMode(next, shouldSave = true) {
@@ -382,7 +358,6 @@
       el.loadedRow.hidden = activeCollection().documents.length === 0;
     }
     setSourceFeedback("");
-    updateSourcePriority();
     if (shouldSave) saveSettings();
     convert();
   }
@@ -593,7 +568,7 @@
     el.preview.innerHTML = result.html;
     el.resultCount.textContent = hasSource
       ? `本文 ${result.plainText.replace(/\n/g, "").length.toLocaleString()}文字 · 画像 ${result.images.length}件`
-      : "原稿を待っています";
+      : "";
     el.copyResult.disabled = !result.html;
     refreshManualCopy();
     el.warnings.replaceChildren();
@@ -616,7 +591,6 @@
   function convert(preserveCopyFeedback = false) {
     clearTimeout(conversionTimer);
     if (!preserveCopyFeedback) clearCopyFeedback();
-    updateSourcePriority();
     if (mixedFilesBlocked()) {
       result = { title: "", html: "", plainText: "", warnings: ["HTML拡張子とその他の原稿ファイルが混在しているため、変換を停止しました。"], images: [] };
       render();
@@ -744,7 +718,6 @@
     el.loadedRow.hidden = collection.documents.length === 0;
     if (!collection.documents.length) el.mixedFormatWarning.hidden = true;
     setSourceFeedback(`${removed.name}を一覧から外しました。元ファイルは変更していません。`);
-    updateSourcePriority();
     convert();
   }
 
@@ -821,7 +794,6 @@
       setSourceFeedback(formats.size > 1
         ? `HTML拡張子とその他の原稿ファイルが混在しています。「02 形式」で原稿全体の記述形式を選び、内容を確認してから強制実行してください。${ignoredMessage}${sizeOverrideMessage}`
         : `${loaded.length}ファイルを追加し、合計${collection.documents.length}ファイルを結合しました。「02 形式」で原稿全体の記述形式を確認してください。${ignoredMessage}${sizeOverrideMessage}`, formats.size > 1);
-      updateSourcePriority();
       convert();
       if (collectionMode === "folder") el.folderFiles.value = "";
       else el.files.value = "";
@@ -1144,7 +1116,6 @@
     if (el.source.value.trim() && !window.confirm("貼り付けた原稿を対応識別子のテスト原稿に置き換えますか？\nこの操作は元に戻せません。")) return;
     setSourceMode("paste");
     el.source.value = sampleSource(el.format.value);
-    updateSourcePriority();
     convert();
     setStatus(`${el.format.selectedOptions[0].textContent}の対応識別子を使ったテスト原稿を読み込みました。`);
   }
@@ -1213,7 +1184,6 @@
   }
   el.source.addEventListener("input", () => {
     setSourceFeedback("");
-    updateSourcePriority();
     clearTimeout(conversionTimer);
     conversionTimer = setTimeout(convert, 120);
   });
@@ -1272,7 +1242,7 @@
     collection.documents = []; collection.combinedText = ""; collection.starts = [0]; collection.format = "markdown";
     el.files.value = ""; el.folderFiles.value = ""; el.loadedRow.hidden = true; el.loadedFiles.replaceChildren();
     el.mixedFormatWarning.hidden = true; el.forceMixedFormats.checked = false;
-    setSourceFeedback(""); updateSourcePriority(); convert();
+    setSourceFeedback(""); convert();
   });
   el.resetSettings.addEventListener("click", () => {
     for (const type of spacingTypes) for (const side of ["Before", "After"]) el[`${type}${side}`].value = "0";
@@ -1299,7 +1269,7 @@
   el.clear.addEventListener("click", () => {
     if (el.source.value.trim() && !window.confirm("貼り付けた原稿を消しますか？読み込んだファイルは変更されません。")) return;
     el.source.value = "";
-    setSourceFeedback(""); updateSourcePriority(); convert(); setStatus("");
+    setSourceFeedback(""); convert(); setStatus("");
   });
   /**
    * 最後に初期化を一定の順序で実行します。
@@ -1448,6 +1418,5 @@
     renderFileList();
     el.loadedRow.hidden = activeCollection().documents.length === 0;
   }
-  updateSourcePriority();
   convert();
 })();

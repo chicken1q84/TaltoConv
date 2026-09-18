@@ -53,9 +53,7 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .home-section { margin-top:48px; }
 .home-section > h2 { margin:0; font-size:17px; }
 /* 端末ごとの始め方。設定欄と同じ開閉部品を使い、該当端末の項目だけ app.js が開きます。 */
-.device-guide-lead { margin:10px 0 14px; color:var(--muted); font-size:14px; line-height:1.8; }
-.device-guide-lead a { color:var(--accent); overflow-wrap:anywhere; }
-.device-guide-lead #deviceGuideDetected { display:block; margin-top:6px; color:var(--accent-dark); }
+.device-guide > h2 { margin-bottom:14px; }
 .device-item { border:1px solid var(--line); border-radius:12px; background:var(--surface); padding:0 20px; }
 .device-item + .device-item { margin-top:10px; }
 .device-item > summary { display:flex; align-items:center; justify-content:space-between; gap:14px; min-height:60px; cursor:pointer; list-style:none; }
@@ -70,12 +68,10 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .device-item code,.device-item kbd { padding:1px 6px; border-radius:5px; background:var(--soft); font-size:13px; }
 .home-safety { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:28px; }
 .home-safety p { margin:0; padding:14px 16px; border:1px solid var(--line); border-radius:10px; background:var(--surface-soft); }
-.home-safety strong,.home-safety span { display:block; }
-.home-safety strong { font-size:14px; }
-.home-safety span { margin-top:4px; color:var(--muted); font-size:13px; line-height:1.6; }
-.legal-notice { margin-top:18px; color:var(--muted); font-size:13px; }
-.legal-notice summary { width:max-content; max-width:100%; cursor:pointer; color:var(--accent-dark); }
-.legal-notice p { max-width:780px; margin:10px 0 0; line-height:1.75; }
+.home-safety strong { display:block; font-size:14px; }
+.legal-notice { margin-top:18px; border:1px solid var(--accent); border-radius:10px; background:var(--soft); color:var(--muted); font-size:13px; }
+.legal-notice summary { padding:14px 16px; cursor:pointer; color:var(--accent-dark); font-size:15px; font-weight:700; }
+.legal-notice p { max-width:780px; margin:0; padding:0 16px 16px; line-height:1.75; }
 .home-footer { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-top:36px; padding-top:22px; border-top:1px solid var(--line); }
 .home-footer p { margin:0; color:var(--muted); font-size:14px; }
 .home-footer a { color:var(--accent); }
@@ -107,7 +103,6 @@ body[data-view="home"] .mobile-action { display:none; }
 .loaded-row { margin-top:15px; display:grid; gap:7px; }
 .source-mode-fieldset { border:0; margin:0 0 18px; padding:0; min-width:0; }
 .source-mode-fieldset legend { margin-bottom:10px; font-size:14px; font-weight:600; }
-.source-priority { min-height:20px; margin:-7px 0 13px; color:var(--muted); font-size:14px; line-height:1.6; }
 .file-format-note { margin:10px 0 0; color:var(--muted); font-size:14px; line-height:1.7; }
 .file-support-summary { margin:14px 0 0; padding:14px 16px; border:1px solid var(--line); border-radius:9px; background:var(--surface-soft); }
 .file-support-summary strong { display:block; font-size:14px; }
@@ -142,9 +137,6 @@ body[data-view="home"] .mobile-action { display:none; }
 /* ===== 6. 原稿形式の対応表 ===== */
 .format-help { display:grid; gap:12px; margin-top:2px; padding:13px 14px; border:1px solid var(--line); border-radius:8px; background:var(--surface-soft); }
 .format-help-group { padding-left:10px; border-left:3px solid #9d91ad; }
-.format-help-group.keep { border-color:#66836e; }
-.format-help-group.simplify { border-color:#a27b41; }
-.format-help-group.exclude { border-color:#9a5e62; }
 .format-help-group strong { display:block; color:var(--ink); font-size:13px; }
 .format-help-group table { width:100%; margin-top:7px; border-collapse:collapse; table-layout:fixed; color:var(--muted); font-size:13px; line-height:1.6; }
 .format-help-group th,.format-help-group td { padding:7px 6px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; overflow-wrap:anywhere; }
@@ -153,8 +145,6 @@ body[data-view="home"] .mobile-action { display:none; }
 .format-help-group table:has(th:nth-child(3)) { table-layout:auto; }
 .format-help-group table:has(th:nth-child(3)) th:first-child,.format-help-group table:has(th:nth-child(3)) td:first-child { width:34%; }
 .format-help-group table:has(th:nth-child(3)) th:nth-child(2),.format-help-group table:has(th:nth-child(3)) td:nth-child(2) { width:31%; }
-.format-help-group ul { margin:5px 0 0; padding-left:17px; color:var(--muted); font-size:13px; font-weight:400; line-height:1.65; }
-.format-help-group li + li { margin-top:3px; }
 .official-references { margin:10px 0 0; color:var(--muted); font-size:12px; line-height:1.7; }
 .official-references a { color:var(--accent); text-underline-offset:2px; }
 .sample-switch { width:100%; justify-content:space-between; margin-top:2px; text-align:left; }

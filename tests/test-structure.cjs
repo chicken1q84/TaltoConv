@@ -37,7 +37,6 @@ for (const format of ["text", "commonmark", "gfm", "obsidian", "pixiv", "html"])
 for (const extension of [".md", ".markdown", ".html", ".htm", ".txt"]) {
   assert.ok(html.includes(extension), `画面に対応拡張子 ${extension} の案内が必要です`);
 }
-assert.ok(html.includes("拡張子からMarkdown方言やpixiv形式を自動判定しません"));
 assert.ok(html.includes("HTML拡張子とその他の原稿ファイルが混在しています"));
 assert.ok(!html.includes("MarkdownとHTMLが混在しています"));
 

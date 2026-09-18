@@ -28,7 +28,6 @@
       <!-- 端末ごとの始め方。app.js が端末を判定して該当する項目を開きます。判定は表示順と開閉だけに使い、機能は制限しません。 -->
       <section class="home-section device-guide" aria-labelledby="deviceGuideHeading">
         <h2 id="deviceGuideHeading">この端末で始める</h2>
-        <p class="device-guide-lead">該当する端末を開いてください。詳しい操作は右上の「使い方」でいつでも確認できます。</p>
         <details class="device-item" data-device="windows">
           <summary><span><strong>Windowsパソコン</strong><small>Microsoft Edge または Google Chrome</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
           <ol>
@@ -62,9 +61,9 @@
         </details>
       </section>
       <aside class="home-safety" aria-label="利用前の注意">
-        <p><strong>原稿は端末内だけで変換</strong><span>外部へ送信・保存しません。</span></p>
-        <p><strong>元原稿は必ず保管</strong><span>最初は短い原稿でお試しください。</span></p>
-        <p><strong>画像はTALTOで挿入</strong><span>原稿には挿入位置の目印を残します。</span></p>
+        <p><strong>原稿は端末内だけで変換</strong></p>
+        <p><strong>元原稿は必ず保管</strong></p>
+        <p><strong>画像はTALTOで挿入</strong></p>
       </aside>
       <details class="legal-notice"><summary>非公式ツール・免責事項について</summary><p>TaltoConvは個人制作の非公式ツールで、TALTOおよび運営元とは関係ありません。変換する原稿は、ご自身が使用・移行する権利を持つものに限ってください。利用によるデータ消失・表示崩れ・保存失敗などについて、制作者は責任を負いません。</p></details>
       <footer class="home-footer"><p>連絡先：<a href="https://x.com/chicken1_skin" target="_blank" rel="noopener noreferrer">@chicken1_skin</a><span class="version-label">バージョン <span id="appVersion">dev</span></span></p></footer>
@@ -87,7 +86,6 @@
             <label><input type="radio" name="sourceMode" value="files"><span>ファイル</span></label>
             <label><input type="radio" name="sourceMode" value="folder"><span id="folderModeLabel">フォルダ</span></label>
           </div></fieldset>
-          <p id="sourcePriority" class="source-priority" role="status" aria-live="polite"></p>
           <div id="pasteSourcePanel">
             <div class="source-label"><label for="source">原稿</label><span id="sourceCount">0文字</span></div>
             <textarea id="source" spellcheck="false" placeholder="ここに原稿を貼り付けます。&#10;&#10;入力後に「02 形式」で、原稿の記述形式を選んでください。"></textarea>
@@ -113,10 +111,10 @@
           </div>
           <p id="sourceFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p>
         </section>
-        <!-- 02 形式：入力記法を選び、対応・簡略化・除外の範囲を表示します。 -->
+        <!-- 02 形式：入力記法を選び、対応する識別子を表示します。 -->
         <section class="card format-card" id="formatPanel" aria-labelledby="formatHeading">
           <div class="section-heading"><div><span class="step-number">02</span><h2 id="formatHeading">形式</h2></div></div>
-          <p class="section-lead">貼り付け原稿も、結合したファイルも、ここで選んだ1種類として読み取ります。拡張子からMarkdown方言やpixiv形式を自動判定しません。</p>
+          <p class="section-lead">原稿全体を選んだ形式で読み取ります。自動判定はしません。</p>
           <div class="field"><label for="format">原稿の記述形式</label><select id="format">
             <option value="text">プレーンテキスト</option>
             <option value="commonmark">標準Markdown（CommonMark）</option>
@@ -133,9 +131,9 @@
             <label><input type="radio" name="spacingMode" value="unified" checked><span>すべて同じ</span></label>
             <label><input type="radio" name="spacingMode" value="custom"><span>種類別</span></label>
           </div></fieldset>
-          <div id="unifiedSpacing"><div class="spacing-intro"><strong>すべての種類に同じ設定</strong><span>見出し1・2・3 / 注釈 / 本文</span></div><div class="unified-inputs">
-            <div class="field"><label for="allBefore">すべての前の空行</label><div class="number-wrap"><input id="allBefore" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div></div>
-            <div class="field"><label for="allAfter">すべての後の空行</label><div class="number-wrap"><input id="allAfter" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div></div>
+          <div id="unifiedSpacing"><div class="spacing-intro"><span>見出し1・2・3 / 注釈 / 本文</span></div><div class="unified-inputs">
+            <div class="field"><label for="allBefore">前の空行</label><div class="number-wrap"><input id="allBefore" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div></div>
+            <div class="field"><label for="allAfter">後の空行</label><div class="number-wrap"><input id="allAfter" type="number" inputmode="numeric" min="0" max="10" step="1" value="0"><span>行</span></div></div>
           </div></div>
           <div id="customSpacing" hidden>
             <div class="spacing-intro"><strong>種類ごとに前後を調整</strong><button id="applyUnified" type="button" class="text-button">同じ値にそろえる</button></div>
@@ -163,7 +161,7 @@
                 <label><input id="boldH2" type="checkbox"><span>見出し2</span></label>
                 <label><input id="boldH3" type="checkbox"><span>見出し3</span></label>
               </div>
-              <p class="hint">選んだ種類の見出し全体を太字にします。未選択の種類は原稿の指定を保ちます。</p>
+              <p class="hint">選んだ見出し全体を太字にします。</p>
             </fieldset>
             <fieldset class="bold-fieldset format-fieldset"><legend>種類ごとに下線を追加</legend>
               <div class="format-options">
@@ -173,12 +171,12 @@
                 <label><input id="underlineNote" type="checkbox"><span>注釈</span></label>
                 <label><input id="underlineBody" type="checkbox"><span>本文</span></label>
               </div>
-              <p class="hint">選んだ種類の文字全体に下線を追加します。</p>
+              <p class="hint">選んだ種類全体に下線を付けます。</p>
             </fieldset>
           </details>
           <details id="listSettings" class="settings-group"><summary><span><strong>箇条書きの見た目</strong><small id="listSettingsSummary">冒頭「・ 」</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
             <div class="list-settings-body">
-              <div class="field"><label for="listMarker">箇条書きの冒頭</label><input id="listMarker" type="text" value="・ " spellcheck="false" autocomplete="off"><p class="hint">文字や空白をそのまま使います。空欄や空白だけの指定もできます。番号付きリストは元の番号を使います。</p></div>
+              <div class="field"><label for="listMarker">箇条書きの冒頭</label><input id="listMarker" type="text" value="・ " spellcheck="false" autocomplete="off"><p class="hint">空欄・空白も使えます。番号付きは元の番号を使います。</p></div>
               <div class="list-style-grid">
                 <fieldset><legend>冒頭だけ</legend><label><input id="listPrefixBold" type="checkbox">太字</label><label><input id="listPrefixUnderline" type="checkbox">下線</label></fieldset>
                 <fieldset><legend>冒頭以外</legend><label><input id="listContentBold" type="checkbox">太字</label><label><input id="listContentUnderline" type="checkbox">下線</label></fieldset>
@@ -187,7 +185,7 @@
           </details>
           <details id="markerSettings" class="settings-group"><summary><span><strong>書式の識別子</strong><small id="markerSettingsSummary">下線 ==文字==</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
             <div class="marker-settings-body">
-              <p class="hint">記号は自由に変更できます。空欄にすると、その書式の自動認識を止めます。「前後を別指定」では開始と終了に異なる記号を使えます。行頭・行末を選ぶと、その行の残り全体へ適用します。</p>
+              <p class="hint">空欄で認識を無効化。「前後を別指定」は開始・終了を個別設定。「行頭・行末」は行全体に適用。</p>
               <div class="marker-rule">
                 <div class="marker-name"><strong>太字</strong><div data-single-marker="bold"><label for="boldMarker">共通の識別子</label><input id="boldMarker" type="text" value="**" spellcheck="false"></div><div class="marker-pair" data-pair-markers="bold" hidden><label for="boldStartMarker">開始</label><input id="boldStartMarker" type="text" value="**" spellcheck="false"><label for="boldEndMarker">終了</label><input id="boldEndMarker" type="text" value="**" spellcheck="false"></div></div>
                 <fieldset><legend>太字の認識方法</legend><div class="segmented marker-mode"><label><input type="radio" name="boldMarkerMode" value="wrap" data-marker-mode="bold" checked><span>挟む</span></label><label><input type="radio" name="boldMarkerMode" value="pair" data-marker-mode="bold"><span>前後を別指定</span></label><label><input type="radio" name="boldMarkerMode" value="start" data-marker-mode="bold"><span>行頭のみ</span></label><label><input type="radio" name="boldMarkerMode" value="end" data-marker-mode="bold"><span>行末のみ</span></label></div></fieldset>
@@ -208,13 +206,13 @@
             </div>
           </details>
           <p id="sizeLimitWarning" class="limit-warning" role="alert" hidden>容量制限を解除しています。大きな原稿では画面が固まる可能性があります。必要な読み込み後はOFFへ戻してください。</p>
-          <section class="settings-files" aria-labelledby="settingsFilesHeading"><div><strong id="settingsFilesHeading">設定の管理</strong><p>原稿本文を含まないJSON形式の設定ファイルです。.txtまたは.jsonを読み込めます。</p></div><div class="settings-file-actions"><button id="resetSettings" type="button" class="secondary">設定を初期化</button><label class="secondary settings-import" for="importSettings">設定を読み込む<input id="importSettings" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="exportSettings" type="button" class="primary">設定を保存</button></div><p id="settingsFileFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p></section>
+          <section class="settings-files" aria-labelledby="settingsFilesHeading"><div><strong id="settingsFilesHeading">設定の管理</strong><p>設定のみ保存（本文なし）。読込：.txt / .json</p></div><div class="settings-file-actions"><button id="resetSettings" type="button" class="secondary">設定を初期化</button><label class="secondary settings-import" for="importSettings">設定を読み込む<input id="importSettings" type="file" accept=".txt,.json,text/plain,application/json"></label><button id="exportSettings" type="button" class="primary">設定を保存</button></div><p id="settingsFileFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p></section>
         </section>
       </div>
       <!-- 04 確認：TALTO相当の結果を見て、3種類のコピー方法から選びます。 -->
       <section class="card result-card" id="previewPanel" aria-labelledby="previewHeading">
         <div class="section-heading"><div><span class="step-number">04</span><h2 id="previewHeading">確認</h2></div></div>
-        <div class="preview-toolbar"><span id="resultCount">原稿を待っています</span><div class="segmented device-switch" role="group" aria-label="プレビューの表示幅"><button id="previewDesktop" type="button" aria-pressed="true">PC</button><button id="previewMobile" type="button" aria-pressed="false">スマホ</button></div></div>
+        <div class="preview-toolbar"><span id="resultCount"></span><div class="segmented device-switch" role="group" aria-label="プレビューの表示幅"><button id="previewDesktop" type="button" aria-pressed="true">PC</button><button id="previewMobile" type="button" aria-pressed="false">スマホ</button></div></div>
         <div class="copy-choice"><label for="copyFormat">コピーする形式</label><select id="copyFormat"><option value="rich">リッチテキスト</option><option value="plain">書式なしテキスト</option><option value="html">HTML</option></select></div>
         <div class="preview-stage" id="previewStage" data-device="desktop">
           <div class="preview-paper">

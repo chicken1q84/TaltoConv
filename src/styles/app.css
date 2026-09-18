@@ -51,12 +51,7 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .home-intro > p:not(.eyebrow) { max-width:760px; margin:18px 0 0; color:var(--muted); font-size:16px; line-height:1.85; }
 .primary.home-primary { min-width:190px; min-height:50px; margin-top:29px; justify-content:space-between; }
 .home-section { margin-top:48px; }
-.home-section > h2,.home-notices h2 { margin:0; font-size:17px; }
-.usage-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:18px 0 0; padding:0; list-style:none; }
-.usage-steps li { display:flex; gap:14px; padding:20px; background:var(--surface); border:1px solid var(--line); border-radius:12px; }
-.usage-steps li > span { display:grid; place-items:center; flex:0 0 29px; width:29px; height:29px; border-radius:50%; background:var(--soft); color:var(--accent); font-size:13px; font-weight:700; }
-.usage-steps strong { display:block; margin:4px 0 8px; font-size:15px; }
-.usage-steps p { margin:0; color:var(--muted); font-size:14px; line-height:1.75; }
+.home-section > h2 { margin:0; font-size:17px; }
 /* 端末ごとの始め方。設定欄と同じ開閉部品を使い、該当端末の項目だけ app.js が開きます。 */
 .device-guide-lead { margin:10px 0 14px; color:var(--muted); font-size:14px; line-height:1.8; }
 .device-guide-lead a { color:var(--accent); overflow-wrap:anywhere; }
@@ -73,15 +68,14 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .device-item ol { margin:0 0 18px; padding-left:22px; color:var(--ink); font-size:14px; line-height:1.85; }
 .device-item li + li { margin-top:8px; }
 .device-item code,.device-item kbd { padding:1px 6px; border-radius:5px; background:var(--soft); font-size:13px; }
-.device-guide-note { margin:14px 0 0; color:var(--muted); font-size:13px; line-height:1.8; }
-.usage-caution { margin-top:14px; padding:16px 18px; border:1px solid #d8c99f; border-radius:10px; background:#fff9e9; color:#624f27; }
-.usage-caution strong { display:block; font-size:15px; }
-.usage-caution p { margin:7px 0 0; font-size:14px; line-height:1.8; }
-.image-support-note { margin:14px 0 0; padding:14px 18px; border:1px solid var(--line); border-radius:10px; background:var(--surface-soft); color:var(--muted); font-size:14px; line-height:1.8; }
-.image-support-note strong { color:var(--ink); margin-right:8px; }
-.home-notices { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:42px; padding-top:32px; border-top:1px solid var(--line); }
-.home-notices section { padding:2px 2px 2px 0; }
-.home-notices p { margin:12px 0 0; color:var(--muted); font-size:14px; line-height:1.8; }
+.home-safety { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:28px; }
+.home-safety p { margin:0; padding:14px 16px; border:1px solid var(--line); border-radius:10px; background:var(--surface-soft); }
+.home-safety strong,.home-safety span { display:block; }
+.home-safety strong { font-size:14px; }
+.home-safety span { margin-top:4px; color:var(--muted); font-size:13px; line-height:1.6; }
+.legal-notice { margin-top:18px; color:var(--muted); font-size:13px; }
+.legal-notice summary { width:max-content; max-width:100%; cursor:pointer; color:var(--accent-dark); }
+.legal-notice p { max-width:780px; margin:10px 0 0; line-height:1.75; }
 .home-footer { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-top:36px; padding-top:22px; border-top:1px solid var(--line); }
 .home-footer p { margin:0; color:var(--muted); font-size:14px; }
 .home-footer a { color:var(--accent); }
@@ -345,7 +339,6 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
 .mobile-tabs,.mobile-action { display:none; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 /* ===== 9. ダークモード固有の補正 ===== 共通変数だけで読みにくい色を直します。 */
-:root[data-resolved-theme="dark"] .usage-caution { background:#302918; border-color:#705e30; color:#f0dda3; }
 :root[data-resolved-theme="dark"] .upload-icon { border-color:#51475c; }
 :root[data-resolved-theme="dark"] .segmented { background:#19171e; }
 :root[data-resolved-theme="dark"] .mixed-warning { background:#332a18; border-color:#80662d; color:#f2d998; }
@@ -378,7 +371,6 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   .card { padding:18px; }
   .preview-stage { padding:12px; }
   .preview-paper { padding:22px; }
-  .usage-steps { grid-template-columns:1fr 1fr; }
 }
 @media (max-width:900px) {
   .site-header { height:73px; padding:0 18px; gap:8px; }
@@ -394,11 +386,8 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   .home-intro h1 { font-size:28px; line-height:1.45; }
   .home-intro > p:not(.eyebrow) { margin-top:17px; font-size:15px; line-height:1.85; }
   .home-primary { width:100%; margin-top:23px; min-height:52px; }
-  .home-section { margin-top:49px; }
-  .usage-steps { grid-template-columns:1fr; gap:10px; }
-  .usage-steps li { padding:17px; }
-  .usage-steps p,.home-notices p { font-size:14px; }
-  .home-notices { grid-template-columns:1fr; gap:26px; margin-top:36px; padding-top:28px; }
+  .home-section { margin-top:36px; }
+  .home-safety { grid-template-columns:1fr; gap:8px; }
   .home-footer { align-items:flex-start; flex-direction:column; }
   .workspace { margin-top:0; }
   .mobile-tabs { display:flex; gap:4px; position:sticky; top:0; z-index:5; background:var(--canvas); padding:10px 0 13px; }

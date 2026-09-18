@@ -20,81 +20,54 @@
     <!-- ホーム画面：使い方、重要な注意、権利・免責を最初に伝えます。 -->
     <section id="homeView" class="home-view" aria-labelledby="homeHeading">
       <div class="home-intro">
-        <p class="eyebrow">TALTOへの手作業移行を補助する非公式ツール</p>
-        <h1 id="homeHeading">原稿をTALTOへ貼り付けやすい形に変換</h1>
-        <p>プレーンテキスト、各種Markdown、pixiv小説形式、HTMLを読み取り、TALTO向けの見出し・注釈・本文・太字・下線に整えます。変換結果の貼り付けと保存確認は手作業で行います。</p>
+        <p class="eyebrow">非公式TALTO移行ヘルパー</p>
+        <h1 id="homeHeading">原稿を、TALTO用に整える。</h1>
+        <p>テキスト・Markdown・pixiv小説形式・HTMLを、見出しや太字を保ったままコピーできます。原稿は外部へ送信しません。</p>
         <button id="startHelper" type="button" class="primary home-primary">変換を始める <span aria-hidden="true">→</span></button>
       </div>
-      <section class="home-section" aria-labelledby="usageHeading">
-        <h2 id="usageHeading">使い方</h2>
-        <ol class="usage-steps">
-          <li><span>1</span><div><strong>原稿</strong><p>貼り付けるか、対応ファイル・フォルダを選びます。</p></div></li>
-          <li><span>2</span><div><strong>形式</strong><p>結合した原稿全体を読み取る形式を1つ選びます。</p></div></li>
-          <li><span>3</span><div><strong>設定</strong><p>空行や書式など、変換方法を設定します。</p></div></li>
-          <li><span>4</span><div><strong>確認</strong><p>変換結果を確認し、コピー方法を選びます。</p></div></li>
-        </ol>
-      </section>
       <!-- 端末ごとの始め方。app.js が端末を判定して該当する項目を開きます。判定は表示順と開閉だけに使い、機能は制限しません。 -->
       <section class="home-section device-guide" aria-labelledby="deviceGuideHeading">
-        <h2 id="deviceGuideHeading">お使いの端末での始め方</h2>
-        <p class="device-guide-lead">TaltoConvはWindowsパソコン、iPhone、iPad、Androidで使えます。Web版は <a id="webVersionLink" href="https://chicken1q84.github.io/TaltoConv/" target="_blank" rel="noopener noreferrer">https://chicken1q84.github.io/TaltoConv/</a> で、一度開いてホーム画面に追加すると、以降はネット接続がなくても起動できます。<span id="deviceGuideDetected" hidden></span></p>
+        <h2 id="deviceGuideHeading">この端末で始める</h2>
+        <p class="device-guide-lead">該当する端末を開いてください。詳しい操作は右上の「使い方」でいつでも確認できます。</p>
         <details class="device-item" data-device="windows">
           <summary><span><strong>Windowsパソコン</strong><small>Microsoft Edge または Google Chrome</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
           <ol>
-            <li>ZIP版なら、展開したフォルダの <code>TaltoConv.html</code> をダブルクリックして開きます。Web版のURLを開いても同じように使えます。</li>
-            <li>「変換を始める」を押し、原稿を貼り付けるかファイル・フォルダから読み込みます。</li>
-            <li>形式と設定を選び、「確認」で結果を見てから「リッチテキストをコピー」を押します。</li>
-            <li>TALTOの本文欄をクリックし、<kbd>Ctrl</kbd>+<kbd>V</kbd> で貼り付けます。保存済み表示が出たら、一度再読み込みして書式が残っているか確認します。</li>
-            <li>コピーできない場合は「自動コピーがうまくいかない場合」から手動でコピーしてください。</li>
+            <li>ZIPを展開し、<code>TaltoConv.html</code> をダブルクリックします。</li>
+            <li>変換結果をコピーし、TALTOへ <kbd>Ctrl</kbd>+<kbd>V</kbd> で貼り付けます。</li>
           </ol>
         </details>
         <details class="device-item" data-device="iphone">
           <summary><span><strong>iPhone</strong><small>Safari</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
           <ol>
-            <li><strong>Safari</strong>でWeb版のURLを開きます。XやLINEなどアプリ内のブラウザで開いてしまった場合は、メニューから「Safariで開く」を選んでください。</li>
-            <li>画面下の共有ボタン（□に↑）→<strong>「ホーム画面に追加」</strong>→「追加」。以降はホーム画面の「TaltoConv」から起動でき、機内モードでも動きます。</li>
-            <li>原稿は貼り付けるか、「ファイル」から選びます。フォルダの読み込みはiPhoneでは使えないため、複数ファイルを選んでください。</li>
-            <li>「確認」で結果を見て「リッチテキストをコピー」を押します。コピーできなかった場合は「手動でコピーする」欄が開くので、<strong>「すべて選択」→「コピー」</strong>の順にタップします。</li>
-            <li>TALTOの本文欄を長押し→<strong>「ペースト」</strong>。保存済み表示が出たら、一度再読み込みして書式が残っているか確認します。</li>
+            <li><strong>Safari</strong>で <a id="webVersionLink" href="https://chicken1q84.github.io/TaltoConv/" target="_blank" rel="noopener noreferrer">Web版を開く</a>（アプリ内ブラウザは使いません）。</li>
+            <li>共有ボタン（□に↑）→「ホーム画面に追加」。追加後はオフラインでも使えます。</li>
+            <li>コピー後、TALTOの本文欄を長押しして「ペースト」します。</li>
           </ol>
         </details>
         <details class="device-item" data-device="ipad">
           <summary><span><strong>iPad</strong><small>Safari</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
           <ol>
-            <li><strong>Safari</strong>でWeb版のURLを開きます。アプリ内のブラウザで開いてしまった場合は「Safariで開く」を選んでください。</li>
-            <li>アドレスバー横の共有ボタン（□に↑）→<strong>「ホーム画面に追加」</strong>→「追加」。以降はホーム画面の「TaltoConv」から起動でき、機内モードでも動きます。</li>
-            <li>横向きにすると原稿と結果を並べて表示します。Split Viewで幅が狭いときは縦向きと同じ工程表示になります。</li>
-            <li>原稿は貼り付けるか、「ファイル」から選びます。フォルダの読み込みは使えないため、複数ファイルを選んでください。</li>
-            <li>「リッチテキストをコピー」を押します。コピーできなかった場合は「手動でコピーする」欄の<strong>「すべて選択」→「コピー」</strong>の順にタップします。</li>
-            <li>TALTOの本文欄を長押し→<strong>「ペースト」</strong>。保存済み表示が出たら、再読み込みして書式が残っているか確認します。</li>
+            <li><strong>Safari</strong>で <a href="https://chicken1q84.github.io/TaltoConv/" target="_blank" rel="noopener noreferrer">Web版を開きます</a>。</li>
+            <li>共有ボタン（□に↑）→「ホーム画面に追加」。追加後はオフラインでも使えます。</li>
+            <li>コピー後、TALTOの本文欄を長押しして「ペースト」します。</li>
           </ol>
         </details>
         <details class="device-item" data-device="android">
           <summary><span><strong>Androidスマートフォン・タブレット</strong><small>Google Chrome</small></span><span class="details-mark" aria-hidden="true">＋</span></summary>
           <ol>
-            <li><strong>Chrome</strong>でWeb版のURLを開きます。アプリ内のブラウザで開いてしまった場合は「Chromeで開く」を選んでください。</li>
-            <li>右上のメニュー（⋮）→<strong>「ホーム画面に追加」</strong>または「アプリをインストール」。以降はホーム画面の「TaltoConv」から起動でき、機内モードでも動きます。</li>
-            <li>原稿は貼り付けるか、「ファイル」から選びます。フォルダの読み込みは端末によって使えないことがあります。</li>
-            <li>「確認」で結果を見て「リッチテキストをコピー」を押します。コピーできなかった場合は「手動でコピーする」欄の<strong>「すべて選択」→「コピー」</strong>の順にタップします。</li>
-            <li>TALTOの本文欄を長押し→<strong>「貼り付け」</strong>。保存済み表示が出たら、一度再読み込みして書式が残っているか確認します。</li>
+            <li><strong>Chrome</strong>で <a href="https://chicken1q84.github.io/TaltoConv/" target="_blank" rel="noopener noreferrer">Web版を開きます</a>。</li>
+            <li>メニュー（⋮）→「ホーム画面に追加」。追加後はオフラインでも使えます。</li>
+            <li>コピー後、TALTOの本文欄を長押しして「貼り付け」ます。</li>
           </ol>
         </details>
-        <p class="device-guide-note">どの端末でも、元の原稿は必ず別に保管し、最初は短い原稿で試してください。</p>
       </section>
-      <section class="home-section" aria-labelledby="notesHeading">
-        <h2 id="notesHeading">知っておいてほしいこと</h2>
-        <p class="image-support-note"><strong>画像について</strong>画像ファイル自体は読み込みません。対応記法の画像参照は「【画像：説明｜参照先】」として残すため、それを目印にTALTO側で挿入してください。</p>
-        <p class="image-support-note"><strong>原稿の扱い</strong>原稿の変換はこの端末の中だけで行い、原稿本文や読み込んだファイルを外部へ送信しません。ネット接続がなくても動きます。<span id="installHint" hidden>Web版はSafariやChromeの「ホーム画面に追加」を行うと、次回からはオフラインでも起動できます。</span></p>
-        <aside class="usage-caution" aria-labelledby="usageCautionHeading">
-          <strong id="usageCautionHeading">使用上の注意</strong>
-          <p>このツールは変換専用で、原稿を管理・編集するエディタではありません。元の原稿は必ず別に保管してください。重要な修正は元の原稿で行い、修正後にもう一度読み込んでください。</p>
-        </aside>
-      </section>
-      <div class="home-notices">
-        <section aria-labelledby="rightsHeading"><h2 id="rightsHeading">権利・運営について</h2><p>本ツールは個人が制作した非公式ツールであり、TALTOおよびその運営元とは関係ありません。TALTOの名称、サービス、掲載作品その他の権利は、それぞれの権利者に帰属します。変換する原稿は、利用者自身が使用・移行する権利を持つものに限ってください。</p></section>
-        <section aria-labelledby="disclaimerHeading"><h2 id="disclaimerHeading">免責事項</h2><p>本ツールの利用によって生じたデータの消失、表示崩れ、保存失敗、その他の損害について、制作者は一切の責任を負いません。元の原稿を必ず保管し、少量の原稿で動作を確認してから利用してください。</p></section>
-      </div>
-      <footer class="home-footer"><p>連絡先：<a href="https://x.com/chicken1_skin" target="_blank" rel="noopener noreferrer">@chicken1_skin</a><span class="version-label">バージョン <span id="appVersion">dev</span></span></p><p><button id="startHelperFooter" type="button" class="text-button">変換を始める <span aria-hidden="true">→</span></button></p></footer>
+      <aside class="home-safety" aria-label="利用前の注意">
+        <p><strong>原稿は端末内だけで変換</strong><span>外部へ送信・保存しません。</span></p>
+        <p><strong>元原稿は必ず保管</strong><span>最初は短い原稿でお試しください。</span></p>
+        <p><strong>画像はTALTOで挿入</strong><span>原稿には挿入位置の目印を残します。</span></p>
+      </aside>
+      <details class="legal-notice"><summary>非公式ツール・免責事項について</summary><p>TaltoConvは個人制作の非公式ツールで、TALTOおよび運営元とは関係ありません。変換する原稿は、ご自身が使用・移行する権利を持つものに限ってください。利用によるデータ消失・表示崩れ・保存失敗などについて、制作者は責任を負いません。</p></details>
+      <footer class="home-footer"><p>連絡先：<a href="https://x.com/chicken1_skin" target="_blank" rel="noopener noreferrer">@chicken1_skin</a><span class="version-label">バージョン <span id="appVersion">dev</span></span></p></footer>
     </section>
     <!-- 変換画面：4工程を順にたどれる構造です。hidden属性でホームと切り替えます。 -->
     <div id="appView" hidden>
@@ -277,26 +250,22 @@
       <button id="helpTabMobile" type="button" role="tab" aria-selected="false" data-help-target="mobile">スマホ・タブレット</button>
     </div>
     <section id="helpPc" class="help-panel" role="tabpanel" data-help="pc">
-      <p class="help-lead">Windows・Macのブラウザ（Edge・Chrome・Safari）向けの手順です。</p>
       <ol>
-        <li><strong>原稿</strong>：貼り付け、ファイル、フォルダのいずれかで入れます。複数ファイルは一覧の上から順に結合され、ドラッグか上下ボタンで並べ替えられます。</li>
-        <li><strong>形式</strong>：原稿の書き方に合うものを1つ選びます。迷ったら「対応識別子のテスト原稿」で表示を見比べてください。</li>
-        <li><strong>設定</strong>：空行、太字、下線などの変換方法を決めます。設定はこの端末に保存されますが、原稿本文は保存されません。</li>
-        <li><strong>確認</strong>：プレビューを見て「リッチテキストをコピー」を押します。<kbd>Ctrl</kbd>+<kbd>Enter</kbd> で原稿欄から直接ここへ来られます。</li>
-        <li><strong>TALTOへ</strong>：本文欄をクリックして <kbd>Ctrl</kbd>+<kbd>V</kbd>（Macは <kbd>⌘</kbd>+<kbd>V</kbd>）。保存済み表示が出たら一度再読み込みし、見出しや太字が残っているか確認します。</li>
+        <li><strong>原稿</strong>を貼り付けるか、ファイルを選びます。</li>
+        <li><strong>形式</strong>を選び、必要なら空行や書式を<strong>設定</strong>します。</li>
+        <li><strong>確認</strong>で「リッチテキストをコピー」を押します。</li>
+        <li>TALTOの本文欄へ <kbd>Ctrl</kbd>+<kbd>V</kbd>（Macは <kbd>⌘</kbd>+<kbd>V</kbd>）。保存後に見出しや太字を確認します。</li>
       </ol>
-      <p class="help-note">コピーできない場合は「自動コピーがうまくいかない場合」から手動でコピーしてください。画像は読み込まないため、「【画像：…】」を目印にTALTO側で挿入します。</p>
+      <p class="help-note">コピーできない場合は「自動コピーがうまくいかない場合」を押してください。画像は「【画像：…】」を目印にTALTOで挿入します。</p>
     </section>
     <section id="helpMobile" class="help-panel" role="tabpanel" data-help="mobile" hidden>
-      <p class="help-lead">iPhone・iPad・Androidスマートフォン・タブレット向けの手順です。</p>
       <ol>
-        <li><strong>進み方</strong>：画面下のボタンで 原稿→形式→設定→確認 と進みます。上のタブで前の工程へ戻れます。iPadを横向きにすると、PCと同じ並びで表示されます。</li>
-        <li><strong>原稿</strong>：貼り付けるか「ファイル」から選びます。フォルダの読み込みはiPhone・iPadでは使えず、Androidでは端末によります。複数ファイルは上下ボタンで並べ替えます。</li>
-        <li><strong>形式・設定</strong>：PCと同じです。設定はこの端末に保存され、原稿本文は保存されません。</li>
-        <li><strong>確認</strong>：画面下の「リッチテキストをコピー」を押します。コピーできなかった場合は「手動でコピーする」欄が開くので、<strong>「すべて選択」→「コピー」</strong>の順にタップします。</li>
-        <li><strong>TALTOへ</strong>：本文欄を長押しして<strong>「ペースト」</strong>（Androidは「貼り付け」）。保存済み表示が出たら一度再読み込みし、見出しや太字が残っているか確認します。</li>
+        <li><strong>原稿</strong>を貼り付けるか、「ファイル」から選びます。</li>
+        <li>画面下のボタンで<strong>形式 → 設定 → 確認</strong>へ進みます。</li>
+        <li>「リッチテキストをコピー」を押します。失敗したら「すべて選択」→「コピー」。</li>
+        <li>TALTOの本文欄を長押しして「ペースト」（Androidは「貼り付け」）。保存後に書式を確認します。</li>
       </ol>
-      <p class="help-note">ネット接続なしで使うには、Safariの共有ボタン→「ホーム画面に追加」、Chromeのメニュー（⋮）→「ホーム画面に追加」で一度登録してください。以降はホーム画面の「TaltoConv」から起動できます。</p>
+      <p class="help-note">オフラインで使うには、Safariの共有ボタンまたはChromeのメニューから「ホーム画面に追加」します。</p>
     </section>
   </dialog>
   <div id="status" class="status" role="status" aria-live="polite" hidden></div>

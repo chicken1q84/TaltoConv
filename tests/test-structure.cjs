@@ -43,7 +43,7 @@ assert.ok(!html.includes("MarkdownとHTMLが混在しています"));
 
 // ビルドがバージョンを埋め込む meta と、Web版の更新案内の部品が HTML にあることを固定します。
 assert.ok(/<meta name="app-version" content="[^"]+">/.test(html), "app-version の meta が必要です");
-for (const id of ["appVersion", "updateNotice", "reloadForUpdate", "installHint"]) {
+for (const id of ["appVersion", "updateNotice", "reloadForUpdate"]) {
   assert.ok(html.includes(`id="${id}"`), `HTMLに id="${id}" が必要です`);
 }
 

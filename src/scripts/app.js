@@ -6,7 +6,7 @@
   "use strict";
   // ===== 1. HTML部品と画面状態 =====
   const ids = [
-    "homeLink", "homeView", "appView", "startHelper", "startHelperFooter", "themeMode", "themeColor", "appVersion", "installHint", "updateNotice", "reloadForUpdate",
+    "homeLink", "homeView", "appView", "startHelper", "themeMode", "themeColor", "appVersion", "updateNotice", "reloadForUpdate",
     "pasteSourcePanel", "fileSourcePanel", "folderSourcePanel", "collectionSourcePanel", "sourcePriority", "files", "folderFiles", "loadedRow", "loadedFiles", "loadedSummary", "fileCount", "clearFiles",
     "mixedFormatWarning", "forceMixedFormats", "format", "formatHelp", "source", "sourceCount", "sourceFeedback", "sample", "clear",
     "unifiedSpacing", "customSpacing", "applyUnified", "includeLeadingSpacing", "includeTrailingSpacing",
@@ -1267,7 +1267,6 @@
   el.sample.addEventListener("click", loadSample);
   el.homeLink.addEventListener("click", () => setView("home"));
   el.startHelper.addEventListener("click", () => setView("helper"));
-  el.startHelperFooter.addEventListener("click", () => setView("helper"));
   el.clearFiles.addEventListener("click", () => {
     const collection = activeCollection();
     collection.documents = []; collection.combinedText = ""; collection.starts = [0]; collection.format = "markdown";
@@ -1358,7 +1357,6 @@
    */
   function registerServiceWorker() {
     if (buildKind !== "web" || !("serviceWorker" in navigator) || !/^https?:$/.test(location.protocol)) return;
-    el.installHint.hidden = false;
     let reloading = false;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
       // 再読み込みボタンを押した後にだけ再読み込みします。初回登録時の controllerchange では動かしません。

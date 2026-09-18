@@ -58,7 +58,7 @@ Web版はホーム画面に追加した後、オフラインでも起動でき�
 
 ## 開発者向け
 
-ツール本体は依存パッケージなしの HTML / CSS / JavaScript で、`TaltoConv.html` を直接開けば動きます。構成と変更箇所の案内は [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)、配布までの計画は [docs/CROSS_PLATFORM_BOOTH_RELEASE_PLAN.md](docs/CROSS_PLATFORM_BOOTH_RELEASE_PLAN.md) を参照してください。
+ツール本体は依存パッケージなしの HTML / CSS / JavaScript で、`TaltoConv.html` を直接開けば動きます。構成と変更箇所の案内は [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) を参照してください。
 
 配布物は次の 3 つを同じソースから生成します。
 

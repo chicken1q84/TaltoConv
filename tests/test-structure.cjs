@@ -4,13 +4,19 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 // ソースでは TaltoConv.html がこのフォルダの1つ上（root）にあります。
-// ZIP版では root が TaltoConv_files/ になり、HTML はさらに1つ上の最上位にあるため、両方を探します。
-const root = path.resolve(__dirname, "..");
+// ZIP版の検査では、ビルドが引数で TaltoConv_files/ を渡します。その場合 HTML はさらに1つ上の最上位にあるため、両方を探します。
+const root = process.argv[2] ? path.resolve(process.argv[2]) : path.resolve(__dirname, "..");
 const htmlCandidates = [path.join(root, "TaltoConv.html"), path.join(root, "..", "TaltoConv.html")];
 const htmlPath = htmlCandidates.find((candidate) => fs.existsSync(candidate));
 assert.ok(htmlPath, "TaltoConv.html が見つかりません");
 const html = fs.readFileSync(htmlPath, "utf8");
 const catalog = require(path.join(root, "src", "scripts", "format-catalog.js"));
+// 配布物は「動く」だけでなく「余計なものが入っていない」ことも確認します（テスト・設計資料・開発用ツールは同梱しない）。
+if (process.argv[2]) {
+  for (const extra of ["tests", "docs", "tools", "e2e", "node_modules"]) {
+    assert.ok(!fs.existsSync(path.join(root, extra)), `配布物に ${extra}/ は同梱しません`);
+  }
+}
 // ZIP版では HTML から見た src/ の位置が TaltoConv_files/src/ になります。参照の前置きはそれに合わせます。
 const isLayered = path.dirname(htmlPath) !== root;
 const assetPrefix = isLayered ? `${path.basename(root)}/` : "";

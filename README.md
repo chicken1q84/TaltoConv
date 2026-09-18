@@ -62,7 +62,7 @@ Web版はホーム画面に追加した後、オフラインでも起動でき�
 
 配布物は次の 3 つを同じソースから生成します。
 
-- **ZIP 版**（Windows 向け）: 最上位に `TaltoConv.html` と `はじめにお読みください.txt`、それ以外は `TaltoConv_files/` にまとめる
+- **ZIP 版**（Windows 向け）: 最上位に `TaltoConv.html` と `はじめにお読みください.txt`、`TaltoConv_files/` には動作に必要な `src/` と単一ファイル版・VERSION・CHANGELOG・LICENSE だけを入れる。テスト・設計資料・開発用ツールは同梱しない
 - **Web 版**（`dist/`、GitHub Pages で配信）: ホーム画面に追加するとオフラインで起動できる
 - **単一ファイル版**（ZIP に同梱）: CSS・JS を 1 つの HTML に埋め込んだ予備
 

@@ -91,9 +91,12 @@ if (fs.existsSync(path.join(packageDir, "TaltoConv.html"))) {
   // 最上位は「クリックするファイル」と説明書だけ
   const topLevel = fs.readdirSync(packageDir).sort();
   assert.deepEqual(topLevel, ["TaltoConv.html", filesDirName, "はじめにお読みください.txt"].sort(), `ZIP版の最上位に余分なものがあります: ${topLevel.join(", ")}`);
-  for (const file of ["TaltoConv_単一ファイル版.html", "VERSION.txt", "CHANGELOG.txt", "LICENSE.txt", "src/scripts/converter.js", "tests/test-structure.cjs", "tools/serve.mjs", "docs/MIGRATION_GUIDE.md"]) {
+  for (const file of ["TaltoConv_単一ファイル版.html", "VERSION.txt", "CHANGELOG.txt", "LICENSE.txt", "src/scripts/converter.js"]) {
     assert.ok(fs.existsSync(path.join(filesDir, file)), `ZIP版に ${filesDirName}/${file} が必要です`);
   }
+  // 利用者に不要なものは入れない（テスト・設計資料・開発用ツール）
+  const filesTopLevel = fs.readdirSync(filesDir).sort();
+  assert.deepEqual(filesTopLevel, ["CHANGELOG.txt", "LICENSE.txt", "TaltoConv_単一ファイル版.html", "VERSION.txt", "src"].sort(), `ZIP版の ${filesDirName}/ に余分なものがあります: ${filesTopLevel.join(", ")}`);
   assert.equal(fs.readFileSync(path.join(filesDir, "VERSION.txt"), "utf8").trim(), version, "ZIP版の VERSION.txt が一致しません");
   assertNoForbidden(packageDir, "ZIP版");
   const single = fs.readFileSync(path.join(filesDir, "TaltoConv_単一ファイル版.html"), "utf8");

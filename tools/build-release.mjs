@@ -9,8 +9,9 @@ import { createHash } from "node:crypto";
 // 同じソースから次の3つを同時に作り、片方だけ更新された状態を作らないようにします。
 //   ZIP版（BOOTH向け）      release/TaltoConv_v<版>/ と同名の zip
 //                            最上位は「TaltoConv.html」と「はじめにお読みください.txt」だけにし、
-//                            ソース・テスト・設計資料・予備の単一ファイル版は TaltoConv_files/ にまとめる
+//                            動作に必要な src/ と、予備の単一ファイル版・版数・変更履歴・ライセンスを TaltoConv_files/ にまとめる
 //                            （利用者がクリックすべきファイルと、触らなくてよいものを層で分ける）
+//                            テスト・設計資料・開発用ツールは同梱しない。改修したい人は GitHub のリポジトリを参照する
 //   Web版（GitHub Pages向け） dist/  index.html・manifest・Service Worker・アイコン
 //
 // 手順:
@@ -18,7 +19,7 @@ import { createHash } from "node:crypto";
 //   2. VERSION.txt を読み、HTML・manifest・Service Worker・zip名へ同じ値を埋め込む
 //   3. HTMLからCSS・JavaScriptへの参照が欠けていないか確認する
 //   4. dist/ と配布フォルダを作る
-//   5. コピー先で構造テストを実行し、TALTO復元コードなど含めてはいけないものが混入していないか検査する
+//   5. 配布フォルダを対象に構造テストを実行し、TALTO復元コードなど含めてはいけないものが混入していないか検査する
 //   6. zip を作る（外部ツール不要。Node.js 22以降が必要）
 //
 // 使い方: node tools/build-release.mjs [--web-only]
@@ -56,10 +57,10 @@ async function readVersion() {
  * テストファイルを1つずつ別プロセスで実行します。
  * 1つでも失敗（終了コード0以外）なら、配布物を作らずに止めます。
  */
-function runTests(baseDir, files) {
+function runTests(baseDir, files, args = []) {
   for (const file of files) {
-    console.log(`> node ${file}`);
-    const result = spawnSync(process.execPath, [join(baseDir, file)], { cwd: baseDir, stdio: "inherit" });
+    console.log(`> node ${file}${args.length ? " " + args.join(" ") : ""}`);
+    const result = spawnSync(process.execPath, [join(baseDir, file), ...args], { cwd: baseDir, stdio: "inherit" });
     if (result.status !== 0) {
       throw new Error(`テストが失敗したため配布物を作成しません: ${file}`);
     }
@@ -404,7 +405,8 @@ if (webOnly) {
   await mkdir(packageDir, { recursive: true });
 
   // 最上位には利用者がクリックする HTML と説明書だけを置き、それ以外は TaltoConv_files/ にまとめます。
-  // 改修する人が原因を追えるよう、ソースだけでなくテストと設計資料も同梱します。
+  // 同梱するのは動作に必要な src/ と、予備の単一ファイル版・版数・変更履歴・ライセンスだけです。
+  // テスト・設計資料・開発用ツールは利用者には不要なので入れません（GitHub のリポジトリで公開しています）。
   const filesDir = resolve(packageDir, filesDirName);
   await mkdir(filesDir, { recursive: true });
   await Promise.all([
@@ -412,20 +414,15 @@ if (webOnly) {
     copyFile(resolve(root, "tools", "templates", "はじめにお読みください.txt"), resolve(packageDir, "はじめにお読みください.txt")),
     buildSingleFileHtml(versionedHtml).then((html) => writeFile(resolve(filesDir, "TaltoConv_単一ファイル版.html"), html, "utf8")),
     cp(resolve(root, "src"), resolve(filesDir, "src"), { recursive: true }),
-    cp(resolve(root, "tests"), resolve(filesDir, "tests"), { recursive: true }),
-    cp(resolve(root, "docs"), resolve(filesDir, "docs"), { recursive: true }),
-    mkdir(resolve(filesDir, "tools"), { recursive: true }).then(() =>
-      copyFile(resolve(root, "tools", "serve.mjs"), resolve(filesDir, "tools", "serve.mjs"))
-    ),
     copyFile(resolve(root, "CHANGELOG.txt"), resolve(filesDir, "CHANGELOG.txt")),
     copyFile(resolve(root, "LICENSE.txt"), resolve(filesDir, "LICENSE.txt")),
     copyFile(resolve(root, "VERSION.txt"), resolve(filesDir, "VERSION.txt"))
   ]);
 
   // ---- 5. 配布物側の検査 ----
-  // コピー先で実行することで、「ソースでは動くが配布物では欠けている」を検出します。
-  // 構造テストは TaltoConv_files/ から1つ上の TaltoConv.html を見つけ、参照の書き換えも確認します。
-  runTests(filesDir, ["tests/test-structure.cjs"]);
+  // 配布フォルダを対象に実行することで、「ソースでは動くが配布物では欠けている」を検出します。
+  // 構造テストに TaltoConv_files/ を渡すと、その1つ上の TaltoConv.html を見つけ、参照の書き換えも確認します。
+  runTests(root, ["tests/test-structure.cjs"], [filesDir]);
   await assertNoForbiddenFiles(packageDir, "ZIP版");
 
   // ---- 6. zip の作成 ----

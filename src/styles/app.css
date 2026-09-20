@@ -214,7 +214,8 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .help-details > summary::-webkit-details-marker { display:none; }
 .spacing-help { margin-bottom:16px; }
 .help-details .hint { margin:8px 0 16px; }
-.conversion-options { border-top:1px solid var(--line); padding-bottom:16px; }
+/* 開いたグループの見出し直下に線を引かない（他のグループと揃える） */
+.conversion-options { padding-bottom:16px; }
 .bold-fieldset { min-width:0; margin:0; padding:0 0 16px; border:0; }
 .bold-fieldset legend { float:left; width:100%; font-size:14px; font-weight:600; margin-bottom:12px; }
 .bold-options { clear:both; display:flex; gap:8px; }
@@ -227,7 +228,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .format-options label:has(input:checked) { background:var(--soft); border-color:var(--accent); color:var(--accent-dark); }
 .format-options input { flex:0 0 auto; accent-color:var(--accent); width:18px; height:18px; margin:0; }
 .format-fieldset > .hint { clear:both; }
-.list-settings-body { display:grid; gap:18px; border-top:1px solid var(--line); padding:16px 0; }
+.list-settings-body { display:grid; gap:18px; padding:0 0 16px; }
 .list-settings-body input[type="text"] { min-height:44px; font:inherit; }
 .list-style-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .list-style-grid fieldset { display:grid; grid-template-columns:1fr 1fr; gap:8px; min-width:0; margin:0; padding:0; border:0; }

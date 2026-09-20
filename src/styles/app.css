@@ -47,6 +47,8 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .home-view { max-width:960px; margin:0 auto; padding:48px 0; }
 .home-intro { max-width:780px; }
 .home-intro h1 { margin:0; font-size:clamp(28px,3.2vw,40px); line-height:1.45; letter-spacing:.01em; }
+/* 見出しの途中で折り返さない。狭い画面や OS の文字拡大で収まらないときは「原稿を、」の後でだけ改行する */
+.home-intro h1 .keep { display:inline-block; }
 .home-intro > p:not(.eyebrow) { max-width:760px; margin:16px 0 0; color:var(--muted); font-size:16px; line-height:1.75; }
 .primary.home-primary { min-width:190px; min-height:50px; margin-top:24px; justify-content:space-between; }
 .home-section { margin-top:40px; }
@@ -378,7 +380,8 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   .theme-control select { min-width:84px; min-height:44px; font-size:13px; }
   main { padding:0 16px; }
   .home-view { padding:32px 0; }
-  .home-intro h1 { font-size:28px; line-height:1.45; }
+  /* 見出し（約12.6文字幅）が1行に収まる大きさまで画面幅に合わせて縮める。360px で約26px */
+  .home-intro h1 { font-size:min(28px,calc((100vw - 32px) / 12.6)); line-height:1.4; }
   .home-intro > p:not(.eyebrow) { margin-top:17px; font-size:15px; line-height:1.85; }
   .home-primary { width:100%; margin-top:23px; min-height:52px; }
   .home-section { margin-top:32px; }

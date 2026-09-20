@@ -1,0 +1,18 @@
+{
+  "name": "taltoconv",
+  "version": "0.0.0-dev",
+  "private": true,
+  "description": "TaltoConv（非公式TALTO移行ヘルパー）。ツール本体は依存パッケージなしのHTML/CSS/JSで動き、このpackage.jsonはPlaywrightによる画面幅テストなど開発専用の依存だけを管理します。",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node tests/test-converter.cjs && node tests/test-structure.cjs && node tests/test-settings-schema.cjs && node tests/test-fixtures.cjs && node tests/fuzz-converter.cjs && node tests/test-release.cjs",
+    "test:e2e": "playwright test",
+    "serve": "node tools/serve.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

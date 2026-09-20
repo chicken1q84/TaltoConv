@@ -1,0 +1,55 @@
+TaltoConv（非公式TALTO移行ヘルパー）
+====================================
+
+テキスト・Markdown・pixiv小説形式・HTMLを、TALTOへ貼り付けやすい形に変換します。
+原稿は端末内だけで処理し、外部へ送信・保存しません。
+
+■ Windowsで始める
+
+1. ZIPを展開する
+2. 「TaltoConv.html」をEdgeまたはChromeで開く
+3. 原稿 → 形式 → 設定 → 確認の順に進む
+4. 「書式付きでコピー」→ TALTOの本文欄へCtrl+V
+5. TALTOの保存後、見出しや太字が残っているか確認する
+
+触るのは「TaltoConv.html」だけです。
+「TaltoConv_files」フォルダは移動・削除・改名しないでください。
+
+■ iPhone・iPad・Androidで始める
+
+ZIPは使いません。SafariまたはChromeで次を開きます。
+https://chicken1q84.github.io/TaltoConv/
+
+iPhone・iPad：共有ボタン →「ホーム画面に追加」
+Android：メニュー（⋮）→「ホーム画面に追加」
+
+追加後はオフラインでも起動できます。Androidは実機未検証です。
+
+■ 困ったとき
+
+コピーできない
+  →「手動コピー」→「すべて選択」→「コピー」
+
+画像が入らない
+  → 仕様です。「【画像：…】」を目印に、TALTOで画像を挿入してください。
+
+設定ファイルを読み込めない
+  → 表示された項目名と理由を確認してください。問題がある場合、設定は変更されません。
+
+■ 大切なこと
+
+・元の原稿は必ず別に保管してください。
+・最初は短い原稿で試してください。
+・TALTOへの貼り付け、画像挿入、保存確認は手作業です。
+・TaltoConvは個人制作の非公式ツールで、TALTOおよび運営元とは関係ありません。
+
+対応環境（2026年9月17日時点）
+  Windows 11 25H2：Edge 153 / Chrome 153以降
+  iPhone・iPad：iOS 27 / iPadOS 27のSafari
+  Android 17：Chrome 153以降（実機未検証）
+
+バージョン：画面下部、またはTaltoConv_files/VERSION.txt
+詳しい仕様・ソースコード：https://github.com/chicken1q84/TaltoConv
+連絡先：https://x.com/chicken1_skin
+
+MIT License

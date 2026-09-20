@@ -1,0 +1,77 @@
+# 改修版の構成
+
+この版は、利用者が HTML をダブルクリックして起動できることを維持しながら、変更理由の異なるコードを分離しています。ローカルファイルでも動くよう、JavaScript は ES Modules ではなく読み込み順が明示された通常のスクリプトです。
+
+## フォルダ構成
+
+```text
+migration-helper-v2/
+├─ TaltoConv.html                画面の構造
+├─ src/
+│  ├─ styles/app.css             見た目とレスポンシブ表示
+│  └─ scripts/
+│     ├─ converter.js            原稿の解析・TALTO向け変換
+│     ├─ format-catalog.js       入力形式の対応表
+│     ├─ settings-schema.js      設定ファイルの書式検査（画面に触らない。Node からもテスト）
+│     └─ app.js                  画面操作・ファイル読込・コピー
+├─ tests/                        変換・構造・共通原稿（fixtures/）・ランダム入力・配布物の検査（Nodeのみ。配布物には同梱しない）
+├─ e2e/                          Playwrightによる画面幅・操作・端末エミュレーション・PWA（オフライン起動と更新）の検査（開発専用）
+├─ tools/
+│  ├─ serve.mjs                  ローカル表示（ソースまたは dist を配信）
+│  ├─ build-release.mjs          ZIP版・Web版・単一ファイル版を同時に作る
+│  ├─ pwa/                       Web版だけで使う Service Worker と manifest の雛形
+│  └─ templates/                 ZIP に同梱する「はじめにお読みください.txt」
+├─ .github/workflows/pages.yml   main への push で dist/ を GitHub Pages へ配信。別ジョブで Playwright（Chromium）も実行
+├─ VERSION.txt                   画面表示・zip名・キャッシュ名の唯一の情報源
+├─ CHANGELOG.txt                 変更履歴
+├─ docs/                         設計・移行ガイド・対応環境・既知の問題・コメント方針・配布計画・BOOTH 説明
+├─ package.json                  Playwrightなど開発専用の依存だけを管理
+├─ playwright.config.mjs         e2e の実行設定（Chromium と WebKit）
+└─ LICENSE.txt                   MIT
+```
+
+`tests/` と `tools/` の実行には Node.js 22 以降が必要です。ツール本体はブラウザだけで動きます。`e2e/` だけは `npm install` と `npx playwright install chromium webkit` が必要です。
+
+このフォルダが git リポジトリのルートです。上位フォルダにある TALTO の復元コードや通信記録はリポジトリに含めません。
+
+## 依存方向
+
+```text
+HTML → converter.js
+     → format-catalog.js
+     → settings-schema.js
+     → app.js → 上記3ファイルの公開APIを利用
+
+tests → converter.js / format-catalog.js / settings-schema.js
+```
+
+`converter.js` と `format-catalog.js` は画面要素を直接操作しません。画面変更が変換結果へ波及しにくく、ブラウザなしで検査できます。
+
+## 変更内容別の入口
+
+| 変更したい内容 | 主に編集する場所 |
+|---|---|
+| Markdown・HTML・Pixiv記法の変換 | `src/scripts/converter.js` |
+| 形式選択時の対応表・説明文 | `src/scripts/format-catalog.js` |
+| 設定ファイルで受け付ける項目・型・範囲 | `src/scripts/settings-schema.js`（`tests/test-settings-schema.cjs` も更新） |
+| ボタン、設定、ファイル一覧、コピー | `src/scripts/app.js` |
+| 色、余白、PC・スマホ表示 | `src/styles/app.css` |
+| 項目や画面構造 | `TaltoConv.html` |
+| 配布内容（ZIP版は最上位に `TaltoConv.html` と説明書、他は `TaltoConv_files/`） | `tools/build-release.mjs` |
+| Web版のオフライン動作・更新案内 | `tools/pwa/sw.js`、`app.js` の「Web版のオフライン対応と更新案内」 |
+| バージョン番号 | `VERSION.txt`（ビルド時に各所へ埋め込まれる） |
+
+## 安全な改修手順
+
+1. 変更前に `node tests/test-converter.cjs` と `node tests/test-structure.cjs` を実行する。
+2. 対象の責務を持つファイルだけを変更する。
+3. `npm test` を再実行する。HTMLの参照先や形式の選択肢を変えた場合は構造テストの期待値を、変換規則を意図して変えた場合は `node tests/test-fixtures.cjs --update` で共通原稿の期待出力を更新し、差分を確認する。
+4. `node tools/serve.mjs` でPC幅とスマホ幅を確認する。見た目を変えた場合は `npx playwright test` で代表幅の横スクロールも検査する。
+5. `node tools/build-release.mjs` で配布物を作る。3種のテストが自動で走り、`release/` にバージョン名のフォルダとzip、`dist/` にWeb版ができる。配布フォルダ内のHTMLを直接開いて起動を確認し、`node tools/serve.mjs 8767 dist` でWeb版も確認する。
+6. 版を上げるときは `VERSION.txt` と `CHANGELOG.txt` を先に更新する。Service Worker のキャッシュ名にバージョンが含まれるため、`VERSION.txt` を変えずに配信すると利用者側で古いファイルが使われ続ける。
+
+## 今後の分割基準
+
+`app.js` 内の一領域が独立して大きくなったら、入力収集、設定保存、クリップボード、プレビューの順でサービスへ切り出します。ただし、行数だけを理由に細分化せず、「単独で説明・テストできる責務」ができた時点で分けます。
+
+コードのコメントは、処理を逐語的に説明するのではなく、理由・制約・失敗時の挙動を中心に記述します。配布物（ZIP 版）には動作に必要な `src/` だけを同梱し、テスト・設計資料はこのリポジトリで公開します。

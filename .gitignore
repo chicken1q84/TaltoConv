@@ -12,3 +12,9 @@ e2e/__screenshots__/
 # OS・エディタ
 .DS_Store
 Thumbs.db
+
+# Visual QA の一時出力（残す比較シートは docs/redesign/ にコピー）
+.vqa/
+
+# Claude Code の自動作業ログ（個人メモ）
+.claude/worklog.md

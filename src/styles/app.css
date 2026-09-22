@@ -62,7 +62,7 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .device-item > summary strong,.device-item > summary small { display:block; }
 .device-item > summary strong { font-size:15px; }
 .device-item > summary small { margin-top:3px; color:var(--muted); font-size:13px; }
-.device-item[data-recommended] > summary strong::after { content:"この端末"; display:inline-block; white-space:nowrap; margin-left:10px; padding:2px 8px; border-radius:99px; background:var(--soft); color:var(--accent-dark); font-size:12px; font-weight:600; vertical-align:middle; }
+.device-item[data-recommended] > summary strong::after { content:"この端末"; display:inline-block; white-space:nowrap; margin-left:10px; padding:2px 8px; border-radius:4px; background:var(--soft); color:var(--accent-dark); font-size:12px; font-weight:600; vertical-align:middle; }
 .device-item ol { margin:0 0 16px; padding-left:22px; color:var(--ink); font-size:14px; line-height:1.75; }
 .device-item li + li { margin-top:8px; }
 .device-item code,.device-item kbd { padding:1px 6px; border-radius:5px; background:var(--soft); font-size:13px; }
@@ -72,9 +72,16 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .must-read-list dt { margin-top:10px; color:var(--ink); font-size:14px; font-weight:700; }
 .must-read-list dt:first-child { margin-top:0; }
 .must-read-list dd { margin:4px 0 0; line-height:1.75; }
-.legal-notice { margin-top:18px; border:1px solid var(--accent); border-radius:10px; background:var(--soft); color:var(--muted); font-size:13px; }
-.legal-notice summary { padding:14px 16px; cursor:pointer; color:var(--accent-dark); font-size:15px; font-weight:700; }
+.legal-notice { margin-top:16px; border:1px solid var(--accent); border-radius:12px; background:var(--soft); color:var(--muted); font-size:13px; }
+/* ホームの折りたたみは端末別ガイドと同じ「見出し + 右端の山形」に揃える */
+.legal-notice summary { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 16px; cursor:pointer; list-style:none; color:var(--accent-dark); font-size:15px; font-weight:700; }
+.legal-notice summary::-webkit-details-marker { display:none; }
+.legal-notice[open] > summary .details-mark { transform:rotate(225deg); }
 .legal-notice p { max-width:780px; margin:0; padding:0 16px 16px; line-height:1.75; }
+/* 免責は枠を持たせず、端末一覧と同じ罫線の行にする（枠付きは「必ずお読みください」1 つだけ） */
+.legal-notice.legal-plain { margin-top:0; border:0; border-bottom:1px solid var(--line); border-radius:0; background:none; }
+.legal-notice.legal-plain summary { min-height:64px; padding:0 4px; color:var(--ink); font-weight:600; }
+.legal-notice.legal-plain p { padding:0 4px 16px; }
 .home-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:32px; padding-top:24px; border-top:1px solid var(--line); }
 .home-footer p { margin:0; color:var(--muted); font-size:14px; }
 .home-footer a { color:var(--accent); }
@@ -89,8 +96,8 @@ body[data-view="home"] .mobile-action { display:none; }
 .card { padding:24px; background:var(--surface); border:1px solid var(--line); border-radius:12px; min-width:0; }
 .section-heading,.section-heading > div { display:flex; align-items:center; }
 .section-heading { justify-content:space-between; gap:8px; margin-bottom:16px; }
-.section-heading > div { gap:9px; }
-.section-heading h2 { margin:0; font-size:17px; font-weight:700; }
+.section-heading > div { gap:8px; }
+.section-heading h2 { margin:0; font-size:16px; font-weight:700; }
 .step-number { font-size:13px; font-weight:600; color:var(--muted); font-variant-numeric:tabular-nums; letter-spacing:.03em; }
 .text-button { min-height:var(--control-height); font-size:14px; line-height:1.4; color:var(--accent); padding:10px 9px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; justify-content:center; border-radius:var(--control-radius); }
 .text-button:hover:not(:disabled) { color:var(--accent-dark); background:var(--soft); }
@@ -273,7 +280,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .settings-import { position:relative; cursor:pointer; }
 .settings-import input { position:absolute; inset:0; width:100%; opacity:0; cursor:pointer; }
 .settings-import:focus-within { outline:3px solid var(--focus); outline-offset:3px; }
-.result-card { position:sticky; top:20px; padding:24px 0 0; background:transparent; border:0; border-radius:0; }
+.result-card { position:sticky; top:20px; }
 /* 結果カードは固定表示のため、画面の高さに収めないと低い画面でコピーボタンが隠れる。
    カードを縦の flex にして、プレビュー欄だけを伸縮させ、ボタン類は常に見える位置に置く。 */
 .result-card { display:flex; flex-direction:column; max-height:calc(100vh - 20px); }
@@ -388,21 +395,23 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   .workspace { margin-top:0; }
   .mobile-tabs { display:flex; gap:4px; position:sticky; top:0; z-index:5; background:var(--canvas); padding:8px 0; }
   .mobile-tabs button { flex:1; border-radius:6px 6px 0 0; min-height:46px; font-size:14px; font-weight:500; color:var(--muted); border-bottom:2px solid transparent; }
-  .mobile-tabs button > span { font-size:11px; margin-right:3px; opacity:.8; }
+  .mobile-tabs button > span { font-size:12px; margin-right:4px; opacity:.8; }
   .mobile-tabs button[aria-current="step"] { background:var(--soft); color:var(--accent-dark); border-bottom-color:var(--accent); font-weight:700; }
   .workspace,.editor-column { display:block; }
   .card { padding:16px; border-radius:12px; }
-  .section-heading { margin-bottom:18px; }
-  .section-heading h2 { font-size:16px; }
+  /* 工程タブが見出しを兼ねるので、カード内の「01 原稿」は読み上げ・フォーカス用にだけ残す */
+  .section-heading { position:absolute; width:1px; height:1px; margin:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
   body:not([data-step="source"]) .source-card,body:not([data-step="format"]) .format-card,body:not([data-step="settings"]) .settings-card,body:not([data-step="preview"]) .result-card { display:none; }
-  .result-card { position:static; display:block; max-height:none; padding:16px 0 0; }
+  .result-card { position:static; display:block; max-height:none; }
   .file-drop { padding:18px 8px; }
   .source-mode-switch label span { min-height:52px; display:grid; place-items:center; line-height:1.45; white-space:nowrap; }
   .settings-file-actions { grid-template-columns:1fr 1fr; }
   .settings-file-actions #resetSettings { grid-column:1 / -1; justify-self:end; }
   input[type="text"],select,textarea { font-size:16px; }
   input[type="text"],select { min-height:46px; }
-  textarea { min-height:270px; line-height:1.8; padding:12px; }
+  textarea { min-height:270px; line-height:1.85; padding:12px; }
+  /* 原稿欄は画面の高さを使う（ヘッダー 73 + タブ 62 + 入力方法 64 + 件数・消すボタン 56 + カード余白 32 + フッター 88 ≒ 380） */
+  #source { min-height:max(270px,calc(100dvh - 380px)); }
   .text-button { min-height:44px; font-size:14px; }
   .segmented label span { min-height:44px; padding:12px 5px; font-size:13px; }
   .toggle-row { min-height:78px; gap:10px; }

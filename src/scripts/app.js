@@ -533,9 +533,11 @@
    */
   function updateMobileAction(temporaryLabel = "") {
     const isPreview = document.body.dataset.step === "preview";
-    const nextLabels = { source: "形式へ", format: "設定へ", settings: "確認へ" };
+    // 最頻の流れは 原稿 → 形式 → 確認。設定は必要なときだけタブから開く（02 から 03 を経由させない）
+    const nextLabels = { source: "形式へ", format: "確認へ", settings: "確認へ" };
     el.mobileActionText.textContent = temporaryLabel || (isPreview ? copyButtonLabel() : nextLabels[document.body.dataset.step] || "次へ");
-    el.mobileAction.lastElementChild.textContent = isPreview ? "↗" : "→";
+    // コピーは移動ではないので矢印を付けない
+    el.mobileAction.lastElementChild.textContent = isPreview ? "" : "→";
     el.mobileAction.disabled = isPreview ? !result.html : !activeSource().trim() || mixedFilesBlocked();
   }
 
@@ -1231,7 +1233,7 @@
   el.mobileAction.addEventListener("click", () => {
     const current = document.body.dataset.step;
     if (current === "preview") copySelectedResult();
-    else if (convert()) setStep({ source: "format", format: "settings", settings: "preview" }[current] || "preview");
+    else if (convert()) setStep({ source: "format", format: "preview", settings: "preview" }[current] || "preview");
   });
   el.copyFormat.addEventListener("change", () => { clearCopyFeedback(); updateMobileAction(); refreshManualCopy(); });
   el.copyResult.addEventListener("click", copySelectedResult);

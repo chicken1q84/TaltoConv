@@ -315,8 +315,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .secondary { color:var(--accent-dark); border:1px solid var(--control-border); background:var(--surface); }
 .secondary:hover:not(:disabled) { background:var(--soft); }
 .copy-primary { width:100%; min-height:49px; }
-.copy-primary > span { flex:0 0 20px; margin-left:auto; font-size:18px; line-height:1; text-align:center; }
-.copy-primary > span:first-child { flex:1; margin-left:20px; font-size:15px; line-height:1.4; }
+.copy-primary > span { flex:1; font-size:15px; line-height:1.4; }
 .copy-feedback { margin:10px 0 2px; padding:11px 12px; border-radius:7px; background:#edf5ef; color:#4f6b57; font-size:13px; line-height:1.7; text-align:center; }
 .copy-feedback.error { background:#f8eded; color:#863c40; }
 .paste-hint { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0 12px; font-size:13px; line-height:1.75; color:var(--muted); margin:8px 0 0; }
@@ -422,6 +421,9 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   body[data-view="helper"] main { padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
   .mobile-action { display:block; position:fixed; z-index:10; bottom:0; left:0; right:0; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); background:#f7f6f2f5; border-top:1px solid var(--line); backdrop-filter:blur(10px); }
   .mobile-action button { width:100%; min-height:50px; font-size:15px; justify-content:space-between; padding:12px 18px; }
+  /* 確認工程のコピーは矢印が無いので、空のスパンを畳んで文言を中央に置く */
+  body[data-step="preview"] .mobile-action button { justify-content:center; }
+  body[data-step="preview"] .mobile-action button > span:empty { display:none; }
   .status { bottom:calc(88px + env(safe-area-inset-bottom)); }
 }
 /* ソフトウェアキーボード表示中（visualViewport が縮んだとき）は固定ボタンを隠し、入力欄を覆わないようにします。 */

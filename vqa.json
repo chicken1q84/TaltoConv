@@ -1,6 +1,176 @@
 {
   "url": "http://127.0.0.1:8766",
-  "routes": ["/"],
-  "viewports": ["1440x900", "768x1024", "390x844"],
-  "scheme": "light"
+  "routes": [
+    "/"
+  ],
+  "viewports": [
+    "1440x900",
+    "768x1024",
+    "390x844"
+  ],
+  "scheme": "light",
+  "steps": [
+    {
+      "route": "/",
+      "name": "app-source-empty",
+      "actions": [
+        {
+          "click": "#startHelper"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "wait": 200
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "name": "app-source-sample",
+      "actions": [
+        {
+          "click": "#startHelper"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=format]"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "click": "#sample"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=source]"
+        },
+        {
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "name": "app-format",
+      "actions": [
+        {
+          "click": "#startHelper"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=format]"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "click": "#sample"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=format]"
+        },
+        {
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "name": "app-settings",
+      "actions": [
+        {
+          "click": "#startHelper"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=format]"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "click": "#sample"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=settings]"
+        },
+        {
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "name": "app-preview",
+      "actions": [
+        {
+          "click": "#startHelper"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=format]"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "click": "#sample"
+        },
+        {
+          "click": "#formatDetails summary"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "clickIfVisible": "[data-step-target=preview]"
+        },
+        {
+          "wait": 300
+        },
+        {
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "route": "/",
+      "name": "help-dialog",
+      "actions": [
+        {
+          "click": "#openHelp"
+        },
+        {
+          "wait": 300
+        }
+      ]
+    }
+  ]
 }

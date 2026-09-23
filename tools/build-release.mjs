@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir, rm, copyFile, cp, readdir } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { resolve, join, relative, sep } from "node:path";
 import { deflateRawSync, deflateSync, crc32 } from "node:zlib";
 import { Script } from "node:vm";
@@ -28,7 +29,12 @@ const root = resolve(import.meta.dirname, "..");
 const webOnly = process.argv.includes("--web-only");
 const version = await readVersion();
 const packageName = `TaltoConv_v${version}`;
-const releaseRoot = resolve(root, "..", "release");
+// 配布物の置き場。本来の置き場所（talto\migration-helper-v2）では ../release（= talto\release）。
+// それ以外の場所に clone した場合（Workbench\talto_ReDesign など）は ../release が無いので、
+// リポジトリ内の release/（.gitignore 済み）を使う。../release を新しく作ると Workbench 直下に
+// 単発のフォルダができ、作業台の規約に反するため（2026-09-23）。tests/test-release.cjs も同じ判定。
+const outsideRelease = resolve(root, "..", "release");
+const releaseRoot = existsSync(outsideRelease) ? outsideRelease : resolve(root, "release");
 const packageDir = resolve(releaseRoot, packageName);
 const zipPath = `${packageDir}.zip`;
 const distDir = resolve(root, "dist");

@@ -10,7 +10,10 @@ const { convertWith } = require("./test-fixtures.cjs");
 const root = path.resolve(__dirname, "..");
 const version = fs.readFileSync(path.join(root, "VERSION.txt"), "utf8").split(/\r?\n/)[0].trim();
 const distDir = path.join(root, "dist");
-const packageDir = path.resolve(root, "..", "release", `TaltoConv_v${version}`);
+// 配布物の置き場は tools/build-release.mjs と同じ判定（../release があればそこ、無ければリポジトリ内の release/）
+const outsideRelease = path.resolve(root, "..", "release");
+const releaseRoot = fs.existsSync(outsideRelease) ? outsideRelease : path.join(root, "release");
+const packageDir = path.join(releaseRoot, `TaltoConv_v${version}`);
 const filesDirName = "TaltoConv_files";
 const forbiddenSegments = new Set(["app", "vendor", "project-capture", "_maps", "deployed", "live-assets", "node_modules", ".git"]);
 

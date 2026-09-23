@@ -73,7 +73,7 @@ npm test                              # Node のテスト一式（変換・構�
 npx playwright test                   # 画面幅・操作・端末エミュレーション・PWA（初回は npm install と npx playwright install chromium webkit）
 node tools/serve.mjs                  # ソースをローカル表示 http://127.0.0.1:8765/
 node tools/serve.mjs 8767 dist        # Web 版をローカル表示
-node tools/build-release.mjs          # ../release/TaltoConv_v<版>/ と zip、dist/ を作る（--web-only で dist/ だけ）
+node tools/build-release.mjs          # ../release/TaltoConv_v<版>/ と zip、dist/ を作る（--web-only で dist/ だけ）。../release が無い場所ではリポジトリ内の release/ に作る
 ```
 
 - 変換規則を意図して変えたときは `node tests/test-fixtures.cjs --update` で共通原稿の期待出力を作り直し、差分を確認してからコミットします

@@ -18,3 +18,9 @@ Thumbs.db
 
 # Claude Code の自動作業ログ（個人メモ）
 .claude/worklog.md
+
+# dev-forge 契約 §8 の必須項目（2026-09-23）
+release/
+build/
+cache/
+*.log

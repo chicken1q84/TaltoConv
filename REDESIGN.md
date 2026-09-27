@@ -22,6 +22,7 @@
 - 最初のバックログ: `Wiki\talto-migration-helper-ui-review.md` の P1
 - 2026-09-27: loop1〜3（`480e590` まで）を**取込型**で元企画の main へ fast-forward し、GitHub（`chicken1q84/TaltoConv`）へ push。Web 版（GitHub Pages）に反映。作業資料（本書・DESIGN.md・docs/redesign など）も公開リポジトリに入った（ユーザー判断）
 - 2026-09-27: **v1.1.0** に版上げ。Codex のコードレビュー（v1.0.0 以降の全コード）の指摘 2 件と、単一ファイル版の不具合 1 件を直してから、ZIP（`talto\release\TaltoConv_v1.1.0.zip`）を作り、main と tag `v1.1.0` を GitHub へ push。BOOTH の差し替えはユーザー作業（説明文は `talto\release\BOOTH_商品説明_v1.1.0.txt`）
+- 2026-09-27: **v1.1.1**。ホーム下部の二重線（免責の行の下線 + フッターの上線）をユーザーが指摘 → フッターの線を外して公開。BOOTH には v1.1.1 の ZIP を載せる（説明文 `BOOTH_商品説明_v1.1.1.txt`）
 
 ## ポート
 - dev server: **8766**（元企画の 8765 / 8767 と分ける。同時起動時に e2e が相手を検査しないため）

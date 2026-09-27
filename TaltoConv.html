@@ -252,11 +252,11 @@
        app.js が端末を判定し、PC か スマホ・タブレット のどちらかを最初に表示します。 -->
   <dialog id="helpDialog" class="help-dialog" aria-labelledby="helpHeading">
     <div class="help-head"><h2 id="helpHeading">使い方</h2><button id="closeHelp" type="button" class="text-button">閉じる</button></div>
-    <div class="segmented help-tabs" role="tablist" aria-label="端末の種類">
-      <button id="helpTabPc" type="button" role="tab" aria-selected="true" data-help-target="pc">PCブラウザ</button>
-      <button id="helpTabMobile" type="button" role="tab" aria-selected="false" data-help-target="mobile">スマホ・タブレット</button>
+    <div class="segmented help-tabs" role="group" aria-label="端末の種類">
+      <button id="helpTabPc" type="button" aria-pressed="true" data-help-target="pc">PCブラウザ</button>
+      <button id="helpTabMobile" type="button" aria-pressed="false" data-help-target="mobile">スマホ・タブレット</button>
     </div>
-    <section id="helpPc" class="help-panel" role="tabpanel" data-help="pc">
+    <section id="helpPc" class="help-panel" data-help="pc">
       <ol>
         <li><strong>原稿</strong>を貼り付けるか、ファイルを選びます。</li>
         <li><strong>形式</strong>を選び、必要なら空行や書式を<strong>設定</strong>します。</li>
@@ -265,7 +265,7 @@
       </ol>
       <p class="help-note">コピーできない場合は「手動コピー」を押してください。画像は「【画像：…】」を目印にTALTOで挿入します。</p>
     </section>
-    <section id="helpMobile" class="help-panel" role="tabpanel" data-help="mobile" hidden>
+    <section id="helpMobile" class="help-panel" data-help="mobile" hidden>
       <ol>
         <li><strong>原稿</strong>を貼り付けるか、「ファイル」から選びます。</li>
         <li>画面下のボタンで<strong>形式 → 設定 → 確認</strong>へ進みます。</li>

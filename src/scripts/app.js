@@ -1384,8 +1384,9 @@
     const isPc = target === "pc";
     el.helpPc.hidden = !isPc;
     el.helpMobile.hidden = isPc;
-    el.helpTabPc.setAttribute("aria-selected", String(isPc));
-    el.helpTabMobile.setAttribute("aria-selected", String(!isPc));
+    // 矢印キー操作を持たない 2 択の切替なので、タブではなく押下状態のボタンとして伝えます。
+    el.helpTabPc.setAttribute("aria-pressed", String(isPc));
+    el.helpTabMobile.setAttribute("aria-pressed", String(!isPc));
   }
   function openHelp() {
     showHelpTab(isMobileDevice ? "mobile" : "pc");

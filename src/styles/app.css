@@ -169,7 +169,7 @@ textarea { display:block; min-height:235px; resize:vertical; font-family:Consola
 .segmented label { position:relative; flex:1; cursor:pointer; }
 .segmented label input { position:absolute; opacity:0; }
 .segmented label span,.segmented button { display:block; text-align:center; padding:10px 7px; border-radius:6px; font-size:13px; font-weight:600; white-space:nowrap; }
-.segmented label input:checked + span,.segmented button[aria-pressed="true"],.segmented button[aria-selected="true"] { color:var(--accent-dark); background:var(--surface); box-shadow:inset 0 0 0 1px var(--control-border); }
+.segmented label input:checked + span,.segmented button[aria-pressed="true"] { color:var(--accent-dark); background:var(--surface); box-shadow:inset 0 0 0 1px var(--control-border); }
 .segmented label input:focus-visible + span { outline:3px solid var(--focus); }
 .spacing-intro { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin:20px 0 13px; }
 .spacing-intro strong { font-size:14px; font-weight:600; }

@@ -31,6 +31,10 @@ for (const asset of [
 ]) {
   assert.ok(html.includes(`"${assetPrefix}${asset}"`), `HTMLに ${assetPrefix}${asset} の参照が必要です`);
   assert.ok(fs.existsSync(path.join(root, asset)), `${asset} が存在する必要があります`);
+  // 単一ファイル版では CSS / JS を HTML に埋め込むため、生の制御文字（NUL など）は HTML の解析で別の文字に置き換わり、
+  // 正規表現などが壊れてスクリプトごと読み込めなくなります（v1.0.0 の単一ファイル版で設定の検査が動かなかった原因）。
+  const rawControl = fs.readFileSync(path.join(root, asset), "utf8").search(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/);
+  assert.equal(rawControl, -1, `${asset} の ${rawControl} 文字目に生の制御文字があります。\\u0000 のようにエスケープして書いてください`);
 }
 
 // 形式選択肢を変えた際、説明カタログの更新漏れを検出します。

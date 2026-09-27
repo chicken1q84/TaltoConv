@@ -115,7 +115,7 @@
         </section>
         <!-- 02 形式：入力記法を選び、対応する識別子を表示します。 -->
         <section class="card format-card" id="formatPanel" aria-labelledby="formatHeading">
-          <div class="section-heading"><div><span class="step-number">02</span><h2 id="formatHeading">形式</h2></div></div>
+          <div class="section-heading"><div><span class="step-number">02</span><h2 id="formatHeading" tabindex="-1">形式</h2></div></div>
           <div class="field"><label for="format" class="sr-only">原稿の記述形式</label><select id="format">
             <option value="text">プレーンテキスト</option>
             <option value="commonmark">標準Markdown（CommonMark）</option>
@@ -132,7 +132,7 @@
         </section>
         <!-- 03 設定：空行、太字、下線、疑似箇条書きなどを調整します。 -->
         <section class="card settings-card" id="settingsPanel" aria-labelledby="settingsHeading">
-          <div class="section-heading"><div><span class="step-number">03</span><h2 id="settingsHeading">設定</h2></div></div>
+          <div class="section-heading"><div><span class="step-number">03</span><h2 id="settingsHeading" tabindex="-1">設定</h2></div></div>
           <fieldset class="spacing-fieldset"><legend>空行</legend><div class="segmented mode-switch">
             <label><input type="radio" name="spacingMode" value="unified" checked><span>すべて同じ</span></label>
             <label><input type="radio" name="spacingMode" value="custom"><span>種類別</span></label>
@@ -221,7 +221,7 @@
       </div>
       <!-- 04 確認：TALTO相当の結果を見て、3種類のコピー方法から選びます。 -->
       <section class="card result-card" id="previewPanel" aria-labelledby="previewHeading">
-        <div class="section-heading"><div><span class="step-number">04</span><h2 id="previewHeading">確認</h2></div></div>
+        <div class="section-heading"><div><span class="step-number">04</span><h2 id="previewHeading" tabindex="-1">確認</h2></div></div>
         <div class="preview-toolbar"><span id="resultCount"></span><div class="segmented device-switch" role="group" aria-label="プレビューの表示幅"><button id="previewDesktop" type="button" aria-pressed="true">PC</button><button id="previewMobile" type="button" aria-pressed="false">スマホ</button></div></div>
         <div class="preview-stage" id="previewStage" data-device="desktop">
           <div class="preview-paper">

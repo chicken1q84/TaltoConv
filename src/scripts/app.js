@@ -1230,8 +1230,13 @@
   stepButtons.forEach((button) => button.addEventListener("click", () => { convert(); setStep(button.dataset.stepTarget); }));
   el.mobileAction.addEventListener("click", () => {
     const current = document.body.dataset.step;
-    if (current === "preview") copySelectedResult();
-    else if (convert()) setStep({ source: "format", format: "preview", settings: "preview" }[current] || "preview");
+    if (current === "preview") return copySelectedResult();
+    if (!convert()) return;
+    const next = { source: "format", format: "preview", settings: "preview" }[current] || "preview";
+    setStep(next);
+    // 画面下の固定ボタンに残ったフォーカスを、新しい工程の見出しへ移します（読み上げ・キーボードで先頭から読めるように）。
+    // 工程タブからの移動ではタブ自体が上部にあるので動かしません。
+    document.getElementById(`${next}Heading`)?.focus({ preventScroll: true });
   });
   el.copyFormat.addEventListener("change", () => { clearCopyFeedback(); updateMobileAction(); refreshManualCopy(); });
   el.copyResult.addEventListener("click", copySelectedResult);

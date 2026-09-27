@@ -831,10 +831,8 @@
       const field = document.createElement("div");
       field.className = "stepper-field";
       input.before(field);
-      field.append(input);
-      const controls = document.createElement("span");
-      controls.className = "number-stepper";
-      for (const [direction, symbol, action] of [[1, "＋", "増やす"], [-1, "−", "減らす"]]) {
+      // 見た目と Tab の順を揃えるため、DOM も「− 入力 ＋」の順に並べます。
+      const makeButton = (direction, symbol, action) => {
         const button = document.createElement("button");
         button.type = "button";
         button.textContent = symbol;
@@ -844,9 +842,9 @@
           else input.stepDown();
           input.dispatchEvent(new Event("change", { bubbles: true }));
         });
-        controls.append(button);
-      }
-      field.append(controls);
+        return button;
+      };
+      field.append(makeButton(-1, "−", "減らす"), input, makeButton(1, "＋", "増やす"));
     }
   }
 

@@ -40,16 +40,18 @@
 | --- | --- | --- | --- | --- | --- |
 | 2026-09-22 | baseline 全 7 状態 × 3 幅 | 2 / 4 / 4 | P1 2 件（工程短縮・↗ 削除） | reviewer 4.7 分 / 114k tok、修正〜after 約 15 分 | reviewer は general-purpose(opus) で代用（agents はセッション開始時読込のため）。codex-review は Codex 使用量上限で未実施 |
 | 2026-09-22 | loop2（同 7 状態 × 3 幅） | 前回の P2 4 件 + 軽微 2 件 | 全件 | 約 20 分 | design-reviewer は途中で中断（指摘なし）。e2e 51 passed。codex-review は未実施 |
+| 2026-09-27 | loop3（同 7 状態 × 3 幅、ライト + ダーク） | reviewer 3 / 3 / 4、Codex 4 / 5 / 0 | 13 件（A〜M）、見送り 6 件 | reviewer 7.6 分 / 113k tok、協議 2 回、修正〜after 約 25 分 | 初めて design-reviewer エージェントと Codex を並行。採否は `docs/redesign/2026-09-27/decisions.md`。e2e 51 passed / 5 skipped。Codex のコードレビューは 5 時間枠上限で途中停止 → REVIEW_DEBT |
 
 ## バックログ（design-reviewer 2026-09-22 の未対応分）
 - [x] P2 ≤900 でタブ見出しとカード内見出し「01 原稿」が二重 → ≤900 で `.section-heading` を視覚的に隠した（2026-09-22）
 - [x] P2 04 確認だけカード枠が無い → (a) 04 も `.card` にした（2026-09-22）
 - [x] P2 ≤900 で textarea が固定 270px → `#source { min-height: max(270px, calc(100dvh - 380px)) }`（2026-09-22）
 - [x] P2 ホームの折りたたみを「見出し + 右端の山形」に統一。免責は罫線行、枠付きは必読 1 つだけ（2026-09-22）
-- [ ] P3 「サンプルを読み込みました。」トーストが最重要行に重なる → 画面で確認できる事象はトーストを出さない
-- [ ] P3 空行ステッパーの幅不揃い（228px × 2 / 140px × 1）→ 同幅 3 列、単位「行」はラベル側へ
-- [ ] P3 「設定の管理」の大型 secondary × 2 → text-button 3 つを 1 行に
-- [ ] P3 Ctrl+V 表記の不統一（kbd / プレーン）、text-button の高さ 20px → kbd に統一、`min-height: 44px`
+- [x] P3 「サンプルを読み込みました。」トーストが最重要行に重なる → 削除（2026-09-27 loop3 D）
+- [ ] P3 空行ステッパーの幅不揃い（228px × 2 / 140px × 1）→ 390 で 3 組横並びは不可（Codex）。「ラベル上 + 同幅」案は HTML の組み替えになるので次回
+- [x] P3 「設定の管理」の大型 secondary × 2 → text-button 3 つを 1 行に（2026-09-27 loop3 K）
+- [ ] P3 Ctrl+V 表記の不統一（kbd / プレーン）→ 未着手。text-button の高さは既に 44px
 - [x] その他: タブ番号 11px → 12px、「この端末」バッジ 99px → 4px、パネル見出し 17px → 16px（2026-09-22）
-- [ ] その他: ヘッダーのテーマ select の枠を軽くする候補（未着手）
-- [ ] codex-review（コード観点）を 2026-09-23 以降に実施
+- [x] その他: ヘッダーのテーマ select の枠を軽くする → やらない（2026-09-27。--control-border を弱める規定値が無い。Codex・主担当とも同意見）
+- [ ] codex-review（コード観点）→ 2026-09-27 に依頼したが Codex の 5 時間枠上限で途中停止。19:10 以降に再実行（dev-forge `REVIEW_DEBT.md`）
+- [ ] loop3 の見送り分: ホーム左端 3 通り、text-button の 9px 内寄せ、≤900 のプレビュー台 8px 枠、390 のプレビュー既定幅 PC、次回撮影に app-copied を追加

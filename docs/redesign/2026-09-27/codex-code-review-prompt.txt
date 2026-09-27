@@ -1,0 +1,32 @@
+TaltoConv ReDesign のコードレビュー依頼（相互レビュー）。読み取り専用。ファイルを変更せず、他のエージェントを呼ばない。重大度／場所／理由／修正案で日本語の指摘を返す。
+
+## 対象
+- リポジトリ: D:\Coding\Workbench\talto_ReDesign（branch redesign）
+- 範囲: `git diff`（未コミットの作業ツリー全体。TaltoConv.html / src/scripts/app.js / src/styles/app.css / e2e/clipboard.spec.mjs）。REDESIGN.md の差分は改行のみなので対象外
+
+## 変更理由
+2026-09-27 のデザイン見直し（design-reviewer と、あなたとの 2 回の協議 .vqa/0927-codex-design-review.md / .vqa/0927-codex-consult.md）で合意した修正:
+A. ≤900 のコピー成功トーストに端末別の貼り付け案内（#pasteHintText の文言）を含める
+B. プレビューの色をトークン化（ダークで紙面が暗くなる）
+C. 状態色 8 トークン（--ok-* / --warn-* / --danger-*）に集約、ダーク個別上書きを削除。変換メモの summary を右端 .details-mark・44px に
+D. サンプル読込トーストを削除（前の通知だけ消す）
+E. ステッパーの DOM を − 入力 ＋ に（.number-stepper ラッパー廃止）。種類別の表は 2 段 grid
+F. 箇条書き要約の ␠ を「＋空白」に
+G. 固定ボタンで工程を進めたときだけ新しい工程の見出し（tabindex=-1）へフォーカス
+H. 「使い方」ボタン 44px
+I. 使い方ダイアログを role=group + aria-pressed に
+J. ダイアログ角丸 12・余白 24、ホーム h2 16px、feedback 角丸 8
+K. 設定の管理を text-button 3 つ（初期化は右端）
+L. ≤900 で .result-card を flex にし、.preview-toolbar / .warning-details を order でプレビューの上へ
+M. 原稿が空（activeSource().trim() が空）の間、.preview-toolbar / .preview-note / .paste-hint / #clear を visibility:hidden（body[data-source-empty]）
+
+## 検証済み
+- npm test（変換・構造・設定スキーマ・fixture・fuzz・release）成功
+- PORT=8766 npx playwright test: 51 passed / 5 skipped（修正前と同じ件数。skip は元から）
+- ブラウザで 390 幅: data-source-empty の切替、固定ボタンでのフォーカス移動（formatHeading → previewHeading）、ステッパーの DOM 順を確認
+- vqa 撮影（ライト・ダーク × 7 状態 × 3 幅）console 0 件
+
+## 観点
+1. 正しさ・回帰: 既存の機能（コピー 3 経路、手動コピー、設定の保存・読込・初期化、ファイル読込・並べ替え、形式混在の警告、PWA）を壊していないか。特に E（ステッパーの組み立て変更と CSS セレクタの置換漏れ）、M（render() から呼ばれない経路で data-source-empty が古くなる可能性、ファイル／フォルダモード）、L（flex 化で PC 側や手動コピー欄の表示が崩れないか）、G（setStep 後のフォーカスで iOS がスクロールする可能性）
+2. CSS の置換漏れ: 旧 .number-stepper、状態色の直書き（意図して残したのは .status.error と .danger-toggle のスイッチ塗り）、aria-selected
+3. アクセシビリティ上の退行

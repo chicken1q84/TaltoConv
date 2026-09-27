@@ -403,7 +403,11 @@
     const enabled = [el.removeFirstHeading, el.italicAsNote, el.removeHorizontalRules].filter((input) => input.checked).length;
     el.headingSettingsSummary.textContent = bold || underlined ? `太字${bold}・下線${underlined}` : "追加書式なし";
     const marker = el.listMarker.value;
-    const markerLabel = marker === "" ? "冒頭なし" : marker.trim() === "" ? `冒頭に空白${marker.length}文字` : `冒頭「${marker.replaceAll(" ", "␠")}」`;
+    // 空白を記号（␠）で示すと小さく潰れて読めないため、末尾の空白は「＋空白」と言葉で添える
+    const markerBody = marker.trimEnd();
+    const trailingSpaces = marker.length - markerBody.length;
+    const spaceLabel = trailingSpaces === 0 ? "" : trailingSpaces === 1 ? "＋空白" : `＋空白${trailingSpaces}文字`;
+    const markerLabel = marker === "" ? "冒頭なし" : markerBody === "" ? `冒頭に空白${marker.length}文字` : `冒頭「${markerBody}」${spaceLabel}`;
     el.listSettingsSummary.textContent = listStyles ? `${markerLabel}・書式${listStyles}件` : markerLabel;
     const underlineMode = markerModeFor("underline");
     const underlineMarker = el.underlineMarker.value || "無効";
@@ -563,6 +567,9 @@
    */
   function render() {
     const hasSource = Boolean(activeSource().trim()) && !mixedFilesBlocked();
+    // 原稿が空の間は、使えない案内（表示幅の切替・目安の注記・貼り付け案内・原稿を消す）を見せない。
+    // 形式混在で変換を止めている間は原稿があるので対象外（hasSource ではなく原稿の有無で判定する）
+    document.body.toggleAttribute("data-source-empty", !activeSource().trim());
     el.sourceCount.textContent = `${el.source.value.length.toLocaleString()}文字`;
     const collection = activeCollection();
     el.fileCount.textContent = sourceMode !== "paste" && collection.documents.length ? `${collection.combinedText.length.toLocaleString()}文字` : "";
@@ -974,9 +981,10 @@
       const message = "コピーしました。";
       closeManualCopy();
       // スマホの固定ボタンからコピーした場合も、スクロール位置に関係なく結果を知らせます。
+      // 貼り付け案内は長いプレビューの下に隠れるので、次の行動も同じ通知に含めます。
       if (window.matchMedia("(max-width: 900px)").matches) {
         clearCopyFeedback();
-        setStatus(message);
+        setStatus(`${message}${el.pasteHintText.textContent}`);
       } else {
         showCopyFeedback(message);
         setStatus("");
@@ -1123,7 +1131,8 @@
     setSourceMode("paste");
     el.source.value = sampleSource(el.format.value);
     convert();
-    setStatus("サンプルを読み込みました。");
+    // 原稿欄と文字数が変わるので読込は画面で分かる。重要な行に重ならないよう通知は出さず、前の通知だけ消す
+    setStatus("");
   }
 
   /**

@@ -216,7 +216,7 @@
             </div>
           </details>
           <p id="sizeLimitWarning" class="limit-warning" role="alert" hidden>容量制限を解除中。大きな原稿では画面が固まる場合があります。</p>
-          <section class="settings-files" aria-labelledby="settingsFilesHeading"><div><strong id="settingsFilesHeading">設定の管理</strong><p>設定のみ保存（本文なし）。読込：.txt / .json</p></div><div class="settings-file-actions"><label class="secondary settings-import" for="importSettings">読み込む<input id="importSettings" type="file" aria-label="設定を読み込む" accept=".txt,.json,text/plain,application/json"></label><button id="exportSettings" type="button" class="secondary" aria-label="設定を保存">保存</button><button id="resetSettings" type="button" class="text-button" aria-label="設定を初期化">初期化</button></div><p id="settingsFileFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p></section>
+          <section class="settings-files" aria-labelledby="settingsFilesHeading"><div><strong id="settingsFilesHeading">設定の管理</strong><p>設定のみ保存（本文なし）。読込：.txt / .json</p></div><div class="settings-file-actions"><label class="text-button settings-import" for="importSettings">読み込む<input id="importSettings" type="file" aria-label="設定を読み込む" accept=".txt,.json,text/plain,application/json"></label><button id="exportSettings" type="button" class="text-button" aria-label="設定を保存">保存</button><button id="resetSettings" type="button" class="text-button" aria-label="設定を初期化">初期化</button></div><p id="settingsFileFeedback" class="inline-feedback" role="status" aria-live="polite" hidden></p></section>
         </section>
       </div>
       <!-- 04 確認：TALTO相当の結果を見て、3種類のコピー方法から選びます。 -->
@@ -230,7 +230,7 @@
           </div>
         </div>
         <p class="preview-note">表示は目安です。貼り付け後にTALTOで確認してください。</p>
-        <details id="warningDetails" class="warning-details" hidden><summary id="warningSummary">変換メモ</summary><ul id="warnings"></ul></details>
+        <details id="warningDetails" class="warning-details" hidden><summary><span id="warningSummary">変換メモ</span><span class="details-mark" aria-hidden="true"></span></summary><ul id="warnings"></ul></details>
         <div class="export-area"><div class="copy-choice"><label for="copyFormat">コピー形式</label><select id="copyFormat"><option value="rich">書式付き</option><option value="plain">テキスト</option><option value="html">HTML</option></select></div><button id="copyResult" type="button" class="primary copy-primary" disabled><span id="copyResultText">書式付きでコピー</span></button><p id="copyFeedback" class="copy-feedback" role="status" aria-live="polite" hidden></p></div>
         <p class="paste-hint"><span id="pasteHintText">TALTOの本文欄へ貼り付け。</span><button id="openManualCopy" type="button" class="text-button">手動コピー</button></p>
         <!-- 手動コピー欄：自動コピーに失敗したとき、または利用者が自分で開いたときだけ表示します。

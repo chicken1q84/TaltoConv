@@ -4,8 +4,8 @@
    「操作できる部品」の境界用です。後者は白背景に対して3:1以上のコントラストを保ちます。
    --muted の補足文字は、薄い背景の上でも6:1以上になる濃さにしています。
    補足文字の最小サイズは13pxです。日本語は12px以下で判読しにくくなるため、これより小さくしません。 */
-:root { color-scheme:light; --ink:#302d3a; --muted:#5b5663; --line:#e1dde5; --control-border:#948da0; --placeholder:#767078; --canvas:#f7f6f2; --surface:#fff; --surface-soft:#faf9fc; --field:#fff; --accent:#655181; --accent-dark:#4e3c69; --soft:#f2eef7; --focus:#765e9a; --control-height:44px; --control-radius:8px; --preview-stage:#f0eef2; --preview-paper:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Meiryo",sans-serif; font-size:15px; }
-:root[data-resolved-theme="dark"] { color-scheme:dark; --ink:#f1eef5; --muted:#bbb5c2; --line:#403a47; --control-border:#726a7d; --placeholder:#a29bab; --canvas:#17151c; --surface:#211e27; --surface-soft:#292530; --field:#26222c; --accent:#c4addf; --accent-dark:#dcc9f2; --soft:#342d40; --focus:#c5abe7; --preview-stage:#17151c; --preview-paper:#211e27; }
+:root { color-scheme:light; --ink:#302d3a; --muted:#5b5663; --line:#e1dde5; --control-border:#948da0; --placeholder:#767078; --canvas:#f7f6f2; --surface:#fff; --surface-soft:#faf9fc; --field:#fff; --accent:#655181; --accent-dark:#4e3c69; --soft:#f2eef7; --focus:#765e9a; --control-height:44px; --control-radius:8px; --preview-stage:#f0eef2; --preview-paper:#fff; --ok-bg:#edf5ef; --ok-fg:#4f6b57; --warn-bg:#fff8e8; --warn-line:#e3c78e; --warn-fg:#70552d; --danger-bg:#f8eded; --danger-line:#e2b8ba; --danger-fg:#863c40; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Meiryo",sans-serif; font-size:15px; }
+:root[data-resolved-theme="dark"] { color-scheme:dark; --ink:#f1eef5; --muted:#bbb5c2; --line:#403a47; --control-border:#726a7d; --placeholder:#a29bab; --canvas:#17151c; --surface:#211e27; --surface-soft:#292530; --field:#26222c; --accent:#c4addf; --accent-dark:#dcc9f2; --soft:#342d40; --focus:#c5abe7; --preview-stage:#17151c; --preview-paper:#211e27; --ok-bg:#203328; --ok-fg:#bfe0c8; --warn-bg:#332a18; --warn-line:#80662d; --warn-fg:#f2d998; --danger-bg:#3a2226; --danger-line:#784a50; --danger-fg:#f0b7bc; }
 * { box-sizing:border-box; }
 [hidden] { display:none !important; }
 body { margin:0; background:var(--canvas); color:var(--ink); }
@@ -23,9 +23,9 @@ button:disabled,a[aria-disabled="true"] { opacity:.55; cursor:default; }
 .site-header { height:82px; display:flex; justify-content:space-between; align-items:center; gap:20px; padding:0 max(28px,calc((100vw - 1344px)/2)); border-bottom:1px solid var(--line); }
 .header-actions { display:flex; align-items:center; gap:10px; }
 .theme-control { display:flex; align-items:center; gap:8px; font-weight:600; white-space:nowrap; }
-.help-button { min-height:40px; padding:8px 14px; font-size:14px; }
+.help-button { min-height:var(--control-height); padding:8px 14px; font-size:14px; }
 /* 使い方ダイアログ。PC／スマホの切替はタブで行い、端末判定で初期表示を決めます。 */
-.help-dialog { width:min(640px,calc(100vw - 32px)); max-height:min(85vh,calc(100vh - 32px)); margin:auto; padding:22px 24px 24px; border:1px solid var(--line); border-radius:14px; background:var(--surface); color:var(--ink); box-shadow:0 18px 48px #302d3a33; overflow:auto; overscroll-behavior:contain; }
+.help-dialog { width:min(640px,calc(100vw - 32px)); max-height:min(85vh,calc(100vh - 32px)); margin:auto; padding:24px; border:1px solid var(--line); border-radius:12px; background:var(--surface); color:var(--ink); box-shadow:0 18px 48px #302d3a33; overflow:auto; overscroll-behavior:contain; }
 .help-dialog::backdrop { background:#302d3a66; }
 .help-head { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; }
 .help-head h2 { margin:0; font-size:18px; }
@@ -52,7 +52,7 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .home-intro > p:not(.eyebrow) { max-width:760px; margin:16px 0 0; color:var(--muted); font-size:16px; line-height:1.75; }
 .primary.home-primary { min-width:190px; min-height:50px; margin-top:24px; justify-content:space-between; }
 .home-section { margin-top:40px; }
-.home-section > h2 { margin:0; font-size:17px; }
+.home-section > h2 { margin:0; font-size:16px; }
 /* 端末ごとの始め方。設定欄と同じ開閉部品を使い、該当端末の項目だけ app.js が開きます。 */
 .device-guide > h2 { margin-bottom:16px; }
 .device-item { border-bottom:1px solid var(--line); padding:0 4px; }
@@ -129,16 +129,16 @@ body[data-view="home"] .mobile-action { display:none; }
 .file-order-buttons { display:flex; gap:3px; }
 .file-order-buttons button { width:44px; height:44px; border-radius:6px; color:var(--accent); font-size:16px; }
 .file-order-buttons button:hover:not(:disabled) { background:var(--soft); }
-.file-order-buttons .file-remove { color:#88474b; }
-.file-order-buttons .file-remove:hover:not(:disabled) { background:#f8eded; }
+.file-order-buttons .file-remove { color:var(--danger-fg); }
+.file-order-buttons .file-remove:hover:not(:disabled) { background:var(--danger-bg); }
 .loaded-row .text-button { justify-self:end; }
-.mixed-warning { margin-top:13px; padding:14px; border:1px solid #e3c78e; border-radius:9px; background:#fff8e8; color:#70552d; }
+.mixed-warning { margin-top:13px; padding:14px; border:1px solid var(--warn-line); border-radius:9px; background:var(--warn-bg); color:var(--warn-fg); }
 .mixed-warning > strong { font-size:14px; }
 .mixed-warning p { margin:7px 0 13px; font-size:13px; line-height:1.7; }
 .force-row { display:flex; align-items:flex-start; gap:9px; margin-top:12px; line-height:1.7; cursor:pointer; }
 .force-row input { flex:0 0 auto; width:18px; height:18px; margin:1px 0 0; accent-color:var(--accent); }
-.inline-feedback { margin:10px 0 0; padding:10px 12px; border-radius:7px; background:#edf5ef; color:#4f6b57; font-size:13px; line-height:1.6; }
-.inline-feedback.error { background:#f8eded; color:#863c40; }
+.inline-feedback { margin:10px 0 0; padding:10px 12px; border-radius:8px; background:var(--ok-bg); color:var(--ok-fg); font-size:13px; line-height:1.6; }
+.inline-feedback.error { background:var(--danger-bg); color:var(--danger-fg); }
 .field { display:grid; gap:8px; }
 /* ===== 6. 原稿形式の対応表 ===== */
 .format-help { margin:0 0 16px; }
@@ -218,7 +218,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .settings-group > summary strong { font-size:15px; }
 .settings-group > summary small { margin-top:4px; color:var(--muted); font-size:13px; }
 .details-mark { flex:0 0 8px; width:8px; height:8px; margin:0 4px; border-right:1.5px solid currentColor; border-bottom:1.5px solid currentColor; color:var(--accent); transform:rotate(45deg); transition:transform .15s; }
-.settings-group[open] > summary .details-mark,.device-item[open] > summary .details-mark,.help-details[open] > summary .details-mark { transform:rotate(225deg); }
+.settings-group[open] > summary .details-mark,.device-item[open] > summary .details-mark,.help-details[open] > summary .details-mark,.warning-details[open] > summary .details-mark { transform:rotate(225deg); }
 .help-details { margin-top:8px; }
 .help-details > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; cursor:pointer; list-style:none; color:var(--accent-dark); font-size:14px; font-weight:600; }
 .help-details > summary::-webkit-details-marker { display:none; }
@@ -271,15 +271,17 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .toggle-row input:checked + .switch { background:var(--accent); }
 .toggle-row input:checked + .switch::after { transform:translateX(16px); }
 .toggle-row input:focus-visible + .switch { outline:3px solid var(--focus); outline-offset:3px; }
-.danger-toggle strong { color:#7f3d42; }
+.danger-toggle strong { color:var(--danger-fg); }
 .danger-toggle input:checked + .switch { background:#9a4b50; }
-.limit-warning { margin:12px 0; padding:12px 14px; border:1px solid #e2b8ba; border-radius:8px; background:#f9eded; color:#7f3d42; font-size:13px; line-height:1.75; }
+.limit-warning { margin:12px 0; padding:12px 14px; border:1px solid var(--danger-line); border-radius:8px; background:var(--danger-bg); color:var(--danger-fg);font-size:13px; line-height:1.75; }
 .settings-files { display:grid; gap:16px; padding-top:16px; border-top:1px solid var(--line); }
 .settings-files > div:first-child > strong { font-size:15px; }
 .settings-files > div:first-child > p { margin:8px 0 0; color:var(--muted); font-size:13px; line-height:1.7; }
-.settings-file-actions { display:grid; grid-template-columns:1fr 1fr auto; gap:8px; }
-.settings-file-actions .primary,.settings-file-actions .secondary { padding-inline:9px; text-align:center; }
-.settings-import { position:relative; cursor:pointer; }
+/* まれにしか使わない操作なので、枠付きボタンにせず文字ボタン 3 つを 1 行に並べる。初期化だけ右端に離す */
+.settings-file-actions { display:flex; flex-wrap:wrap; align-items:center; gap:0 24px; }
+.settings-file-actions .text-button { padding-inline:0; }
+.settings-file-actions #resetSettings { margin-left:auto; }
+.settings-import { position:relative; cursor:pointer; font-weight:400; }
 .settings-import input { position:absolute; inset:0; width:100%; opacity:0; cursor:pointer; }
 .settings-import:focus-within { outline:3px solid var(--focus); outline-offset:3px; }
 .result-card { position:sticky; top:20px; }
@@ -292,14 +294,14 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .device-switch { padding:3px; }
 .device-switch button { font-size:13px; min-width:55px; padding:8px 10px; }
 .preview-stage { flex:1 1 auto; background:var(--preview-stage); border-radius:12px; padding:16px; min-height:240px; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
-.preview-paper { max-width:780px; min-height:380px; padding:28px; margin:0 auto; background:#fff; border-radius:4px; overflow-wrap:anywhere; }
+.preview-paper { max-width:780px; min-height:380px; padding:28px; margin:0 auto; background:var(--preview-paper); border-radius:4px; overflow-wrap:anywhere; }
 .preview-stage[data-device="mobile"] .preview-paper { max-width:375px; padding:24px 20px; }
-#preview { color:#333; font-family:"Helvetica Neue","Noto Sans JP",-apple-system,Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif; font-size:16px; line-height:1.8; -webkit-font-smoothing:antialiased; }
+#preview { color:var(--ink);font-family:"Helvetica Neue","Noto Sans JP",-apple-system,Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif; font-size:16px; line-height:1.8; -webkit-font-smoothing:antialiased; }
 #preview > * { margin:0; }
-#preview h1 { padding-bottom:8px; border-bottom:1px solid #e2e2e2; font-size:32px; font-weight:normal; line-height:1.6; }
+#preview h1 { padding-bottom:8px; border-bottom:1px solid var(--line);font-size:32px; font-weight:normal; line-height:1.6; }
 #preview h2 { font-size:24px; font-weight:normal; line-height:1.6; }
 #preview h3 { font-size:20px; font-weight:normal; line-height:1.6; }
-#preview blockquote { padding:24px; color:#777; background:#f8f8f8; border:0; border-radius:8px; font-size:12px; line-height:1.6; }
+#preview blockquote { padding:24px; color:var(--muted); background:var(--surface-soft);border:0; border-radius:8px; font-size:12px; line-height:1.6; }
 #preview p { min-height:1rem; }
 #preview strong { font-weight:bold; }
 .preview-stage[data-device="mobile"] #preview { font-size:14px; line-height:1.6; }
@@ -307,13 +309,16 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .preview-stage[data-device="mobile"] #preview h2 { font-size:18px; line-height:1.4; }
 .preview-stage[data-device="mobile"] #preview h3 { font-size:16px; line-height:1.4; }
 .preview-stage[data-device="mobile"] #preview blockquote { padding:16px; }
-#preview code { font-family:Consolas,monospace; background:#f1eef4; padding:1px 3px; border-radius:3px; }
+#preview code { font-family:Consolas,monospace; background:var(--soft);padding:1px 3px; border-radius:3px; }
 .empty-preview { text-align:center; padding:25px 0 15px; }
-.empty-preview p { color:#5b5663; font-size:14px; line-height:1.75; }
+.empty-preview p { color:var(--muted);font-size:14px; line-height:1.75; }
 .preview-note { font-size:13px; color:var(--muted); line-height:1.7; margin:10px 0 16px; }
-.warning-details { padding:12px 14px; margin:15px 0; background:#fbf5e9; color:#886535; border:1px solid #efe4cc; border-radius:8px; font-size:13px; }
-.warning-details summary { cursor:pointer; min-height:22px; font-weight:600; }
-.warning-details ul { margin:8px 0 0; padding-left:18px; line-height:1.8; }
+/* 変換メモも他の折りたたみと同じ「見出し + 右端の山形」。押せる高さは 44px */
+.warning-details { padding:0 12px; margin:16px 0; background:var(--warn-bg); color:var(--warn-fg); border:1px solid var(--warn-line); border-radius:8px; font-size:13px; }
+.warning-details > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; cursor:pointer; list-style:none; font-weight:600; }
+.warning-details > summary::-webkit-details-marker { display:none; }
+.warning-details .details-mark { color:var(--warn-fg); }
+.warning-details ul { margin:0 0 12px; padding-left:18px; line-height:1.75; }
 .warning-details li + li { margin-top:6px; }
 .export-area { padding-top:0; }
 .copy-choice { display:grid; grid-template-columns:auto minmax(0,180px); align-items:center; justify-content:end; gap:8px; margin-bottom:12px; }
@@ -325,15 +330,15 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .secondary:hover:not(:disabled) { background:var(--soft); }
 .copy-primary { width:100%; min-height:49px; }
 .copy-primary > span { flex:1; font-size:15px; line-height:1.4; }
-.copy-feedback { margin:10px 0 2px; padding:11px 12px; border-radius:7px; background:#edf5ef; color:#4f6b57; font-size:13px; line-height:1.7; text-align:center; }
-.copy-feedback.error { background:#f8eded; color:#863c40; }
+.copy-feedback { margin:10px 0 2px; padding:11px 12px; border-radius:8px; background:var(--ok-bg); color:var(--ok-fg); font-size:13px; line-height:1.7; text-align:center; }
+.copy-feedback.error { background:var(--danger-bg); color:var(--danger-fg); }
 .paste-hint { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0 12px; font-size:13px; line-height:1.75; color:var(--muted); margin:8px 0 0; }
 .paste-hint .text-button { padding-inline:0; font-size:13px; color:var(--accent-dark); text-decoration:underline; }
 /* 手動コピー欄：iOSでは自動コピーが許可されない場合があるため、選択→コピーを利用者の操作で行えるようにします。
    contenteditable は「すべて選択」の呼び出しを容易にするために使い、inputmode="none" でキーボードは出しません。 */
 .manual-copy { margin-top:16px; padding:16px 18px; border:1px solid var(--line); border-radius:10px; background:var(--surface-soft); }
 .manual-copy h3 { margin:0 0 6px; font-size:15px; }
-.manual-copy-reason { margin:0 0 6px; font-size:13px; line-height:1.7; color:#863c40; }
+.manual-copy-reason { margin:0 0 6px; font-size:13px; line-height:1.7; color:var(--danger-fg); }
 .manual-copy-steps { margin:0 0 12px; font-size:13px; line-height:1.8; color:var(--muted); }
 .manual-copy-actions { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
 .manual-copy-actions .text-button { color:var(--accent-dark); text-decoration:underline; font-size:13px; }
@@ -344,25 +349,15 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
 .status { position:fixed; z-index:20; bottom:24px; left:50%; transform:translateX(-50%); max-width:min(560px,calc(100vw - 32px)); width:max-content; border-radius:10px; padding:13px 18px; background:#393244; color:white; font-size:13px; line-height:1.7; box-shadow:0 6px 24px #302d3a24; }
 .status.error { background:#913f43; }
 .mobile-tabs,.mobile-action { display:none; }
+/* 原稿が空の間は使えない要素を隠す。場所は残し、最初の 1 文字で配置が跳ねないようにする */
+body[data-source-empty] :is(.preview-toolbar,.preview-note,.paste-hint,#clear) { visibility:hidden; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
 /* ===== 9. ダークモード固有の補正 ===== 共通変数だけで読みにくい色を直します。 */
 :root[data-resolved-theme="dark"] .upload-icon { border-color:#51475c; }
 :root[data-resolved-theme="dark"] .segmented { background:#19171e; }
-:root[data-resolved-theme="dark"] .mixed-warning { background:#332a18; border-color:#80662d; color:#f2d998; }
-:root[data-resolved-theme="dark"] .inline-feedback,
-:root[data-resolved-theme="dark"] .copy-feedback { background:#203328; color:#bfe0c8; }
-:root[data-resolved-theme="dark"] .manual-copy-reason { color:#f0b7bc; }
-:root[data-resolved-theme="dark"] .inline-feedback.error,
-:root[data-resolved-theme="dark"] .copy-feedback.error,
-:root[data-resolved-theme="dark"] .limit-warning { background:#3a2226; color:#f0b7bc; border-color:#784a50; }
-:root[data-resolved-theme="dark"] .warning-details { background:#302918; color:#efd99d; border-color:#65562f; }
 :root[data-resolved-theme="dark"] .primary { background:#8063a5; color:#fff; }
 :root[data-resolved-theme="dark"] .primary:hover:not(:disabled) { background:#9475bd; }
 :root[data-resolved-theme="dark"] .primary:disabled { background:#3a3344; color:#dcc9f2; }
-/* 赤系の警告文字は暗い背景では沈むため、明るい赤へ置き換えます。 */
-:root[data-resolved-theme="dark"] .file-order-buttons .file-remove,
-:root[data-resolved-theme="dark"] .danger-toggle strong { color:#f0b7bc; }
-:root[data-resolved-theme="dark"] .file-order-buttons .file-remove:hover:not(:disabled) { background:#3a2226; }
 :root[data-resolved-theme="dark"] .mobile-action { background:#17151cf2; border-color:var(--line); }
 :root[data-resolved-theme="dark"] select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%23c4addf' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 :root[data-resolved-theme="dark"] .stepper-field > button:active:not(:disabled) { background:#42364f; }
@@ -379,7 +374,7 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
 }
 @media (max-width:900px) {
   .site-header { height:73px; padding:0 18px; gap:8px; }
-  .help-button { min-height:36px; padding:6px 10px; font-size:13px; }
+  .help-button { min-height:44px; padding:6px 10px; font-size:13px; }
   .help-dialog { padding:18px 16px 20px; }
   .brand > span { font-size:16px; }
   .brand > small { font-size:12px; }
@@ -404,11 +399,13 @@ textarea.manual-copy-area { font-family:inherit; white-space:pre-wrap; }
   /* 工程タブが見出しを兼ねるので、カード内の「01 原稿」は読み上げ・フォーカス用にだけ残す */
   .section-heading { position:absolute; width:1px; height:1px; margin:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
   body:not([data-step="source"]) .source-card,body:not([data-step="format"]) .format-card,body:not([data-step="settings"]) .settings-card,body:not([data-step="preview"]) .result-card { display:none; }
-  .result-card { position:static; display:block; max-height:none; }
+  .result-card { position:static; display:flex; max-height:none; }
+  /* プレビューは原稿の長さぶん伸びるので、変換メモは件数の直下（プレビューの上）に出す。
+     この幅のプレビュー台はフォーカス対象にならないため、並べ替えても操作順は見た目どおり */
+  .preview-toolbar { order:-2; }
+  .warning-details { order:-1; margin:0 0 12px; }
   .file-drop { padding:18px 8px; }
   .source-mode-switch label span { min-height:52px; display:grid; place-items:center; line-height:1.45; white-space:nowrap; }
-  .settings-file-actions { grid-template-columns:1fr 1fr; }
-  .settings-file-actions #resetSettings { grid-column:1 / -1; justify-self:end; }
   input[type="text"],select,textarea { font-size:16px; }
   input[type="text"],select { min-height:46px; }
   textarea { min-height:270px; line-height:1.85; padding:12px; }

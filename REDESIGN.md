@@ -20,6 +20,7 @@
 ## 状態
 - **進行中**（2026-09-22〜）
 - 最初のバックログ: `Wiki\talto-migration-helper-ui-review.md` の P1
+- 2026-09-27: loop1〜3（`480e590` まで）を**取込型**で元企画の main へ fast-forward し、GitHub（`chicken1q84/TaltoConv`）へ push。Web 版（GitHub Pages）に反映。作業資料（本書・DESIGN.md・docs/redesign など）も公開リポジトリに入った（ユーザー判断）。VERSION は 1.0.0 のまま（BOOTH の ZIP は未更新）
 
 ## ポート
 - dev server: **8766**（元企画の 8765 / 8767 と分ける。同時起動時に e2e が相手を検査しないため）

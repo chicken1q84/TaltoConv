@@ -82,7 +82,8 @@ main { max-width:1400px; padding:0 28px; margin:0 auto; }
 .legal-notice.legal-plain { margin-top:0; border:0; border-bottom:1px solid var(--line); border-radius:0; background:none; }
 .legal-notice.legal-plain summary { min-height:64px; padding:0 4px; color:var(--ink); font-weight:600; }
 .legal-notice.legal-plain p { padding:0 4px 16px; }
-.home-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:32px; padding-top:24px; border-top:1px solid var(--line); }
+/* 直前の免責の行が下線を持つので、フッターには線を引かない（2 本並ぶと二重線に見える） */
+.home-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:32px; }
 .home-footer p { margin:0; color:var(--muted); font-size:14px; }
 .home-footer a { color:var(--accent); }
 .version-label { margin-left:14px; font-variant-numeric:tabular-nums; }

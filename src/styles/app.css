@@ -197,11 +197,11 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .spacing-table tbody th { font-size:13px; font-weight:600; }
 .spacing-table td { padding:6px 5px; }
 .spacing-table input { min-height:44px; padding:8px; text-align:center; font-size:16px; }
-/* 表の中は幅が狭いので 2 段: 1 段目に入力、2 段目に − ＋ */
+/* 表の中は幅が狭いので 2 段: 1 段目に入力、2 段目に − ＋（DOM も「入力 − ＋」の順） */
 .spacing-table .stepper-field { grid-template-columns:1fr 1fr; }
-.spacing-table .stepper-field > input { grid-column:1 / -1; grid-row:1; }
-.spacing-table .stepper-field > button { grid-row:2; border-top:1px solid var(--line); }
-.spacing-table .stepper-field > button:first-child { border-right:0; border-radius:0 0 0 7px; }
+.spacing-table .stepper-field > input { grid-column:1 / -1; }
+.spacing-table .stepper-field > button { border-top:1px solid var(--line); }
+.spacing-table .stepper-field > input + button { border-radius:0 0 0 7px; }
 .spacing-table .stepper-field > button:last-child { border-radius:0 0 7px 0; }
 .type-symbol { display:inline-block; margin-right:6px; color:var(--muted); font-size:12px; }
 .note-symbol { font-size:18px; }

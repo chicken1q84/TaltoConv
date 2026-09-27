@@ -838,7 +838,8 @@
       const field = document.createElement("div");
       field.className = "stepper-field";
       input.before(field);
-      // 見た目と Tab の順を揃えるため、DOM も「− 入力 ＋」の順に並べます。
+      // 見た目と Tab の順を揃えるため、DOM も見た目どおりに並べます。
+      // 通常は横一列の「− 入力 ＋」、種類別の表の中は 2 段（上に入力、下に − ＋）なので「入力 − ＋」。
       const makeButton = (direction, symbol, action) => {
         const button = document.createElement("button");
         button.type = "button";
@@ -851,7 +852,10 @@
         });
         return button;
       };
-      field.append(makeButton(-1, "−", "減らす"), input, makeButton(1, "＋", "増やす"));
+      const decrease = makeButton(-1, "−", "減らす");
+      const increase = makeButton(1, "＋", "増やす");
+      if (input.closest(".spacing-table")) field.append(input, decrease, increase);
+      else field.append(decrease, input, increase);
     }
   }
 

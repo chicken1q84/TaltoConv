@@ -313,8 +313,8 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .empty-preview { text-align:center; padding:25px 0 15px; }
 .empty-preview p { color:var(--muted);font-size:14px; line-height:1.75; }
 .preview-note { font-size:13px; color:var(--muted); line-height:1.7; margin:10px 0 16px; }
-/* 変換メモも他の折りたたみと同じ「見出し + 右端の山形」。押せる高さは 44px */
-.warning-details { padding:0 12px; margin:16px 0; background:var(--warn-bg); color:var(--warn-fg); border:1px solid var(--warn-line); border-radius:8px; font-size:13px; }
+/* 変換メモも他の折りたたみと同じ「見出し + 右端の山形」。押せる高さは 44px。件数の直下（プレビューの上）に置く */
+.warning-details { padding:0 12px; margin:0 0 12px;background:var(--warn-bg); color:var(--warn-fg); border:1px solid var(--warn-line); border-radius:8px; font-size:13px; }
 .warning-details > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:44px; cursor:pointer; list-style:none; font-weight:600; }
 .warning-details > summary::-webkit-details-marker { display:none; }
 .warning-details .details-mark { color:var(--warn-fg); }
@@ -399,11 +399,7 @@ body[data-source-empty] :is(.preview-toolbar,.preview-note,.paste-hint,#clear) {
   /* 工程タブが見出しを兼ねるので、カード内の「01 原稿」は読み上げ・フォーカス用にだけ残す */
   .section-heading { position:absolute; width:1px; height:1px; margin:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
   body:not([data-step="source"]) .source-card,body:not([data-step="format"]) .format-card,body:not([data-step="settings"]) .settings-card,body:not([data-step="preview"]) .result-card { display:none; }
-  .result-card { position:static; display:flex; max-height:none; }
-  /* プレビューは原稿の長さぶん伸びるので、変換メモは件数の直下（プレビューの上）に出す。
-     この幅のプレビュー台はフォーカス対象にならないため、並べ替えても操作順は見た目どおり */
-  .preview-toolbar { order:-2; }
-  .warning-details { order:-1; margin:0 0 12px; }
+  .result-card { position:static; display:block; max-height:none; }
   .file-drop { padding:18px 8px; }
   .source-mode-switch label span { min-height:52px; display:grid; place-items:center; line-height:1.45; white-space:nowrap; }
   input[type="text"],select,textarea { font-size:16px; }

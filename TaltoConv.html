@@ -223,6 +223,8 @@
       <section class="card result-card" id="previewPanel" aria-labelledby="previewHeading">
         <div class="section-heading"><div><span class="step-number">04</span><h2 id="previewHeading" tabindex="-1">確認</h2></div></div>
         <div class="preview-toolbar"><span id="resultCount"></span><div class="segmented device-switch" role="group" aria-label="プレビューの表示幅"><button id="previewDesktop" type="button" aria-pressed="true">PC</button><button id="previewMobile" type="button" aria-pressed="false">スマホ</button></div></div>
+        <!-- 変換メモはプレビューの前に置く。スマホではプレビューが原稿の長さぶん伸びるため、後ろだと見落とす -->
+        <details id="warningDetails" class="warning-details" hidden><summary><span id="warningSummary">変換メモ</span><span class="details-mark" aria-hidden="true"></span></summary><ul id="warnings"></ul></details>
         <div class="preview-stage" id="previewStage" data-device="desktop">
           <div class="preview-paper">
             <div id="emptyPreview" class="empty-preview"><p>ここに変換結果が表示されます。</p></div>
@@ -230,7 +232,6 @@
           </div>
         </div>
         <p class="preview-note">表示は目安です。貼り付け後にTALTOで確認してください。</p>
-        <details id="warningDetails" class="warning-details" hidden><summary><span id="warningSummary">変換メモ</span><span class="details-mark" aria-hidden="true"></span></summary><ul id="warnings"></ul></details>
         <div class="export-area"><div class="copy-choice"><label for="copyFormat">コピー形式</label><select id="copyFormat"><option value="rich">書式付き</option><option value="plain">テキスト</option><option value="html">HTML</option></select></div><button id="copyResult" type="button" class="primary copy-primary" disabled><span id="copyResultText">書式付きでコピー</span></button><p id="copyFeedback" class="copy-feedback" role="status" aria-live="polite" hidden></p></div>
         <p class="paste-hint"><span id="pasteHintText">TALTOの本文欄へ貼り付け。</span><button id="openManualCopy" type="button" class="text-button">手動コピー</button></p>
         <!-- 手動コピー欄：自動コピーに失敗したとき、または利用者が自分で開いたときだけ表示します。
